@@ -1,15 +1,267 @@
-import React from 'react';
+import React, {
+    createContext,
+    Dispatch,
+    ReactNode,
+    SetStateAction,
+    useCallback,
+    useContext,
+    useEffect,
+    useState
+} from 'react';
 import './App.css';
 import HistoryTimeline from './components/HistoryTimeline/HistoryTimeline';
-import historicalEvents from './data/data.json'
+import QuizBlock from "./components/QuizBlock/QuizBlock";
+import Article from "./components/Article/Article";
+import data from "./data/data.json";
+import Header from "./components/Header/Header";
+import {
+    Box,
+    Container,
+    createTheme,
+    CssBaseline,
+    IconButton,
+    PaletteMode,
+    ThemeProvider,
+    Typography,
+    useTheme
+} from "@mui/material";
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import getDesignTokens from './themes/getDesignTokens';
+
+export const ColorModeContext = React.createContext({
+    toggleColorMode: () => {
+    }
+});
+
+
+export interface IThemeContextProps {
+    theme: 'light' | 'dark';
+    setTheme: Dispatch<SetStateAction<'light' | 'dark'>>;
+}
+
+export const ThemeContext = createContext<IThemeContextProps>({
+    theme: 'light',
+    setTheme: () => null,
+});
+
+export interface ILanguageContextProps {
+    language: 'uk' | 'en';
+    setLanguage: Dispatch<SetStateAction<'uk' | 'en'>>;
+}
+
+export const LanguageContext = createContext<ILanguageContextProps>({
+    language: 'uk',
+    setLanguage: () => null,
+});
+
+export interface IUser {
+    name: string;
+    // Додайте інші властивості користувача, які вам потрібні
+}
+
+export interface UserContextProps {
+    currentUser: null | IUser;
+    setCurrentUser: Dispatch<SetStateAction<null | object>>;
+}
+
+export const UserContext = createContext<UserContextProps>({
+    currentUser: null,
+    setCurrentUser: () => null,
+});
+
+interface MyProvidersProps {
+    children: ReactNode;
+}
+
 
 function App() {
+    const [showTimeline, setShowTimeline] = useState(true)
+    const [showQuiz, setShowQuiz] = useState(false);
+    const [expandedArticle, setExpandedArticle] = useState(false);
+    const [selectedArticle, setSelectedArticle] = useState<null | number>(null)
+    const [buttonStates, setButtonStates] = useState(
+        data.historyList.map((_, index) => index === 0) // Початково активна лише перша кнопка
+    );
+
+    const [achievements, setAchievements] = useState<[] | string[]>([])
+
+    const [theme, setTheme] = useState<'light' | "dark">('light');
+    const [language, setLanguage] = useState<"uk" | "en">("uk");
+    const [allAnswerIsCorrect, setAllAnswerIsCorrect] = useState(false)
+    const {currentUser, setCurrentUser} = useContext(UserContext);
+
+    const handleExpandArticle = (index: number) => {
+        setExpandedArticle(true);
+        setSelectedArticle(index)
+        setShowTimeline(false)
+    };
+
+
+    const handleCloseArticle = () => {
+        setExpandedArticle(false);
+        setSelectedArticle(null)
+        setShowTimeline(true)
+    }
+
+
+    const allAnswerIsCorrectFunc = useCallback(() => {
+        if (selectedArticle !== null) {
+            setButtonStates((prevStates) => {
+                const updatedStates = [...prevStates];
+                updatedStates[selectedArticle + 1] = true;
+                return updatedStates;
+            });
+
+            setAchievements((prevAchievements) => {
+                const newAchievements = [...prevAchievements];
+                newAchievements[selectedArticle] = data.historyList[selectedArticle].achieved;
+                return newAchievements;
+            });
+        }
+    }, [selectedArticle, setButtonStates, setAchievements]);
+
+    useEffect(() => {
+        const effect = () => {
+            if (selectedArticle !== null && allAnswerIsCorrect) {
+                allAnswerIsCorrectFunc();
+            }
+        };
+
+        effect();
+    }, [allAnswerIsCorrect, selectedArticle, allAnswerIsCorrectFunc]);
+
+
+    const handleQuizComplete = (results: { correct: number; incorrect: number }) => {
+        // Ваш код для обробки результатів тесту
+        console.log('Результати тесту:');
+        console.log(`Правильних відповідей: ${results.correct}`);
+        console.log(`Неправильних відповідей: ${results.incorrect}`);
+    };
+
+
+    const handleShowQuiz = () => {
+        setShowQuiz(true);
+        setExpandedArticle(false);
+    };
+
+    const closeTestPage = () => {
+        setShowQuiz(false);
+        setShowTimeline(true)
+        // Виконати дії для переходу на головну сторінку
+        // Наприклад, перенаправлення на іншу сторінку або зміна URL
+        // Може залежати від вашої архітектури додатку
+        console.log("Перехід на головну сторінку");
+    };
+
+    const backToArticleFromTest = () => {
+        setShowQuiz(false);
+        setExpandedArticle(true);
+    }
+
+    const handleNextLevel = () => {
+        if (selectedArticle !== null) {
+            setShowQuiz(false);
+            setSelectedArticle(selectedArticle + 1);
+            setExpandedArticle(true);
+        }
+    };
+
+    const handleGoToTestNow = (index: number) => {
+        setSelectedArticle(index);
+        handleShowQuiz();
+        setShowTimeline(false)
+    }
+
 
     return (
         <div className="App">
-            <HistoryTimeline events={historicalEvents.historyList}/>
+
+
+            <MyProviders>
+                <Header/>
+
+                <Container> {showTimeline &&
+                <HistoryTimeline handleGoToTestNow={handleGoToTestNow} buttonStates={buttonStates}
+                                 handleExpandArticle={handleExpandArticle}
+                                 events={data.historyList}/>
+                }
+                    {showQuiz && (
+                        <div>
+                            <Typography variant={"h3"}>Theme{selectedArticle}</Typography>
+
+
+                            <QuizBlock
+                                allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
+                                events={data.historyList}
+                                selectedArticle={selectedArticle}
+                                handleNextLevel={handleNextLevel}
+                                setAllAnswerIsCorrect={setAllAnswerIsCorrect}
+                                closeTestPage={closeTestPage}
+                                questions={data.questions} options={data.options}
+                                correctAnswers={data.correctAnswers}
+                                onAnswer={handleQuizComplete}
+                                backToArticleFromTest={backToArticleFromTest}
+                            />
+
+
+                        </div>
+                    )}
+                    {expandedArticle && (
+                        <Article handleCloseArticle={handleCloseArticle} handleShowQuiz={handleShowQuiz}
+                                 selectedArticle={selectedArticle}/>
+                    )}</Container>
+                <footer>
+                    <Container>
+                        <div>sociicons</div>
+                        <div>copyright</div>
+                    </Container>
+                </footer>
+            </MyProviders>
+
         </div>
     );
 }
+
+function MyProviders({children}: MyProvidersProps) {
+    const [currentUser, setCurrentUser] = useState<any>(null);
+    // const [theme, setTheme] = useState<'light' | 'dark'>('light');
+    const [language, setLanguage] = useState<'uk' | 'en'>('uk');
+
+    const [mode, setMode] = React.useState<PaletteMode>('light');
+    const colorMode = React.useMemo(
+        () => ({
+            // The dark mode switch would invoke this method
+            toggleColorMode: () => {
+                setMode((prevMode: PaletteMode) =>
+                    prevMode === 'light' ? 'dark' : 'light',
+                );
+            },
+        }),
+        [],
+    );
+
+    const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+
+
+    return (
+        <LanguageContext.Provider value={{language, setLanguage}}>
+            <UserContext.Provider
+                value={{
+                    currentUser,
+                    setCurrentUser
+                }}
+            >
+                <ColorModeContext.Provider value={colorMode}>
+                    <ThemeProvider theme={theme}>
+                        <CssBaseline/>
+                        {children}
+                    </ThemeProvider>
+                </ColorModeContext.Provider>
+            </UserContext.Provider>
+        </LanguageContext.Provider>
+    );
+}
+
 
 export default App;
