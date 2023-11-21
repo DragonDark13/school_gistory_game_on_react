@@ -1,21 +1,15 @@
 import 'react-vertical-timeline-component/style.min.css';
 import './timeline-ovveriders.scss'
 import {
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    CardHeader, makeStyles,
-    styled,
-    Typography,
-    TypographyVariantsOptions,
+    Card, CardActionArea,
     useTheme
 } from '@mui/material';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {VerticalTimeline, VerticalTimelineElement} from 'react-vertical-timeline-component';
 
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import {tss} from "tss-react";
+import TimelineCard from "./TimelineCard";
 
 
 export interface HistoricalEvent {
@@ -27,34 +21,25 @@ interface HistoryTimelineProps {
     events: HistoricalEvent[];
     handleExpandArticle: (index: number) => void;
     buttonStates: Array<boolean>;
+    successLevels: Array<boolean>;
     handleGoToTestNow: (index: number) => void;
 }
-
 
 
 const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
                                                              events,
                                                              handleExpandArticle,
                                                              buttonStates,
-                                                             handleGoToTestNow
+                                                             handleGoToTestNow,
+                                                             successLevels
                                                          }) => {
 
     const theme = useTheme();
 
-    const iconColorState=(active:boolean)=>{
-
+    const iconColorState = (active: boolean) => {
         if (active) return theme.palette.primary.contrastText
         else return theme.palette.primary.main
-
     }
-    const textColorState=(active:boolean)=>{
-
-        if (active) return theme.palette.text.secondary
-        else return theme.palette.text.disabled
-
-    }
-
-
 
 
     return (
@@ -67,37 +52,45 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
                         // date={event.date}
                         dateClassName={"hidden"}
 
-                        iconStyle={{background: theme.palette.primary.light,
+                        iconStyle={{
+                            background: theme.palette.primary.light,
                             color: iconColorState(buttonStates[index]),
 
                         }}
                         contentStyle={{padding: 0, boxShadow: "none"}}
-                      icon={<CheckCircleOutlineIcon />}
+                        icon={successLevels[index] ? <CheckCircleOutlineIcon/> : <RadioButtonUncheckedRoundedIcon/>}
 
                     >
-                        <Card elevation={ buttonStates[index] ? 4 : 1}>
-                            <CardHeader titleTypographyProps={{
-                                color: textColorState(buttonStates[index])
-                            }}  title={event.date} />
-                            {/*<h3 className="vertical-timeline-element-title">{event.date}</h3>*/}
-                            <CardContent>
-                                <Typography  color={textColorState(buttonStates[index])} component={"div"}>
-                                    {event.text}
-                                </Typography>
-                            </CardContent>
-                            <CardActions disableSpacing sx={{"flexWrap": "wrap"}}>
-                                <Button sx={{mb: 1}} size={"small"} fullWidth variant={"contained"}
-                                        disabled={!buttonStates[index]} className="learn-more-button"
-                                        onClick={() => handleExpandArticle(index)}>
-                                    Дізнатися більше
-                                </Button>
-                                <Button color={"secondary"} size={"small"} fullWidth variant={"contained"}
-                                        disabled={!buttonStates[index]}
-                                        className={"goToTest"}
-                                        onClick={() => handleGoToTestNow(index)}>Пройти тест
-                                </Button
-                                >
-                            </CardActions>
+
+
+                        <Card elevation={buttonStates[index] ? 4 : 1}>
+                            {buttonStates[index] ?
+                                <CardActionArea onClick={() => handleExpandArticle(index)}>
+
+
+                                    <TimelineCard
+                                        event={event}
+                                        index={index}
+                                        buttonState={buttonStates[index]}
+                                        handleExpandArticle={handleExpandArticle}
+                                        handleGoToTestNow={handleGoToTestNow}
+                                        successLevel={successLevels[index]}
+                                    />
+
+                                </CardActionArea>
+                                :
+
+                                <TimelineCard
+                                    event={event}
+                                    index={index}
+                                    buttonState={buttonStates[index]}
+                                    handleExpandArticle={handleExpandArticle}
+                                    handleGoToTestNow={handleGoToTestNow}
+                                    successLevel={successLevels[index]}
+                                />
+                            }
+
+
                         </Card>
                     </VerticalTimelineElement>
                 ))}

@@ -8,7 +8,6 @@ import React, {
     useEffect,
     useState
 } from 'react';
-import './App.css';
 import HistoryTimeline from './components/HistoryTimeline/HistoryTimeline';
 import QuizBlock from "./components/QuizBlock/QuizBlock";
 import Article from "./components/Article/Article";
@@ -29,6 +28,8 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import getDesignTokens from './themes/getDesignTokens';
 import {AuthProvider} from "./components/AuthContext/AuthContext";
+import "./static/css/normalize.css"
+
 
 export const ColorModeContext = React.createContext({
     toggleColorMode: () => {
@@ -85,6 +86,9 @@ function App() {
         data.historyList.map((_, index) => index === 0) // Початково активна лише перша кнопка
     );
 
+    const [successLevels, setSuccessLevels] = useState(data.historyList.map((_, index) => index === -1))
+    console.log(successLevels);
+
     const [achievements, setAchievements] = useState<[] | string[]>([])
 
     const [theme, setTheme] = useState<'light' | "dark">('light');
@@ -96,6 +100,7 @@ function App() {
         setExpandedArticle(true);
         setSelectedArticle(index)
         setShowTimeline(false)
+        setShowQuiz(false)
     };
 
 
@@ -113,6 +118,15 @@ function App() {
                 updatedStates[selectedArticle + 1] = true;
                 return updatedStates;
             });
+
+
+            setSuccessLevels((prevStates) => {
+                const updatedStates = [...prevStates];
+                updatedStates[selectedArticle] = true;
+                return updatedStates;
+            });
+
+            console.log("successLevels",successLevels);
 
             setAchievements((prevAchievements) => {
                 const newAchievements = [...prevAchievements];
@@ -182,36 +196,35 @@ function App() {
             <MyProviders>
                 <Header/>
 
-                <Container> {showTimeline &&
-                <HistoryTimeline handleGoToTestNow={handleGoToTestNow} buttonStates={buttonStates}
-                                 handleExpandArticle={handleExpandArticle}
-                                 events={data.historyList}/>
-                }
-                    {showQuiz && (
-                        <div>
-                            <Typography variant={"h3"}>Theme{selectedArticle}</Typography>
-
-
-                            <QuizBlock
-                                allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
-                                events={data.historyList}
-                                selectedArticle={selectedArticle}
-                                handleNextLevel={handleNextLevel}
-                                setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                closeTestPage={closeTestPage}
-                                questions={data.questions} options={data.options}
-                                correctAnswers={data.correctAnswers}
-                                onAnswer={handleQuizComplete}
-                                backToArticleFromTest={backToArticleFromTest}
-                            />
-
-
-                        </div>
-                    )}
+                <Container>
+                    {showTimeline &&
+                    <HistoryTimeline successLevels={successLevels} handleGoToTestNow={handleGoToTestNow}
+                                     buttonStates={buttonStates}
+                                     handleExpandArticle={handleExpandArticle}
+                                     events={data.historyList}/>
+                    }
                     {expandedArticle && (
                         <Article handleCloseArticle={handleCloseArticle} handleShowQuiz={handleShowQuiz}
                                  selectedArticle={selectedArticle}/>
-                    )}</Container>
+                    )}
+                    {showQuiz &&
+
+                    <QuizBlock
+                        allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
+                        events={data.historyList}
+                        selectedArticle={selectedArticle}
+                        handleNextLevel={handleNextLevel}
+                        setAllAnswerIsCorrect={setAllAnswerIsCorrect}
+                        closeTestPage={closeTestPage}
+                        questions={data.questions} options={data.options}
+                        correctAnswers={data.correctAnswers}
+                        onAnswer={handleQuizComplete}
+                        backToArticleFromTest={backToArticleFromTest}
+                    />
+
+                    }
+
+                </Container>
                 <footer>
                     <Container>
                         <div>sociicons</div>

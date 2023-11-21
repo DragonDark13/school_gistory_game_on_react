@@ -1,7 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
 import {HistoricalEvent} from "../HistoryTimeline/HistoryTimeline";
 import {ThemeContext, UserContext} from "../../App";
-import {Button, FormControlLabel, Radio, RadioGroup} from "@mui/material";
+import {Button, FormControlLabel, Grid, Radio, RadioGroup} from "@mui/material";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ReplayIcon from '@mui/icons-material/Replay';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
 
 interface QuizBlockProps {
     questions: string[];
@@ -78,29 +84,48 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
 
 
     return (
-        <div>
+        <React.Fragment>
+            <Grid container justifyContent={"space-between"}>
+                <Grid item>
+                    <Button startIcon={<ArrowBackIosIcon/>} onClick={backToArticleFromTest}>
+                        До бібліотеки
+                    </Button>
+                </Grid>
+                <Grid item>
+                    <Button endIcon={<ArrowUpwardIcon/>} color={"secondary"} onClick={closeTestPage}>
+                        На головну
+                    </Button>
+                </Grid>
+            </Grid>
+
             {isQuizFinished ? (
                 <div>
                     <h1>Тест завершено</h1>
                     <p>Результати:</p>
                     <p>Правильних відповідей: {results.correct}</p>
                     <p>Неправильних відповідей: {results.incorrect}</p>
-                    {nextLevelAvailable && (
-                        <div>
-                            <p>Вітаю, {currentUser ? currentUser.name : "Невідомий"}, ви досягли наступного рівня. Тепер
-                                ви можити відправитися у наступний
-                                пункт нашої
-                                подорожі у часі . Вперед до </p>
-                            <h4>{selectedArticle !== null ? events[selectedArticle + 1].date : "Помилка у машині часу"}</h4>
-                            <Button variant={"contained"} onClick={handleNextLevel}>Перейти на наступний рівень</Button>
-                        </div>
+                    {nextLevelAvailable ? (
+                            <div>
+                                <p>Вітаю, {currentUser ? currentUser.name : "Невідомий"}, ви досягли наступного рівня. Тепер
+                                    ви можити відправитися у наступний
+                                    пункт нашої
+                                    подорожі у часі . Вперед до </p>
+                                <h4>{selectedArticle !== null ? events[selectedArticle + 1].date : "Помилка у машині часу"}</h4>
+                                    <Button endIcon={<ArrowForwardIosIcon/>} variant={"contained"} size={"large"} onClick={handleNextLevel}>Hаступний рівень</Button>
+                            </div>
 
-                    )}
-                    <Button variant={"contained"} onClick={handleRetakeQuiz}>Пройти тест ще раз</Button>
-                    <Button variant={"contained"} color={"secondary"} onClick={closeTestPage}>Повернутися на головну</Button>
+                        ) :
+                        <Button endIcon={<ReplayIcon/>}
+                                variant={"contained"}
+                                onClick={handleRetakeQuiz}>Пройти ще раз</Button>
+                    }
+
+
                 </div>
             ) : (
-                <div>
+                <React.Fragment>
+
+
                     <h1>Test Theme {currentQuestion + 1}</h1>
                     <p>{questions[currentQuestion]}</p>
                     <RadioGroup
@@ -112,19 +137,18 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                                 key={index + "button"}
                                 className={theme + " answer-quiz-button"}
                                 onClick={() => handleAnswer(option)}
-                                control={<Radio />}
+                                control={<Radio/>}
                                 label={option}
                                 value={option}
                             />
 
-                          
+
                         ))}
                     </RadioGroup>
-                    <Button variant={"contained"} onClick={backToArticleFromTest}>Переїти до бібліотеки</Button>
-                    <Button variant={"contained"} color={"secondary"} onClick={closeTestPage}>Повернутися на головну</Button>
-                </div>
+
+                </React.Fragment>
             )}
-        </div>
+        </React.Fragment>
     );
 };
 

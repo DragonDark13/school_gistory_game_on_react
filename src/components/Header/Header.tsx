@@ -84,7 +84,7 @@ const Header: React.FC = (): React.ReactElement => {
 
     return (<MyAppBar position={"static"} className={cx(classes.customAppBar)}>
         <Container>
-            <Toolbar sx={{"justifyContent": "space-between"}}>
+            <Toolbar disableGutters sx={{"justifyContent": "space-between"}}>
                 {smUp && <WelcomePanel/>}
 
 
