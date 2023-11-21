@@ -3,6 +3,7 @@ import {PaletteMode} from "@mui/material";
 
 
 const getDesignTokens = (mode: PaletteMode) => ({
+
     palette: {
         mode,
         ...(mode === 'light'
@@ -10,8 +11,8 @@ const getDesignTokens = (mode: PaletteMode) => ({
                 // palette values for light mode
                 primary: {
                     main: '#923d31',
-                    light: '#b14b39',
-                    dark: '#7d3127'
+                    light: '#d46d5c',
+                    dark: '#431e19'
                 },
                 secondary: {
                     main: '#318692',

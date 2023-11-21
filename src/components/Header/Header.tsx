@@ -11,13 +11,36 @@ import {
     Box,
     IconButton,
     Menu,
-    MenuItem
+    MenuItem,
+    Dialog, Slide
 } from "@mui/material";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import LoginIcon from '@mui/icons-material/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import {useAuth} from "../AuthContext/AuthContext";
+import {TransitionProps} from '@mui/material/transitions';
+import CloseIcon from '@mui/icons-material/Close';
+import SignIn from "../SignIn/SignIn";
+import SignUp from "../SignUp/SignUp";
+import {makeStyles} from 'tss-react/mui';
+import MyAppBar from "../MyAppBar/MyAppBar";
 
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & {
+        children: React.ReactElement;
+    },
+    ref: React.Ref<unknown>,
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const useStyles = makeStyles()((theme) => ({
+    customAppBar: {
+        backgroundColor: theme.palette.mode === 'light' ? theme.palette.primary.light : theme.palette.primary.light,
+        // Додайте інші глобальні стилі за вашими потребами
+    },
+}));
 
 const Header: React.FC = (): React.ReactElement => {
 
@@ -32,20 +55,40 @@ const Header: React.FC = (): React.ReactElement => {
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+
+    const {isAuthenticated} = useAuth();
+
+    const [openModal, setOpenModal] = React.useState(false);
+    const [showSignInForm, setShowSignInForm] = React.useState(false)
+    const [showSignUpForm, setShowSignUpForm] = React.useState(false)
+
+    const handleClickOpenModal = () => {
+        setOpenModal(true);
+        setShowSignInForm(true);
+    };
+
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+
+
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const {cx, classes} = useStyles();
 
-    return (<AppBar position="static">
+
+    return (<MyAppBar position={"static"} className={cx(classes.customAppBar)}>
         <Container>
-            <Toolbar>
+            <Toolbar sx={{"justifyContent": "space-between"}}>
                 {smUp && <WelcomePanel/>}
 
 
-                <IconButton  onClick={colorMode.toggleColorMode} >
+                <IconButton onClick={colorMode.toggleColorMode}>
                     {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}
                 </IconButton>
 
@@ -89,19 +132,46 @@ const Header: React.FC = (): React.ReactElement => {
                 {/*    <MenuItem onClick={handleClose}>Logout</MenuItem>*/}
                 {/*</Menu>*/}
 
-                <IconButton color="inherit" title={"Увійти"} >
-                    <LoginIcon/>
-                </IconButton>
+                {isAuthenticated ?
+                    <IconButton color="inherit" title={"Профіль"}>
+                        <AccountCircleIcon/>
+                    </IconButton> :
+                    <IconButton onClick={handleClickOpenModal} color="inherit" title={"Увійти"}>
+                        <LoginIcon/>
+                    </IconButton>
+                }
 
-                <IconButton color="inherit" title={"Профіль"}>
-                    <AccountCircleIcon/>
-                </IconButton>
+                <Dialog
+                    fullScreen
+                    open={openModal}
+                    onClose={handleCloseModal}
+                    TransitionComponent={Transition}
+                >
+                    <MyAppBar position={"static"}>
+                        <Toolbar sx={{"justifyContent": "end"}}>
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleCloseModal}
+                                aria-label="close"
+                            >
+                                <CloseIcon/>
+                            </IconButton>
+                        </Toolbar>
+                    </MyAppBar>
+                    {showSignInForm &&
+                    <SignIn setShowSignUpForm={setShowSignUpForm} setShowSignInForm={setShowSignInForm}/>}
+                    {showSignUpForm &&
+                    <SignUp setShowSignInForm={setShowSignInForm} setShowSignUpForm={setShowSignUpForm}/>}
+
+                </Dialog>
+
 
                 {/*<Button variant="contained">Увійти</Button>*/}
                 {/*<Button variant="contained">Профіль</Button>*/}
             </Toolbar>
         </Container>
-    </AppBar>)
+    </MyAppBar>)
 
 }
 

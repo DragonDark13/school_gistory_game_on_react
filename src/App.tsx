@@ -28,6 +28,7 @@ import {
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import getDesignTokens from './themes/getDesignTokens';
+import {AuthProvider} from "./components/AuthContext/AuthContext";
 
 export const ColorModeContext = React.createContext({
     toggleColorMode: () => {
@@ -254,8 +255,10 @@ function MyProviders({children}: MyProvidersProps) {
             >
                 <ColorModeContext.Provider value={colorMode}>
                     <ThemeProvider theme={theme}>
-                        <CssBaseline/>
-                        {children}
+                        <AuthProvider>
+                            <CssBaseline/>
+                            {children}
+                        </AuthProvider>
                     </ThemeProvider>
                 </ColorModeContext.Provider>
             </UserContext.Provider>

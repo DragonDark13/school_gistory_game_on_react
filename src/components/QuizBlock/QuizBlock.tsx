@@ -92,12 +92,12 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                                 пункт нашої
                                 подорожі у часі . Вперед до </p>
                             <h4>{selectedArticle !== null ? events[selectedArticle + 1].date : "Помилка у машині часу"}</h4>
-                            <button onClick={handleNextLevel}>Перейти на наступний рівень</button>
+                            <Button variant={"contained"} onClick={handleNextLevel}>Перейти на наступний рівень</Button>
                         </div>
 
                     )}
-                    <button onClick={handleRetakeQuiz}>Пройти тест ще раз</button>
-                    <button onClick={closeTestPage}>Повернутися на головну</button>
+                    <Button variant={"contained"} onClick={handleRetakeQuiz}>Пройти тест ще раз</Button>
+                    <Button variant={"contained"} color={"secondary"} onClick={closeTestPage}>Повернутися на головну</Button>
                 </div>
             ) : (
                 <div>
@@ -121,7 +121,7 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                         ))}
                     </RadioGroup>
                     <Button variant={"contained"} onClick={backToArticleFromTest}>Переїти до бібліотеки</Button>
-                    <Button variant={"contained"} onClick={closeTestPage}>Повернутися на головну</Button>
+                    <Button variant={"contained"} color={"secondary"} onClick={closeTestPage}>Повернутися на головну</Button>
                 </div>
             )}
         </div>
