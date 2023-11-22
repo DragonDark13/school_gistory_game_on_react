@@ -1,7 +1,7 @@
 import 'react-vertical-timeline-component/style.min.css';
 import './timeline-ovveriders.scss'
 import {
-    Card, CardActionArea,
+    Card, CardActionArea, Typography,
     useTheme
 } from '@mui/material';
 import React from 'react';
@@ -44,7 +44,7 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
 
     return (
         <div>
-            <h1>History Timeline</h1>
+            <Typography className={"main_title"} textAlign={"center"} component={"h1"} variant={"h3"}>Шкала Історії</Typography>
             <VerticalTimeline lineColor={theme.palette.primary.light}>
                 {events.map((event, index) => (
                     <VerticalTimelineElement

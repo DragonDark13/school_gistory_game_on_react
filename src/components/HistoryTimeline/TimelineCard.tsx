@@ -25,8 +25,7 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
                                                    }) => {
     const theme = useTheme();
 
-    const iconColor = successLevel ? theme.palette.primary.contrastText : theme.palette.primary.main;
-    const textColor = successLevel ? theme.palette.text.secondary : theme.palette.text.disabled;
+    const textColor = buttonState ? theme.palette.text.secondary : theme.palette.text.disabled;
 
     return (
         <React.Fragment>
