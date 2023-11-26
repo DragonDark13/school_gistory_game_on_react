@@ -1,0 +1,33 @@
+.result_test_card.MuiCard-root .MuiCardHeader-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@keyframes animate {
+  0% {
+    transform: scale(2.0);
+  }
+
+  100% {
+    transform: scale(0.7);
+  }
+}
+
+.pulse {
+  animation: animate 2s linear infinite
+}
+
+.icon_container{
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.go_to_next_level_container{
+  margin-top: 2rem;
+}
+
+.textMessage{
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}

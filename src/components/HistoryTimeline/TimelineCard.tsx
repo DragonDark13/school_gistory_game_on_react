@@ -44,14 +44,22 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
             </CardContent>
             <CardActions disableSpacing sx={{"flexWrap": "wrap"}}>
                 <Button sx={{mb: 1}} size={"large"} fullWidth variant={"contained"} disabled={!buttonState}
-                        className="learn-more-button" onClick={() => handleExpandArticle(index)}>
+                        className="learn-more-button" onClick={(e) => {
+                    e.stopPropagation();
+                    handleExpandArticle(index);
+                }}>
                     Дізнатися більше
                 </Button>
-                <Button color={"secondary"} size={"small"} fullWidth variant={"contained"} disabled={!buttonState}
-                        className={"goToTest"} onClick={() => handleGoToTestNow(index)}>
+                <Button  color={"secondary"} size={"small"} fullWidth variant={"outlined"} disabled={!buttonState}
+                        className={"goToTest"} onClick={(e) => {
+                    e.stopPropagation();
+                    handleGoToTestNow(index);
+                }}
+                >
                     Пройти тест
                 </Button>
-            </CardActions></React.Fragment>
+            </CardActions>
+        </React.Fragment>
 
     );
 };

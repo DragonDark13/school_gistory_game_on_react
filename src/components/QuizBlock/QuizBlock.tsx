@@ -1,12 +1,28 @@
 import React, {useContext, useEffect, useState} from "react";
 import {HistoricalEvent} from "../HistoryTimeline/HistoryTimeline";
-import {ThemeContext, UserContext} from "../../App";
-import {Button, FormControlLabel, Grid, Radio, RadioGroup} from "@mui/material";
+import { UserContext} from "../../App";
+import {
+    Button,
+    Card, CardActions,
+    CardContent, CardHeader,
+    FormControlLabel,
+    Grid,
+    LinearProgress,
+    Radio,
+    RadioGroup,
+    Typography,
+    useTheme
+} from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ReplayIcon from '@mui/icons-material/Replay';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
+import StarIcon from '@mui/icons-material/Star';
+
+import "./quiz_style.scss"
 
 
 interface QuizBlockProps {
@@ -42,6 +58,8 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
     const [results, setResults] = useState({correct: 0, incorrect: 0});
     const [isQuizFinished, setIsQuizFinished] = useState(false);
     const [nextLevelAvailable, setNextLevelAvailable] = useState(false);
+    const [selectedAnswer, setSelectedAnswer] = useState<string>("");
+    const [isNextButtonActive, setIsNextButtonActive] = useState(false);
 
 
     useEffect(() => {
@@ -52,13 +70,29 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
     }, [results.correct, questions.length]);
 
     const handleAnswer = (answer: string) => {
-        setUserAnswers([
-            ...userAnswers.slice(0, currentQuestion),
-            answer,
-            ...userAnswers.slice(currentQuestion + 1),
-        ]);
+        setSelectedAnswer(answer);
+        setIsNextButtonActive(true);
+    };
 
-        if (answer === correctAnswers[currentQuestion]) {
+
+    const handleRetakeQuiz = () => {
+        setCurrentQuestion(0);
+        setUserAnswers(Array(questions.length).fill(""));
+        setResults({correct: 0, incorrect: 0});
+        setIsQuizFinished(false);
+        setSelectedAnswer("")
+        setIsNextButtonActive(false);
+    };
+
+    const {currentUser} = useContext(UserContext);
+
+    const handleNextQuestion = () => {
+        if (!selectedAnswer) {
+            // Якщо не обрано відповідь, не переходьте до наступного питання
+            return;
+        }
+
+        if (selectedAnswer === correctAnswers[currentQuestion]) {
             setResults({...results, correct: results.correct + 1});
         } else {
             setResults({...results, incorrect: results.incorrect + 1});
@@ -66,26 +100,33 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
 
         if (currentQuestion < questions.length - 1) {
             setCurrentQuestion(currentQuestion + 1);
+            setSelectedAnswer(""); // Очистіть вибір для нового питання
+            setIsNextButtonActive(false); // Зробіть кнопку "Далі" неактивною
         } else {
             onAnswer(results);
             setIsQuizFinished(true);
         }
     };
 
-    const handleRetakeQuiz = () => {
-        setCurrentQuestion(0);
-        setUserAnswers(Array(questions.length).fill(""));
-        setResults({correct: 0, incorrect: 0});
-        setIsQuizFinished(false);
+    const handleAnswerKeyPress = (event: React.KeyboardEvent) => {
+        if (event.key === "Enter" && isNextButtonActive) {
+            handleNextQuestion();
+        }
     };
 
-    const theme = useContext(ThemeContext);
-    const {currentUser} = useContext(UserContext);
+    const resultIcon = (result: boolean) => {
+
+        if (result) {
+            return <CheckCircleIcon color={"success"}/>
+        } else return <DoNotDisturbOnIcon color={"error"}/>
+
+    }
+    const theme = useTheme();
 
 
     return (
         <React.Fragment>
-            <Grid container justifyContent={"space-between"}>
+            <Grid className={"back_button_container"} container justifyContent={"space-between"}>
                 <Grid item>
                     <Button startIcon={<ArrowBackIosIcon/>} onClick={backToArticleFromTest}>
                         До бібліотеки
@@ -98,26 +139,90 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                 </Grid>
             </Grid>
 
+
             {isQuizFinished ? (
                 <div>
-                    <h1>Тест завершено</h1>
-                    <p>Результати:</p>
-                    <p>Правильних відповідей: {results.correct}</p>
-                    <p>Неправильних відповідей: {results.incorrect}</p>
+
+
+                    <Typography className={"title"} variant={"h4"}>Ваші Результати:</Typography>
+
+                    <Card className={"result_test_card"}>
+                        <CardHeader title={` ${options.length}/${results.correct}`}
+                                    subheader={resultIcon(nextLevelAvailable)}
+                        />
+                        <CardContent>
+                            <LinearProgress
+                                color={"success"}
+                                value={Math.round((100 / options.length) * results.correct)}
+                                variant={"determinate"}
+                            />
+                        </CardContent>
+
+                    </Card>
+
+
+                    {/*<p>Правильних відповідей: {results.correct}</p>*/}
+                    {/*<p>Неправильних відповідей: {results.incorrect}</p>*/}
+
+
                     {nextLevelAvailable ? (
                             <div>
-                                <p>Вітаю, {currentUser ? currentUser.name : "Невідомий"}, ви досягли наступного рівня. Тепер
-                                    ви можити відправитися у наступний
-                                    пункт нашої
-                                    подорожі у часі . Вперед до </p>
-                                <h4>{selectedArticle !== null ? events[selectedArticle + 1].date : "Помилка у машині часу"}</h4>
-                                    <Button endIcon={<ArrowForwardIosIcon/>} variant={"contained"} size={"large"} onClick={handleNextLevel}>Hаступний рівень</Button>
+
+                                <Grid className={"icon_container"} container justifyContent={"center"}>
+                                    <Grid item>
+                                        <StarIcon fontSize={"large"} color={"success"}
+                                                  className={"pulse"}/>
+                                    </Grid>
+                                </Grid>
+
+                                <Card sx={{background: theme.palette.secondary.light}}>
+                                    <CardContent>
+                                        <Typography sx={{color: theme.palette.text.secondary}}>Вітаю, <Typography
+                                            component={"span"}
+                                            variant={"subtitle1"}>{currentUser ? currentUser.name : "Невідомий"}</Typography>,
+                                            ви
+                                            досягли наступного
+                                            рівня. Тепер
+                                            ви можити відправитися у наступний
+                                            пункт нашої
+                                            подорожі у часі.</Typography>
+
+                                        {/*<Grid className={"go_to_next_level_container"} container*/}
+                                        {/*      justifyContent={"space-between"} alignItems={"center"}>*/}
+                                        {/*    <Grid xs={12}>*/}
+
+                                        {/*    </Grid>*/}
+                                        {/*    */}
+                                        {/*    /!*<Grid>*!/*/}
+                                        {/*    /!*    <Typography variant={"subtitle1"}*!/*/}
+                                        {/*    /!*                color={"secondary"}></Typography>*!/*/}
+                                        {/*    /!*</Grid>*!/*/}
+                                        {/*</Grid>*/}
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button fullWidth startIcon={<ArrowForwardIosIcon/>} color={"secondary"}
+                                                endIcon={<ArrowForwardIosIcon/>} variant={"contained"}
+                                                size={"large"}
+                                                onClick={handleNextLevel}>{selectedArticle !== null ? events[selectedArticle + 1].date : "Помилка" +
+                                            " у машині часу"}</Button>
+                                    </CardActions>
+
+                                </Card>
+
+
                             </div>
 
                         ) :
-                        <Button endIcon={<ReplayIcon/>}
-                                variant={"contained"}
-                                onClick={handleRetakeQuiz}>Пройти ще раз</Button>
+
+                        <React.Fragment>
+                            <Typography className={"textMessage"}>
+                                Не сумуйте. Підготуйтесь та спробуйте знову
+                            </Typography>
+
+                            <Button fullWidth endIcon={<ReplayIcon/>}
+                                    variant={"contained"}
+                                    onClick={handleRetakeQuiz}>Пройти ще раз</Button></React.Fragment>
+
                     }
 
 
@@ -126,7 +231,7 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                 <React.Fragment>
 
 
-                    <h1>Test Theme {currentQuestion + 1}</h1>
+                    <h1>Тема: {currentQuestion + 1}</h1>
                     <p>{questions[currentQuestion]}</p>
                     <RadioGroup
 
@@ -136,15 +241,26 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                             <FormControlLabel
                                 key={index + "button"}
                                 className={theme + " answer-quiz-button"}
+                                onKeyPress={handleAnswerKeyPress}
                                 onClick={() => handleAnswer(option)}
-                                control={<Radio/>}
+                                control={<Radio checked={selectedAnswer === option}/>}
                                 label={option}
                                 value={option}
                             />
-
-
                         ))}
                     </RadioGroup>
+
+                    <Grid container justifyContent="center" mt={2}>
+                        <Button
+                            endIcon={<ArrowForwardIosIcon/>}
+                            variant={"contained"}
+                            size={"large"}
+                            onClick={handleNextQuestion}
+                            disabled={!isNextButtonActive}
+                        >
+                            Продовжити
+                        </Button>
+                    </Grid>
 
                 </React.Fragment>
             )}

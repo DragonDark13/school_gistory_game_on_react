@@ -14,21 +14,17 @@ import Article from "./components/Article/Article";
 import data from "./data/data.json";
 import Header from "./components/Header/Header";
 import {
-    Box,
     Container,
     createTheme,
     CssBaseline,
-    IconButton,
     PaletteMode,
     ThemeProvider,
-    Typography,
-    useTheme
 } from "@mui/material";
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
 import getDesignTokens from './themes/getDesignTokens';
 import {AuthProvider} from "./components/AuthContext/AuthContext";
 import "./static/css/normalize.css"
+import "./static/style/main.scss"
+
 
 
 export const ColorModeContext = React.createContext({

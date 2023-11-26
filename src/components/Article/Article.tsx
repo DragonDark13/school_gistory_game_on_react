@@ -27,7 +27,7 @@ const Article: React.FC<ArticleProps> = ({handleCloseArticle, selectedArticle, h
 
 
 
-            <Typography className={"title"} variant={"h4"}>Theme{selectedArticle}</Typography>
+            <Typography className={"title"} variant={"h4"}>Тема {selectedArticle}</Typography>
 
             <img src={myImage} alt=""/>
             <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut

@@ -51,6 +51,12 @@ const getDesignTokens = (mode: PaletteMode) => ({
                 }
             }),
     },
+
+    typography: {
+        subtitle1:{
+            fontWeight:"bold",
+        }
+    }
 });
 
 export default getDesignTokens;
