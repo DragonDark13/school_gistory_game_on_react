@@ -43,7 +43,7 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
 
     return (
         <div>
-            <Typography className={"main_title"} textAlign={"center"} component={"h1"} variant={"h3"}>Шкала Історії</Typography>
+            {/*<Typography className={"main_title"} textAlign={"center"} component={"h1"} variant={"h3"}>Шкала Історії</Typography>*/}
             <VerticalTimeline lineColor={theme.palette.primary.light}>
                 {events.map((event, index) => (
                     <VerticalTimelineElement

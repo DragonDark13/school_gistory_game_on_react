@@ -1,0 +1,9 @@
+.header{
+  $padding: 16px;
+  padding-bottom: $padding;
+  padding-top: $padding;
+  .logo_icon {
+    font-size: 56px;
+    display: block;
+  }
+}

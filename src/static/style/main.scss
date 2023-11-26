@@ -7,4 +7,11 @@
   margin-bottom: 2rem;
 }
 
+main  > .MuiContainer-root,
+main  > *>.MuiContainer-root{
+  $padding: 4rem;
+  padding-top: $padding;
+  padding-bottom: $padding;
+}
+
 

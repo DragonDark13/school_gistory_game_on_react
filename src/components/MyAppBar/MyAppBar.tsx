@@ -14,12 +14,11 @@ interface MyAppBarProps extends AppBarProps {
 }
 
 function MyAppBar({children, ...props}: MyAppBarProps) {
-    const theme = useTheme();
     const {cx, classes} = useStyles();
 
 
     return (
-        <AppBar className={cx(classes.customAppBar)} {...props}>
+        <AppBar elevation={8} className={cx(classes.customAppBar)} {...props}>
             {children}
         </AppBar>
     );

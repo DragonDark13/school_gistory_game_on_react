@@ -12,7 +12,7 @@ import {
     IconButton,
     Menu,
     MenuItem,
-    Dialog, Slide
+    Dialog, Slide, Link, Typography
 } from "@mui/material";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
@@ -25,6 +25,9 @@ import SignIn from "../SignIn/SignIn";
 import SignUp from "../SignUp/SignUp";
 import {makeStyles} from 'tss-react/mui';
 import MyAppBar from "../MyAppBar/MyAppBar";
+import LogoIcon from "../../icon/Logo"
+import "./header.scss"
+import Grid from "@mui/material/Grid";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -40,6 +43,20 @@ const useStyles = makeStyles()((theme) => ({
         backgroundColor: theme.palette.mode === 'light' ? theme.palette.primary.light : theme.palette.primary.light,
         // Додайте інші глобальні стилі за вашими потребами
     },
+
+    headerLogoIcon: {
+        color: theme.palette.background.default,
+    },
+
+    headerLogoText: {
+        color: theme.palette.background.default,
+
+        "& .first": {
+            color: theme.palette.primary.dark,
+        }
+    }
+
+
 }));
 
 const Header: React.FC = (): React.ReactElement => {
@@ -82,15 +99,22 @@ const Header: React.FC = (): React.ReactElement => {
     const {cx, classes} = useStyles();
 
 
-    return (<MyAppBar position={"static"} className={cx(classes.customAppBar)}>
+    return (<MyAppBar position={"static"} className={cx(classes.customAppBar, "header")}>
         <Container>
             <Toolbar disableGutters sx={{"justifyContent": "space-between"}}>
                 {smUp && <WelcomePanel/>}
 
-
-                <IconButton onClick={colorMode.toggleColorMode}>
-                    {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}
-                </IconButton>
+                <Link underline={"none"} href="#">
+                    <Grid gap={2} container alignItems={"center"}>
+                        <Grid item><LogoIcon className={cx(classes.headerLogoIcon, "logo_icon")}/></Grid>
+                        <Grid item>
+                            <Typography className={cx(classes.headerLogoText)}
+                                        variant={"h5"}>
+                                <span className={"first"}>Вчись</span><span>Грай</span>
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </Link>
 
 
                 {/*<label>*/}
@@ -132,14 +156,20 @@ const Header: React.FC = (): React.ReactElement => {
                 {/*    <MenuItem onClick={handleClose}>Logout</MenuItem>*/}
                 {/*</Menu>*/}
 
-                {isAuthenticated ?
-                    <IconButton color="inherit" title={"Профіль"}>
-                        <AccountCircleIcon/>
-                    </IconButton> :
-                    <IconButton onClick={handleClickOpenModal} color="inherit" title={"Увійти"}>
-                        <LoginIcon/>
+                <Grid>
+                    <IconButton onClick={colorMode.toggleColorMode}>
+                        {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}
                     </IconButton>
-                }
+                    {isAuthenticated ?
+                        <IconButton color={"inherit"} title={"Профіль"}>
+                            <AccountCircleIcon/>
+                        </IconButton> :
+                        <IconButton onClick={handleClickOpenModal} className={cx(classes.headerLogoIcon)}
+                                    title={"Увійти"}>
+                            <LoginIcon/>
+                        </IconButton>
+                    }
+                </Grid>
 
                 <Dialog
                     fullScreen

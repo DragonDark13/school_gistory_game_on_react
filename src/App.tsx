@@ -24,7 +24,8 @@ import getDesignTokens from './themes/getDesignTokens';
 import {AuthProvider} from "./components/AuthContext/AuthContext";
 import "./static/css/normalize.css"
 import "./static/style/main.scss"
-
+import AboutProject from "./components/AboutProject/AboutProject";
+import AboutFeatureList from "./components/AboutFeatureList/AboutFeatureList";
 
 
 export const ColorModeContext = React.createContext({
@@ -122,7 +123,7 @@ function App() {
                 return updatedStates;
             });
 
-            console.log("successLevels",successLevels);
+            console.log("successLevels", successLevels);
 
             setAchievements((prevAchievements) => {
                 const newAchievements = [...prevAchievements];
@@ -192,7 +193,14 @@ function App() {
             <MyProviders>
                 <Header/>
 
-                <Container>
+                <main>
+                    <Container>
+                        <AboutProject/>
+                    </Container>
+
+                    <AboutFeatureList/>
+
+                                    <Container>
                     {showTimeline &&
                     <HistoryTimeline successLevels={successLevels} handleGoToTestNow={handleGoToTestNow}
                                      buttonStates={buttonStates}
@@ -221,6 +229,11 @@ function App() {
                     }
 
                 </Container>
+
+
+                </main>
+
+
                 <footer>
                     <Container>
                         <div>sociicons</div>

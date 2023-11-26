@@ -141,7 +141,7 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
 
 
             {isQuizFinished ? (
-                <div>
+                <div className={"finished_container"}>
 
 
                     <Typography className={"title"} variant={"h4"}>Ваші Результати:</Typography>

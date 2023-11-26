@@ -1,0 +1,24 @@
+.about {
+  text-align: center;
+  //padding-top: 5rem;
+  //padding-bottom: 5rem;
+
+  .about_logo {
+    font-size: 90px;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 2rem;
+    border-radius: 50%;
+  }
+
+  .big_title {
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .subtitle {
+    letter-spacing: 3px;
+    margin-bottom: 2rem;
+  }
+
+}

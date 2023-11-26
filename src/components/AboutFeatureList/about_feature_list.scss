@@ -1,0 +1,28 @@
+.about_feature_list_container {
+  //padding-top: 3rem;
+  //padding-bottom: 3rem;
+
+
+  .MuiListItem-root {
+    margin-bottom: 2rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+
+  .MuiListItem-root > .MuiPaper-root {
+    padding: 1.5rem;
+    width: 100%;
+  }
+
+  .icon_container {
+    padding: 1rem;
+  }
+
+  .MuiSvgIcon-root {
+    display: block;
+  }
+
+}
