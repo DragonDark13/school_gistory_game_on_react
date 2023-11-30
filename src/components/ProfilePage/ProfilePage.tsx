@@ -108,7 +108,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
                 <Grid container className={"achievement_icon_list"}>
                     {achievementIconArray.map((achievement, index) => (
-                        <Grid title={historyList[index].achieved} key={index + "test"} item xs={6}>
+                        <Grid  key={index + "test"} item xs={6}>
                             <Paper variant={"outlined"}>
                                 {/*<ListItemIcon>*/}
                                 <EmojiEvents color={achievementActiveCount > index ? "primary" : "disabled"}

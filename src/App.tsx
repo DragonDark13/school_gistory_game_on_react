@@ -191,7 +191,7 @@ function App() {
     const {currentUser} = useContext(UserContext)
 
 
-    return ( <BrowserRouter basename="/school_gistory_game_on_react"  >
+    return ( <BrowserRouter basename={process.env.PUBLIC_URL}  >
             <div className="App">
 
 
