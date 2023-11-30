@@ -13,6 +13,7 @@ import Article from "./components/Article/Article";
 import data from "./data/data.json";
 import Header from "./components/Header/Header";
 import {
+    Button,
     Container,
     createTheme,
     CssBaseline,
@@ -27,7 +28,10 @@ import AboutProject from "./components/AboutProject/AboutProject";
 import AboutFeatureList from "./components/AboutFeatureList/AboutFeatureList";
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import ProfilePage from "./components/ProfilePage/ProfilePage";
-import avatarImg  from "./static/image/city.jpg"
+import avatarImg from "./static/image/city.jpg"
+import Grid from "@mui/material/Grid";
+import {Link as RouterLink} from "react-router-dom";
+
 
 
 export const ColorModeContext = React.createContext({
@@ -185,7 +189,7 @@ function App() {
         setShowTimeline(false)
     }
 
-    const {currentUser}=useContext(UserContext)
+    const {currentUser} = useContext(UserContext)
 
 
     return (<Router>
@@ -197,49 +201,63 @@ function App() {
 
                     <main>
                         <Routes>
-                            <Route path="/profile" element={<ProfilePage achievementLevel={"test"} achievements={achievements} avatar={avatarImg} lessonsVisited={2} username={currentUser ? currentUser.name : "Невідомий"}/>}/>
+                            <Route path="/profile"
+                                   element={<ProfilePage achievementLevel={"test"} achievements={achievements}
+                                                         avatar={avatarImg} lessonsVisited={2}
+                                                         username={currentUser ? currentUser.name : "Невідомий"}/>}/>
+                            <Route path="/timeline" element={
+                                <React.Fragment>
+                                    <Container>
+                                        {showTimeline &&
+                                        <HistoryTimeline successLevels={successLevels}
+                                                         handleGoToTestNow={handleGoToTestNow}
+                                                         buttonStates={buttonStates}
+                                                         handleExpandArticle={handleExpandArticle}
+                                                         events={data.historyList}/>
+                                        }
+                                        {expandedArticle && (
+                                            <Article handleCloseArticle={handleCloseArticle}
+                                                     handleShowQuiz={handleShowQuiz}
+                                                     selectedArticle={selectedArticle}/>
+                                        )}
+                                        {showQuiz &&
+
+                                        <QuizBlock
+                                            allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
+                                            events={data.historyList}
+                                            selectedArticle={selectedArticle}
+                                            handleNextLevel={handleNextLevel}
+                                            setAllAnswerIsCorrect={setAllAnswerIsCorrect}
+                                            closeTestPage={closeTestPage}
+                                            questions={data.questions} options={data.options}
+                                            correctAnswers={data.correctAnswers}
+                                            onAnswer={handleQuizComplete}
+                                            backToArticleFromTest={backToArticleFromTest}
+                                        />
+
+                                        }
+
+                                    </Container>
+
+                                </React.Fragment>}/>
                             <Route path={"/"}
-                                element={
-                                    <>
-                                        <Container>
-                                            <AboutProject/>
-                                        </Container>
+                                   element={
+                                       <>
+                                           <Container>
+                                               <AboutProject/>
+                                           </Container>
 
-                                        <AboutFeatureList/>
+                                           <AboutFeatureList/>
+                                           <Container>
+                                               <Grid container>
+                                                   <Grid xs={12}>
+                                                       <Button href={"/timeline"} fullWidth size={"large"} variant={"contained"}>Почати</Button>
+                                                   </Grid>
+                                               </Grid>
+                                           </Container>
 
-                                        <Container>
-                                            {showTimeline &&
-                                            <HistoryTimeline successLevels={successLevels}
-                                                             handleGoToTestNow={handleGoToTestNow}
-                                                             buttonStates={buttonStates}
-                                                             handleExpandArticle={handleExpandArticle}
-                                                             events={data.historyList}/>
-                                            }
-                                            {expandedArticle && (
-                                                <Article handleCloseArticle={handleCloseArticle}
-                                                         handleShowQuiz={handleShowQuiz}
-                                                         selectedArticle={selectedArticle}/>
-                                            )}
-                                            {showQuiz &&
-
-                                            <QuizBlock
-                                                allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
-                                                events={data.historyList}
-                                                selectedArticle={selectedArticle}
-                                                handleNextLevel={handleNextLevel}
-                                                setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                                closeTestPage={closeTestPage}
-                                                questions={data.questions} options={data.options}
-                                                correctAnswers={data.correctAnswers}
-                                                onAnswer={handleQuizComplete}
-                                                backToArticleFromTest={backToArticleFromTest}
-                                            />
-
-                                            }
-
-                                        </Container>
-                                    </>
-                                }
+                                       </>
+                                   }
                             />
                         </Routes>
 
