@@ -33,7 +33,6 @@ import Grid from "@mui/material/Grid";
 import {Link as RouterLink} from "react-router-dom";
 
 
-
 export const ColorModeContext = React.createContext({
     toggleColorMode: () => {
     }
@@ -202,9 +201,14 @@ function App() {
                     <main>
                         <Routes>
                             <Route path="/profile"
-                                   element={<ProfilePage achievementLevel={"test"} achievements={achievements}
-                                                         avatar={avatarImg} lessonsVisited={2}
-                                                         username={currentUser ? currentUser.name : "Невідомий"}/>}/>
+                                   element={<ProfilePage
+                                       historyList={data.historyList}
+                                       achievementLevel={"test"}
+                                       achievements={achievements}
+                                       avatar={avatarImg}
+                                       lessonsVisited={7}
+                                       username={currentUser ? currentUser.name : "Петро" +
+                                           " Сагайдачний"}/>}/>
                             <Route path="/timeline" element={
                                 <React.Fragment>
                                     <Container>
@@ -251,7 +255,8 @@ function App() {
                                            <Container>
                                                <Grid container>
                                                    <Grid xs={12}>
-                                                       <Button href={"/timeline"} fullWidth size={"large"} variant={"contained"}>Почати</Button>
+                                                       <Button href={"/timeline"} fullWidth size={"large"}
+                                                               variant={"contained"}>Почати</Button>
                                                    </Grid>
                                                </Grid>
                                            </Container>

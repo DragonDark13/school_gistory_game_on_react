@@ -1,0 +1,67 @@
+.profile_container {
+  padding: 20px;
+
+  .profile_block {
+    text-align: center;
+    padding: 90px 1rem 1rem;
+    margin-top: 140px;
+    position: relative;
+    margin-bottom: 3rem;
+
+    .profile_block_avatar {
+      position: absolute;
+      margin: auto;
+      left: 0;
+      right: 0;
+      top: -98px;
+      width: 200px;
+      height: 200px;
+    }
+
+    .block_icon {
+    display: block;
+  }
+
+  .MuiLinearProgress-root {
+    height: 16px;
+    border-radius: 4px;
+  }
+
+  .achievement_icon_list .MuiGrid-root.MuiGrid-item {
+    padding: 10px;
+
+    .MuiPaper-root {
+      padding: 5px;
+    }
+  }
+
+    &.profile_block_settings {
+      margin-top: 3rem;
+      padding-top: 1rem;
+    }
+  }
+
+  .field_container{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+
+    &>.MuiTypography-root{
+      margin-bottom: 1rem;
+    }
+
+    .MuiInputBase-input{
+      text-align: center;
+    }
+
+    input[type="password"]{
+      letter-spacing: 3px;
+    }
+
+  }
+
+  .settings_button{
+    margin-bottom: 2rem;
+  }
+
+
+}

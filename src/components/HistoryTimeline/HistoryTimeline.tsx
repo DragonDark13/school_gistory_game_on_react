@@ -14,6 +14,7 @@ import TimelineCard from "./TimelineCard";
 export interface HistoricalEvent {
     date: string;
     text: string;
+    achieved:string
 }
 
 interface HistoryTimelineProps {
