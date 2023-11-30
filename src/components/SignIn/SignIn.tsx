@@ -9,6 +9,11 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import {useAuth} from "../AuthContext/AuthContext";
+import {useEffect, useState} from 'react';
+import {redirect} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+
 
 interface ISignIn {
     setShowSignInForm: (value: boolean) => void;
@@ -16,21 +21,95 @@ interface ISignIn {
 }
 
 
-export default function SignIn({setShowSignInForm,setShowSignUpForm}: ISignIn) {
+export default function SignIn({setShowSignInForm, setShowSignUpForm}: ISignIn) {
 
     const gotoSignUp = () => {
         setShowSignInForm(false)
         setShowSignUpForm(true)
     }
 
-    const handleSubmit = (event: any) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+    const navigate = useNavigate();
+
+
+    // const handleSubmit = (event: any) => {
+    //     event.preventDefault();
+    //     const data = new FormData(event.currentTarget);
+    //     console.log({
+    //         email: data.get('email'),
+    //         password: data.get('password'),
+    //     });
+    // };
+
+
+    const {login, isAuthenticated} = useAuth();
+
+    console.log("isAuthenticated", isAuthenticated);
+
+    const [email, setEmail] = useState<string>("")
+    const [password, setPassword] = useState<string>("")
+    const [emailErrorState, setEmailErrorState] = useState<boolean>(false)
+    const [emailErrorText, setEmailErrorText] = useState<string>("")
+    const [passwordErrorState, setPasswordErrorState] = useState<boolean>(false)
+    const [passwordErrorText, setPasswordErrorText] = useState<string>("")
+
+
+    const validateEmail = () => {
+        // Email validation logic
+        // Check if the user has entered both fields correctly
+        if ("" === email || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+            setEmailErrorState(true)
+        }
+
+        if ("" === email) {
+            setEmailErrorText("Please enter your email")
+            return false
+        }
+
+        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+            setEmailErrorText("Please enter a valid email")
+            return false
+        }
+
+        return true
     };
+
+    const validatePassword = () => {
+        // Password validation logic
+        if ("" === password || password.length < 7) {
+            setPasswordErrorState(true)
+        }
+
+        if ("" === password) {
+            setPasswordErrorText("Please enter a password")
+            return false
+        }
+
+        if (password.length < 7) {
+            setPasswordErrorText("The password must be 8 characters or longer")
+            return false
+        }
+
+        return true
+
+    };
+
+    const onLogInButtonClick = () => {
+        setEmailErrorState(false);
+        setPasswordErrorState(false);
+
+        if (!validateEmail()) return;
+        if (!validatePassword()) return;
+
+        login(email, password);
+    };
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            setShowSignInForm(false)
+            navigate("/profile");
+        }
+    }, [isAuthenticated, navigate]);
+
 
     return (
         <Container component="main" maxWidth="xs">
@@ -48,9 +127,11 @@ export default function SignIn({setShowSignInForm,setShowSignUpForm}: ISignIn) {
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+                <Box sx={{mt: 1}}>
                     <TextField
                         margin="normal"
+                        error={emailErrorState}
+                        helperText={emailErrorState && emailErrorText}
                         required
                         fullWidth
                         id="email"
@@ -58,9 +139,11 @@ export default function SignIn({setShowSignInForm,setShowSignUpForm}: ISignIn) {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        onChange={({target: {value}}) => setEmail(value)}
                     />
                     <TextField
                         margin="normal"
+                        error={passwordErrorState}
                         required
                         fullWidth
                         name="password"
@@ -68,15 +151,18 @@ export default function SignIn({setShowSignInForm,setShowSignUpForm}: ISignIn) {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        helperText={passwordErrorState && passwordErrorText}
+                        onChange={ev => setPassword(ev.target.value)}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary"/>}
                         label="Remember me"
                     />
                     <Button
-                        type="submit"
+                        type="button"
                         fullWidth
                         variant="contained"
+                        onClick={onLogInButtonClick}
                         sx={{mt: 3, mb: 1}}
                     >
                         Sign In
@@ -88,7 +174,8 @@ export default function SignIn({setShowSignInForm,setShowSignUpForm}: ISignIn) {
                             </Button>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button color={"secondary"} onClick={gotoSignUp} sx={{mt: 1, mb: 1}} fullWidth variant={"contained"}>
+                            <Button color={"secondary"} onClick={gotoSignUp} sx={{mt: 1, mb: 1}} fullWidth
+                                    variant={"contained"}>
                                 {"Don't have an account? Sign Up"}
                             </Button>
                         </Grid>

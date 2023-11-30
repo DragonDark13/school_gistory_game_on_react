@@ -16,7 +16,7 @@ interface IAuthProviderProps {
 export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = (username: string, password: string) => {
+  const login = (email: string, password: string) => {
     // Реалізуйте функціонал для аутентифікації, наприклад, використовуючи API
 
     // При успішній аутентифікації встановлюємо isAuthenticated в true

@@ -1,4 +1,4 @@
-import React, {ReactNode, useContext, useState} from "react";
+import React, {ReactNode, useContext, useEffect, useState} from "react";
 import {ColorModeContext, LanguageContext, ThemeContext, UserContext} from "../../App";
 import {
     Container,
@@ -7,7 +7,7 @@ import {
     useTheme,
     useMediaQuery,
     IconButton,
-    Dialog, Slide, Link, Typography
+    Dialog, Slide, Typography, Link
 } from "@mui/material";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
@@ -23,6 +23,7 @@ import MyAppBar from "../MyAppBar/MyAppBar";
 import LogoIcon from "../../icon/Logo"
 import "./header.scss"
 import Grid from "@mui/material/Grid";
+import {Link as RouterLink} from "react-router-dom";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -84,6 +85,12 @@ const Header: React.FC = (): React.ReactElement => {
         setOpenModal(false);
     };
 
+    useEffect(() => {
+        if (isAuthenticated) {
+            setOpenModal(false);
+        }
+    }, [isAuthenticated]);
+
 
     // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     //     setAnchorEl(event.currentTarget);
@@ -99,7 +106,7 @@ const Header: React.FC = (): React.ReactElement => {
             <Toolbar disableGutters sx={{"justifyContent": "space-between"}}>
                 {smUp && <WelcomePanel/>}
 
-                <Link underline={"none"} href="#">
+                <Link component={RouterLink} underline={"none"} to="/">
                     <Grid gap={2} container alignItems={"center"}>
                         <Grid item><LogoIcon className={cx(classes.headerLogoIcon, "logo_icon")}/></Grid>
                         <Grid item>
@@ -156,7 +163,7 @@ const Header: React.FC = (): React.ReactElement => {
                         {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}
                     </IconButton>
                     {isAuthenticated ?
-                        <IconButton color={"inherit"} title={"Профіль"}>
+                        <IconButton className={cx(classes.headerLogoIcon)} title={"Профіль"}>
                             <AccountCircleIcon/>
                         </IconButton> :
                         <IconButton onClick={handleClickOpenModal} className={cx(classes.headerLogoIcon)}

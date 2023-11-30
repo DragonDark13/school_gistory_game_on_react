@@ -3,8 +3,7 @@ import React, {
     Dispatch,
     ReactNode,
     SetStateAction,
-    useCallback,
-    useContext,
+    useCallback, useContext,
     useEffect,
     useState
 } from 'react';
@@ -26,6 +25,9 @@ import "./static/css/normalize.css"
 import "./static/style/main.scss"
 import AboutProject from "./components/AboutProject/AboutProject";
 import AboutFeatureList from "./components/AboutFeatureList/AboutFeatureList";
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import ProfilePage from "./components/ProfilePage/ProfilePage";
+import avatarImg  from "./static/image/city.jpg"
 
 
 export const ColorModeContext = React.createContext({
@@ -89,7 +91,7 @@ function App() {
     const [achievements, setAchievements] = useState<[] | string[]>([])
     const [allAnswerIsCorrect, setAllAnswerIsCorrect] = useState(false)
 
-    console.log("achievements",achievements);
+    console.log("achievements", achievements);
 
     const handleExpandArticle = (index: number) => {
         setExpandedArticle(true);
@@ -183,64 +185,78 @@ function App() {
         setShowTimeline(false)
     }
 
-
-    return (
-        <div className="App">
+    const {currentUser}=useContext(UserContext)
 
 
-            <MyProviders>
-                <Header/>
-
-                <main>
-                    <Container>
-                        <AboutProject/>
-                    </Container>
-
-                    <AboutFeatureList/>
-
-                                    <Container>
-                    {showTimeline &&
-                    <HistoryTimeline successLevels={successLevels} handleGoToTestNow={handleGoToTestNow}
-                                     buttonStates={buttonStates}
-                                     handleExpandArticle={handleExpandArticle}
-                                     events={data.historyList}/>
-                    }
-                    {expandedArticle && (
-                        <Article handleCloseArticle={handleCloseArticle} handleShowQuiz={handleShowQuiz}
-                                 selectedArticle={selectedArticle}/>
-                    )}
-                    {showQuiz &&
-
-                    <QuizBlock
-                        allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
-                        events={data.historyList}
-                        selectedArticle={selectedArticle}
-                        handleNextLevel={handleNextLevel}
-                        setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                        closeTestPage={closeTestPage}
-                        questions={data.questions} options={data.options}
-                        correctAnswers={data.correctAnswers}
-                        onAnswer={handleQuizComplete}
-                        backToArticleFromTest={backToArticleFromTest}
-                    />
-
-                    }
-
-                </Container>
+    return (<Router>
+            <div className="App">
 
 
-                </main>
+                <MyProviders>
+                    <Header/>
+
+                    <main>
+                        <Routes>
+                            <Route path="/profile" element={<ProfilePage achievementLevel={"test"} achievements={achievements} avatar={avatarImg} lessonsVisited={2} username={currentUser ? currentUser.name : "Невідомий"}/>}/>
+                            <Route path={"/"}
+                                element={
+                                    <>
+                                        <Container>
+                                            <AboutProject/>
+                                        </Container>
+
+                                        <AboutFeatureList/>
+
+                                        <Container>
+                                            {showTimeline &&
+                                            <HistoryTimeline successLevels={successLevels}
+                                                             handleGoToTestNow={handleGoToTestNow}
+                                                             buttonStates={buttonStates}
+                                                             handleExpandArticle={handleExpandArticle}
+                                                             events={data.historyList}/>
+                                            }
+                                            {expandedArticle && (
+                                                <Article handleCloseArticle={handleCloseArticle}
+                                                         handleShowQuiz={handleShowQuiz}
+                                                         selectedArticle={selectedArticle}/>
+                                            )}
+                                            {showQuiz &&
+
+                                            <QuizBlock
+                                                allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
+                                                events={data.historyList}
+                                                selectedArticle={selectedArticle}
+                                                handleNextLevel={handleNextLevel}
+                                                setAllAnswerIsCorrect={setAllAnswerIsCorrect}
+                                                closeTestPage={closeTestPage}
+                                                questions={data.questions} options={data.options}
+                                                correctAnswers={data.correctAnswers}
+                                                onAnswer={handleQuizComplete}
+                                                backToArticleFromTest={backToArticleFromTest}
+                                            />
+
+                                            }
+
+                                        </Container>
+                                    </>
+                                }
+                            />
+                        </Routes>
 
 
-                <footer>
-                    <Container>
-                        <div>sociicons</div>
-                        <div>copyright</div>
-                    </Container>
-                </footer>
-            </MyProviders>
+                    </main>
 
-        </div>
+
+                    <footer>
+                        <Container>
+                            <div>sociicons</div>
+                            <div>copyright</div>
+                        </Container>
+                    </footer>
+                </MyProviders>
+
+            </div>
+        </Router>
     );
 }
 
