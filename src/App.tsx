@@ -191,7 +191,7 @@ function App() {
     const {currentUser} = useContext(UserContext)
 
 
-    return ( <HashRouter  >
+    return ( <BrowserRouter basename="/school_gistory_game_on_react"  >
             <div className="App">
 
 
@@ -279,7 +279,7 @@ function App() {
                 </MyProviders>
 
             </div>
-        </HashRouter>
+        </BrowserRouter>
     );
 }
 
