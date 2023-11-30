@@ -87,11 +87,9 @@ function App() {
     console.log(successLevels);
 
     const [achievements, setAchievements] = useState<[] | string[]>([])
-
-    const [theme, setTheme] = useState<'light' | "dark">('light');
-    const [language, setLanguage] = useState<"uk" | "en">("uk");
     const [allAnswerIsCorrect, setAllAnswerIsCorrect] = useState(false)
-    const {currentUser, setCurrentUser} = useContext(UserContext);
+
+    console.log("achievements",achievements);
 
     const handleExpandArticle = (index: number) => {
         setExpandedArticle(true);

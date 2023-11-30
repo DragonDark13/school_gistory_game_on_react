@@ -1,17 +1,12 @@
 import React, {ReactNode, useContext, useState} from "react";
-import {THeaderProps} from "./Header.types";
 import {ColorModeContext, LanguageContext, ThemeContext, UserContext} from "../../App";
 import {
-    AppBar,
     Container,
     Toolbar,
     Button,
     useTheme,
     useMediaQuery,
-    Box,
     IconButton,
-    Menu,
-    MenuItem,
     Dialog, Slide, Link, Typography
 } from "@mui/material";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
@@ -63,15 +58,15 @@ const Header: React.FC = (): React.ReactElement => {
 
     // const {theme, setTheme} = useContext(ThemeContext)
     const {language} = useContext(LanguageContext)
-
+    console.log(language);
     const themeDefault = useTheme();
     const smUp = useMediaQuery(themeDefault.breakpoints.up('sm'));
 
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    // const open = Boolean(anchorEl);
 
     const {isAuthenticated} = useAuth();
 
@@ -90,12 +85,12 @@ const Header: React.FC = (): React.ReactElement => {
     };
 
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    //     setAnchorEl(event.currentTarget);
+    // };
+    // const handleClose = () => {
+    //     setAnchorEl(null);
+    // };
     const {cx, classes} = useStyles();
 
 

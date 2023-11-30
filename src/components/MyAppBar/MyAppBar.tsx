@@ -1,5 +1,5 @@
 import React from 'react';
-import {AppBar, useTheme, Theme, AppBarProps} from '@mui/material';
+import {AppBar, AppBarProps} from '@mui/material';
 import {makeStyles} from 'tss-react/mui';
 
 const useStyles = makeStyles()((theme) => ({

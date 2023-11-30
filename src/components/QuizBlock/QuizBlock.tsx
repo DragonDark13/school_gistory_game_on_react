@@ -61,6 +61,8 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
     const [selectedAnswer, setSelectedAnswer] = useState<string>("");
     const [isNextButtonActive, setIsNextButtonActive] = useState(false);
 
+    console.log(userAnswers);
+
 
     useEffect(() => {
         if (results.correct === questions.length) {
