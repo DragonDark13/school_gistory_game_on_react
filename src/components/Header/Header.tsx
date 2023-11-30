@@ -24,6 +24,8 @@ import LogoIcon from "../../icon/Logo"
 import "./header.scss"
 import Grid from "@mui/material/Grid";
 import {Link as RouterLink} from "react-router-dom";
+import LogoutIcon from '@mui/icons-material/Logout';
+
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -69,7 +71,7 @@ const Header: React.FC = (): React.ReactElement => {
     // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     // const open = Boolean(anchorEl);
 
-    const {isAuthenticated} = useAuth();
+    const {isAuthenticated,logout} = useAuth();
 
     const [openModal, setOpenModal] = React.useState(false);
     const [showSignInForm, setShowSignInForm] = React.useState(false)
@@ -101,109 +103,118 @@ const Header: React.FC = (): React.ReactElement => {
     const {cx, classes} = useStyles();
 
 
-    return (<MyAppBar position={"static"} className={cx(classes.customAppBar, "header")}>
-        <Container>
-            <Toolbar disableGutters sx={{"justifyContent": "space-between"}}>
-                {smUp && <WelcomePanel/>}
+    return (
+        <MyAppBar position={"static"} className={cx(classes.customAppBar, "header")}>
+            <Container>
+                <Toolbar disableGutters sx={{"justifyContent": "space-between"}}>
+                    {smUp && <WelcomePanel/>}
 
-                <Link component={RouterLink} underline={"none"} to="/">
-                    <Grid gap={2} container alignItems={"center"}>
-                        <Grid item><LogoIcon className={cx(classes.headerLogoIcon, "logo_icon")}/></Grid>
-                        <Grid item>
-                            <Typography className={cx(classes.headerLogoText)}
-                                        variant={"h5"}>
-                                <span className={"first"}>Вчись</span><span>Грай</span>
-                            </Typography>
+                    <Link component={RouterLink} underline={"none"} to="/">
+                        <Grid gap={2} container alignItems={"center"}>
+                            <Grid item><LogoIcon className={cx(classes.headerLogoIcon, "logo_icon")}/></Grid>
+                            <Grid item>
+                                <Typography className={cx(classes.headerLogoText)}
+                                            variant={"h5"}>
+                                    <span className={"first"}>Вчись</span><span>Грай</span>
+                                </Typography>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Link>
+                    </Link>
 
 
-                {/*<label>*/}
-                {/*    <input*/}
-                {/*        type="checkbox"*/}
-                {/*        checked={theme === 'dark'}*/}
-                {/*        onChange={(e) => {*/}
-                {/*            setTheme(e.target.checked ? 'dark' : 'light')*/}
-                {/*        }}*/}
-                {/*    />*/}
-                {/*    Use dark mode*/}
-                {/*</label>*/}
-                {/*{!smUp &&*/}
-                {/*<p>language: {language}*/}
-                {/*</p>}*/}
+                    {/*<label>*/}
+                    {/*    <input*/}
+                    {/*        type="checkbox"*/}
+                    {/*        checked={theme === 'dark'}*/}
+                    {/*        onChange={(e) => {*/}
+                    {/*            setTheme(e.target.checked ? 'dark' : 'light')*/}
+                    {/*        }}*/}
+                    {/*    />*/}
+                    {/*    Use dark mode*/}
+                    {/*</label>*/}
+                    {/*{!smUp &&*/}
+                    {/*<p>language: {language}*/}
+                    {/*</p>}*/}
 
-                {/*<Button*/}
-                {/*    color="secondary"*/}
-                {/*    id="basic-button"*/}
-                {/*    aria-controls={open ? 'basic-menu' : undefined}*/}
-                {/*    aria-haspopup="true"*/}
-                {/*    aria-expanded={open ? 'true' : undefined}*/}
-                {/*    onClick={handleClick}*/}
-                {/*>*/}
-                {/*    Dashboard*/}
-                {/*</Button>*/}
+                    {/*<Button*/}
+                    {/*    color="secondary"*/}
+                    {/*    id="basic-button"*/}
+                    {/*    aria-controls={open ? 'basic-menu' : undefined}*/}
+                    {/*    aria-haspopup="true"*/}
+                    {/*    aria-expanded={open ? 'true' : undefined}*/}
+                    {/*    onClick={handleClick}*/}
+                    {/*>*/}
+                    {/*    Dashboard*/}
+                    {/*</Button>*/}
 
-                {/*<Menu*/}
-                {/*    id="basic-menu"*/}
-                {/*    anchorEl={anchorEl}*/}
-                {/*    open={open}*/}
-                {/*    onClose={handleClose}*/}
-                {/*    MenuListProps={{*/}
-                {/*        'aria-labelledby': 'basic-button',*/}
-                {/*    }}*/}
-                {/*>*/}
-                {/*    <MenuItem onClick={handleClose}>Profile</MenuItem>*/}
-                {/*    <MenuItem onClick={handleClose}>My account</MenuItem>*/}
-                {/*    <MenuItem onClick={handleClose}>Logout</MenuItem>*/}
-                {/*</Menu>*/}
+                    {/*<Menu*/}
+                    {/*    id="basic-menu"*/}
+                    {/*    anchorEl={anchorEl}*/}
+                    {/*    open={open}*/}
+                    {/*    onClose={handleClose}*/}
+                    {/*    MenuListProps={{*/}
+                    {/*        'aria-labelledby': 'basic-button',*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                    {/*    <MenuItem onClick={handleClose}>Profile</MenuItem>*/}
+                    {/*    <MenuItem onClick={handleClose}>My account</MenuItem>*/}
+                    {/*    <MenuItem onClick={handleClose}>Logout</MenuItem>*/}
+                    {/*</Menu>*/}
 
-                <Grid>
-                    <IconButton onClick={colorMode.toggleColorMode}>
-                        {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}
-                    </IconButton>
-                    {isAuthenticated ?
-                        <IconButton className={cx(classes.headerLogoIcon)} title={"Профіль"}>
-                            <AccountCircleIcon/>
-                        </IconButton> :
-                        <IconButton onClick={handleClickOpenModal} className={cx(classes.headerLogoIcon)}
-                                    title={"Увійти"}>
-                            <LoginIcon/>
+                    <Grid>
+                        <IconButton onClick={colorMode.toggleColorMode}>
+                            {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}
                         </IconButton>
-                    }
-                </Grid>
-
-                <Dialog
-                    fullScreen
-                    open={openModal}
-                    onClose={handleCloseModal}
-                    TransitionComponent={Transition}
-                >
-                    <MyAppBar position={"static"}>
-                        <Toolbar sx={{"justifyContent": "end"}}>
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                onClick={handleCloseModal}
-                                aria-label="close"
-                            >
-                                <CloseIcon/>
+                        {isAuthenticated ?
+                            <React.Fragment>
+                                <RouterLink to={"/profile"}>
+                                    <IconButton className={cx(classes.headerLogoIcon)} title={"Профіль"}>
+                                        <AccountCircleIcon/>
+                                    </IconButton>
+                                </RouterLink>
+                                <IconButton onClick={logout} className={cx(classes.headerLogoIcon)} title={"Вийти"}>
+                                    <LogoutIcon/>
+                                </IconButton>
+                            </React.Fragment>
+                            :
+                            <IconButton onClick={handleClickOpenModal} className={cx(classes.headerLogoIcon)}
+                                        title={"Увійти"}>
+                                <LoginIcon/>
                             </IconButton>
-                        </Toolbar>
-                    </MyAppBar>
-                    {showSignInForm &&
-                    <SignIn setShowSignUpForm={setShowSignUpForm} setShowSignInForm={setShowSignInForm}/>}
-                    {showSignUpForm &&
-                    <SignUp setShowSignInForm={setShowSignInForm} setShowSignUpForm={setShowSignUpForm}/>}
+                        }
+                    </Grid>
 
-                </Dialog>
+                    <Dialog
+                        fullScreen
+                        open={openModal}
+                        onClose={handleCloseModal}
+                        TransitionComponent={Transition}
+                    >
+                        <MyAppBar position={"static"}>
+                            <Toolbar sx={{"justifyContent": "end"}}>
+                                <IconButton
+                                    edge="start"
+                                    color="inherit"
+                                    onClick={handleCloseModal}
+                                    aria-label="close"
+                                >
+                                    <CloseIcon/>
+                                </IconButton>
+                            </Toolbar>
+                        </MyAppBar>
+                        {showSignInForm &&
+                        <SignIn setShowSignUpForm={setShowSignUpForm} setShowSignInForm={setShowSignInForm}/>}
+                        {showSignUpForm &&
+                        <SignUp setShowSignInForm={setShowSignInForm} setShowSignUpForm={setShowSignUpForm}/>}
+
+                    </Dialog>
 
 
-                {/*<Button variant="contained">Увійти</Button>*/}
-                {/*<Button variant="contained">Профіль</Button>*/}
-            </Toolbar>
-        </Container>
-    </MyAppBar>)
+                    {/*<Button variant="contained">Увійти</Button>*/}
+                    {/*<Button variant="contained">Профіль</Button>*/}
+                </Toolbar>
+            </Container>
+        </MyAppBar>)
 
 }
 
