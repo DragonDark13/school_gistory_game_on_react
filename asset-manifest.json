@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/school_gistory_game_on_react/static/css/main.7614c30b.css",
-    "main.js": "/school_gistory_game_on_react/static/js/main.db6d6f05.js",
+    "main.css": "/school_gistory_game_on_react/static/css/main.36e4f30c.css",
+    "main.js": "/school_gistory_game_on_react/static/js/main.7aaadb92.js",
     "static/js/787.aee4433d.chunk.js": "/school_gistory_game_on_react/static/js/787.aee4433d.chunk.js",
     "static/media/city.jpg": "/school_gistory_game_on_react/static/media/city.d20fbb73aee94aad1ccd.jpg",
     "index.html": "/school_gistory_game_on_react/index.html",
-    "main.7614c30b.css.map": "/school_gistory_game_on_react/static/css/main.7614c30b.css.map",
-    "main.db6d6f05.js.map": "/school_gistory_game_on_react/static/js/main.db6d6f05.js.map",
+    "main.36e4f30c.css.map": "/school_gistory_game_on_react/static/css/main.36e4f30c.css.map",
+    "main.7aaadb92.js.map": "/school_gistory_game_on_react/static/js/main.7aaadb92.js.map",
     "787.aee4433d.chunk.js.map": "/school_gistory_game_on_react/static/js/787.aee4433d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7614c30b.css",
-    "static/js/main.db6d6f05.js"
+    "static/css/main.36e4f30c.css",
+    "static/js/main.7aaadb92.js"
   ]
 }
