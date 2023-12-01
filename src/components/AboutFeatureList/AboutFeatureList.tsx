@@ -158,7 +158,7 @@ const AboutFeatureList = () => {
                             {/*<ListItemText*/}
                             {/*    primary={}*/}
                             {/*/>*/}
-                            <Paper elevation={3}>
+                            <Paper elevation={1}>
                                 <Grid alignItems={"center"} gap={3} container>
                                     <Grid>
                                         <Paper className={"icon_container"}

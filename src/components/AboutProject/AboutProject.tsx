@@ -1,8 +1,9 @@
-import {Typography} from "@mui/material";
+import {Button, Typography} from "@mui/material";
 import LogoIcon from "../../icon/Logo";
 import React from "react";
 import "./about.scss"
 import {makeStyles} from "tss-react/mui";
+import {Link as RouterLink} from "react-router-dom";
 
 const useStyles = makeStyles()((theme) => ({
 
@@ -26,7 +27,14 @@ const AboutProject = () => {
             </Typography>
             <Typography className={"subtitle"} variant={"h6"}>Грай та Навчайся</Typography>
 
-            <Typography>
+
+
+
+            <Button className={"start_button"} component={RouterLink} to={"/timeline"} fullWidth
+                    size={"large"}
+                    variant={"contained"}>Почати</Button>
+
+               <Typography>
                 <Typography variant={"subtitle1"} component={"span"}>"Шкала Історіі: Грай та Навчайся"</Typography> - це
                 інноваційний веб-додаток, спрямований на учнів, який робить
                 процес вивчення історії захоплюючим та ефективним. Додаток пропонує вам:

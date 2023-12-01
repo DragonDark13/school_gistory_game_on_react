@@ -191,7 +191,7 @@ function App() {
     const {currentUser} = useContext(UserContext)
 
 
-    return ( <BrowserRouter basename={process.env.PUBLIC_URL}  >
+    return (<BrowserRouter basename={process.env.PUBLIC_URL}>
             <div className="App">
 
 
@@ -200,76 +200,64 @@ function App() {
 
                     <main>
 
-                            <Routes>
-                                <Route path="/profile"
-                                       element={<ProfilePage
-                                           historyList={data.historyList}
-                                           achievementLevel={"test"}
-                                           achievements={achievements}
-                                           avatar={avatarImg}
-                                           lessonsVisited={7}
-                                           username={currentUser ? currentUser.name : "Петро" +
-                                               " Сагайдачний"}/>}/>
-                                <Route path="/timeline" element={
-                                    <React.Fragment>
-                                        <Container>
-                                            {showTimeline &&
-                                            <HistoryTimeline successLevels={successLevels}
-                                                             handleGoToTestNow={handleGoToTestNow}
-                                                             buttonStates={buttonStates}
-                                                             handleExpandArticle={handleExpandArticle}
-                                                             events={data.historyList}/>
-                                            }
-                                            {expandedArticle && (
-                                                <Article handleCloseArticle={handleCloseArticle}
-                                                         handleShowQuiz={handleShowQuiz}
-                                                         selectedArticle={selectedArticle}/>
-                                            )}
-                                            {showQuiz &&
+                        <Routes>
+                            <Route path="/profile"
+                                   element={<ProfilePage
+                                       historyList={data.historyList}
+                                       achievementLevel={"test"}
+                                       achievements={achievements}
+                                       avatar={avatarImg}
+                                       lessonsVisited={7}
+                                       username={currentUser ? currentUser.name : "Петро" +
+                                           " Сагайдачний"}/>}/>
+                            <Route path="/timeline" element={
+                                <React.Fragment>
+                                    <Container>
+                                        {showTimeline &&
+                                        <HistoryTimeline successLevels={successLevels}
+                                                         handleGoToTestNow={handleGoToTestNow}
+                                                         buttonStates={buttonStates}
+                                                         handleExpandArticle={handleExpandArticle}
+                                                         events={data.historyList}/>
+                                        }
+                                        {expandedArticle && (
+                                            <Article handleCloseArticle={handleCloseArticle}
+                                                     handleShowQuiz={handleShowQuiz}
+                                                     selectedArticle={selectedArticle}/>
+                                        )}
+                                        {showQuiz &&
 
-                                            <QuizBlock
-                                                allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
-                                                events={data.historyList}
-                                                selectedArticle={selectedArticle}
-                                                handleNextLevel={handleNextLevel}
-                                                setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                                closeTestPage={closeTestPage}
-                                                questions={data.questions} options={data.options}
-                                                correctAnswers={data.correctAnswers}
-                                                onAnswer={handleQuizComplete}
-                                                backToArticleFromTest={backToArticleFromTest}
-                                            />
+                                        <QuizBlock
+                                            allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
+                                            events={data.historyList}
+                                            selectedArticle={selectedArticle}
+                                            handleNextLevel={handleNextLevel}
+                                            setAllAnswerIsCorrect={setAllAnswerIsCorrect}
+                                            closeTestPage={closeTestPage}
+                                            questions={data.questions} options={data.options}
+                                            correctAnswers={data.correctAnswers}
+                                            onAnswer={handleQuizComplete}
+                                            backToArticleFromTest={backToArticleFromTest}
+                                        />
 
-                                            }
+                                        }
 
-                                        </Container>
+                                    </Container>
 
-                                    </React.Fragment>}/>
-                                <Route path={"/"}
-                                       element={
-                                           <>
-                                               <Container>
-                                                   <AboutProject/>
-                                               </Container>
+                                </React.Fragment>}/>
+                            <Route path={"/"}
+                                   element={
+                                       <>
+                                           <Container>
+                                               <AboutProject/>
+                                           </Container>
 
-                                               <AboutFeatureList/>
-                                               <Container>
-                                                   <Grid container>
-                                                       <Grid xs={12}>
-                                                           <Button href={"/timeline"} fullWidth size={"large"}
-                                                                   variant={"contained"}>Почати</Button>
-                                                       </Grid>
-                                                   </Grid>
-                                               </Container>
-
-                                           </>
-                                       }
-                                />
-                            </Routes>
-
+                                           <AboutFeatureList/>
+                                       </>
+                                   }
+                            />
+                        </Routes>
                     </main>
-
-
                     <footer>
                         <Container>
                             <div>sociicons</div>
