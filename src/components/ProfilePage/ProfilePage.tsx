@@ -9,7 +9,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import EmojiEvents from '@mui/icons-material/EmojiEvents';
 import CommentIcon from '@mui/icons-material/Comment';
 import {Link} from 'react-router-dom';
-import {Grid, LinearProgress, List, ListItem, ListItemIcon, ListItemText} from "@mui/material";
+import {Container, Grid, LinearProgress, List, ListItem, ListItemIcon, ListItemText} from "@mui/material";
 import {HistoricalEvent} from '../HistoryTimeline/HistoryTimeline';
 import './profile_page.scss'
 import UserProfileSettings from "./UserProfileSettings";
@@ -59,7 +59,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     const achievementActiveCount = 3;
 
     return (
-        <div className={"profile_container"}>
+        <Container className={"profile_container"}>
             <Paper className={"profile_block"} elevation={3}>
                 <Avatar className={"profile_block_avatar"} alt={username} src={avatar}
                         sx={{width: 100, height: 100, margin: 'auto'}}/>
@@ -160,7 +160,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                     </Button>
                 </Grid>
             </Grid>
-        </div>
+        </Container>
     );
 };
 

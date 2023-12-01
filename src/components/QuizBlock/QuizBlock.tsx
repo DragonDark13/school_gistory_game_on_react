@@ -5,6 +5,7 @@ import {
     Button,
     Card, CardActions,
     CardContent, CardHeader,
+    Container,
     FormControlLabel,
     Grid,
     LinearProgress,
@@ -23,6 +24,7 @@ import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import StarIcon from '@mui/icons-material/Star';
 
 import "./quiz_style.scss"
+import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 
 
 interface QuizBlockProps {
@@ -34,7 +36,6 @@ interface QuizBlockProps {
     allAnswerIsCorrectFunc: () => void;
     handleNextLevel: () => void;
     events: HistoricalEvent[];
-    selectedArticle: number | null;
     setAllAnswerIsCorrect: (arg0: boolean) => void
     backToArticleFromTest: () => void
 }
@@ -48,7 +49,6 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                                                  closeTestPage,
                                                  allAnswerIsCorrectFunc,
                                                  handleNextLevel,
-                                                 selectedArticle,
                                                  events,
                                                  setAllAnswerIsCorrect,
                                                  backToArticleFromTest
@@ -60,6 +60,17 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
     const [nextLevelAvailable, setNextLevelAvailable] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState<string>("");
     const [isNextButtonActive, setIsNextButtonActive] = useState(false);
+
+      const {selectedArticle} = useParams();
+    console.log(typeof selectedArticle);
+
+    const navigate = useNavigate();
+
+    const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
+    console.log(typeof selectedArticleNumber);
+
+
+
 
     console.log(userAnswers);
 
@@ -127,16 +138,16 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
 
 
     return (
-        <React.Fragment>
+        <Container>
             <Grid className={"back_button_container"} container justifyContent={"space-between"}>
                 <Grid item>
-                    <Button startIcon={<ArrowBackIosIcon/>} onClick={backToArticleFromTest}>
+                    <Button component={RouterLink} to={`/article/${selectedArticleNumber}`}  startIcon={<ArrowBackIosIcon/>} onClick={backToArticleFromTest}>
                         До бібліотеки
                     </Button>
                 </Grid>
                 <Grid item>
-                    <Button endIcon={<ArrowUpwardIcon/>} color={"secondary"} onClick={closeTestPage}>
-                        На головну
+                    <Button component={RouterLink} to={"/timeline"} endIcon={<ArrowUpwardIcon/>} color={"secondary"} >
+                      До Часопростору
                     </Button>
                 </Grid>
             </Grid>
@@ -202,10 +213,10 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                                         {/*</Grid>*/}
                                     </CardContent>
                                     <CardActions>
-                                        <Button fullWidth startIcon={<ArrowForwardIosIcon/>} color={"secondary"}
+                                        <Button component={RouterLink} to={`/article/${selectedArticleNumber + 1}`} fullWidth startIcon={<ArrowForwardIosIcon/>} color={"secondary"}
                                                 endIcon={<ArrowForwardIosIcon/>} variant={"contained"}
                                                 size={"large"}
-                                                onClick={handleNextLevel}>{selectedArticle !== null ? events[selectedArticle + 1].date : "Помилка" +
+>{selectedArticleNumber !== null ? events[selectedArticleNumber + 1].date : "Помилка" +
                                             " у машині часу"}</Button>
                                     </CardActions>
 
@@ -233,7 +244,7 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                 <React.Fragment>
 
 
-                    <h1>Тема: {currentQuestion + 1}</h1>
+                    <h1>Тема: {selectedArticle}</h1>
                     <p>{questions[currentQuestion]}</p>
                     <RadioGroup
 
@@ -266,7 +277,7 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
 
                 </React.Fragment>
             )}
-        </React.Fragment>
+        </Container>
     );
 };
 

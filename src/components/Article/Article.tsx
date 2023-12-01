@@ -1,33 +1,45 @@
 import React from "react";
-import {Button, Grid, Typography} from "@mui/material";
+import {Button, Container, Grid, Typography} from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import "./article.scss"
 import myImage from "../../static/image/city.jpg";
+import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 
 
 interface ArticleProps {
-    selectedArticle: number | null,
+    // selectedArticle: number | null,
     handleShowQuiz: () => void
     handleCloseArticle: () => void
 }
 
-const Article: React.FC<ArticleProps> = ({handleCloseArticle, selectedArticle, handleShowQuiz}) => {
+const Article: React.FC<ArticleProps> = ({handleCloseArticle, handleShowQuiz}) => {
+    const {selectedArticle} = useParams();
+    console.log(typeof selectedArticle);
+
+    const navigate = useNavigate();
+
+    const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
+    console.log(typeof selectedArticleNumber);
+
+    handleShowQuiz = () => {
+        navigate(`/test/${selectedArticleNumber}`);
+    }
+
 
     return (
-        <React.Fragment>
+        <Container>
 
             <Grid className={"back_button_container"} container>
                 <Grid item>
-                    <Button color={"secondary"} startIcon={<ArrowBackIosIcon/>} className="close-button"
-                            onClick={handleCloseArticle}>
-                        На головну
+                    <Button component={RouterLink} to={"/timeline"} color={"secondary"} startIcon={<ArrowBackIosIcon/>}
+                            className="close-button">
+                        До Часопростору
                     </Button>
                 </Grid>
             </Grid>
 
 
-
-            <Typography className={"title"} variant={"h4"}>Тема {selectedArticle}</Typography>
+            <Typography className={"title"} variant={"h4"}>Тема {selectedArticleNumber}</Typography>
 
             <img src={myImage} alt=""/>
             <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
@@ -41,7 +53,7 @@ const Article: React.FC<ArticleProps> = ({handleCloseArticle, selectedArticle, h
                 Пройти тест
             </Button>
 
-        </React.Fragment>
+        </Container>
     )
 
 }

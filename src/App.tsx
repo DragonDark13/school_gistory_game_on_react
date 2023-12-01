@@ -26,7 +26,7 @@ import "./static/css/normalize.css"
 import "./static/style/main.scss"
 import AboutProject from "./components/AboutProject/AboutProject";
 import AboutFeatureList from "./components/AboutFeatureList/AboutFeatureList";
-import {BrowserRouter, BrowserRouter as Router, HashRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, BrowserRouter as Router, HashRouter, Route, Routes, useNavigate} from 'react-router-dom';
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import avatarImg from "./static/image/city.jpg"
 import Grid from "@mui/material/Grid";
@@ -96,7 +96,10 @@ function App() {
 
     console.log("achievements", achievements);
 
+
     const handleExpandArticle = (index: number) => {
+
+        // Перейти на сторінку з параметром
         setExpandedArticle(true);
         setSelectedArticle(index)
         setShowTimeline(false)
@@ -210,52 +213,49 @@ function App() {
                                        lessonsVisited={7}
                                        username={currentUser ? currentUser.name : "Петро" +
                                            " Сагайдачний"}/>}/>
-                            <Route path="/timeline" element={
-                                <React.Fragment>
-                                    <Container>
-                                        {showTimeline &&
-                                        <HistoryTimeline successLevels={successLevels}
+
+                            <Route path="/article/:selectedArticle"
+                                   element={<Article handleCloseArticle={handleCloseArticle}
+                                                     handleShowQuiz={handleShowQuiz}
+                                       // selectedArticle={selectedArticle}
+                                   />
+                                   }
+                            />
+
+                            <Route path={"/test/:selectedArticle"}
+                                   element={
+                                       <QuizBlock
+                                           allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
+                                           events={data.historyList}
+                                           handleNextLevel={handleNextLevel}
+                                           setAllAnswerIsCorrect={setAllAnswerIsCorrect}
+                                           closeTestPage={closeTestPage}
+                                           questions={data.questions} options={data.options}
+                                           correctAnswers={data.correctAnswers}
+                                           onAnswer={handleQuizComplete}
+                                           backToArticleFromTest={backToArticleFromTest}
+                                       />
+                                   }
+                            />
+
+                            <Route path="/timeline" element={<HistoryTimeline successLevels={successLevels}
                                                          handleGoToTestNow={handleGoToTestNow}
                                                          buttonStates={buttonStates}
-                                                         handleExpandArticle={handleExpandArticle}
-                                                         events={data.historyList}/>
-                                        }
-                                        {expandedArticle && (
-                                            <Article handleCloseArticle={handleCloseArticle}
-                                                     handleShowQuiz={handleShowQuiz}
-                                                     selectedArticle={selectedArticle}/>
-                                        )}
-                                        {showQuiz &&
+                                            // handleExpandArticle={handleExpandArticle}
+                                                         events={data.historyList}/>}/>
 
-                                        <QuizBlock
-                                            allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
-                                            events={data.historyList}
-                                            selectedArticle={selectedArticle}
-                                            handleNextLevel={handleNextLevel}
-                                            setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                            closeTestPage={closeTestPage}
-                                            questions={data.questions} options={data.options}
-                                            correctAnswers={data.correctAnswers}
-                                            onAnswer={handleQuizComplete}
-                                            backToArticleFromTest={backToArticleFromTest}
-                                        />
-
-                                        }
-
-                                    </Container>
-
-                                </React.Fragment>}/>
                             <Route path={"/"}
                                    element={
-                                       <>
+                                       <div className={"main_page"}>
                                            <Container>
                                                <AboutProject/>
                                            </Container>
 
                                            <AboutFeatureList/>
-                                       </>
+                                       </div>
                                    }
                             />
+
                         </Routes>
                     </main>
                     <footer>

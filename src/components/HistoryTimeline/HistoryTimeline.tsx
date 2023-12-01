@@ -1,7 +1,7 @@
 import 'react-vertical-timeline-component/style.min.css';
 import './timeline-ovveriders.scss'
 import {
-    Card, CardActionArea, Typography,
+    Card, CardActionArea, Container, Typography,
     useTheme
 } from '@mui/material';
 import React from 'react';
@@ -9,17 +9,18 @@ import {VerticalTimeline, VerticalTimelineElement} from 'react-vertical-timeline
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import TimelineCard from "./TimelineCard";
+import {useNavigate} from "react-router-dom";
 
 
 export interface HistoricalEvent {
     date: string;
     text: string;
-    achieved:string
+    achieved: string
 }
 
 interface HistoryTimelineProps {
     events: HistoricalEvent[];
-    handleExpandArticle: (index: number) => void;
+    // handleExpandArticle: (index: number) => void;
     buttonStates: Array<boolean>;
     successLevels: Array<boolean>;
     handleGoToTestNow: (index: number) => void;
@@ -28,7 +29,7 @@ interface HistoryTimelineProps {
 
 const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
                                                              events,
-                                                             handleExpandArticle,
+                                                             // handleExpandArticle,
                                                              buttonStates,
                                                              handleGoToTestNow,
                                                              successLevels
@@ -41,10 +42,22 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
         else return theme.palette.primary.main
     }
 
+    const navigate = useNavigate();
+
+    const handleExpandArticle = (index: number) => {
+
+        // Перейти на сторінку з параметром
+        navigate(`/article/${index}`);
+    };
+
+    handleGoToTestNow = (index: number) => {
+        navigate(`/test/${index}`);
+    }
+
 
     return (
-        <div>
-            {/*<Typography className={"main_title"} textAlign={"center"} component={"h1"} variant={"h3"}>Шкала Історії</Typography>*/}
+        <Container>
+            <Typography className={"main_title"} textAlign={"center"} component={"h1"} variant={"h3"}>Часопростір</Typography>
             <VerticalTimeline lineColor={theme.palette.primary.light}>
                 {events.map((event, index) => (
                     <VerticalTimelineElement
@@ -64,31 +77,16 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
 
 
                         <Card elevation={buttonStates[index] ? 4 : 1}>
-                            {buttonStates[index] ?
-                                <CardActionArea onClick={() => handleExpandArticle(index)}>
 
 
-                                    <TimelineCard
-                                        event={event}
-                                        index={index}
-                                        buttonState={buttonStates[index]}
-                                        handleExpandArticle={handleExpandArticle}
-                                        handleGoToTestNow={handleGoToTestNow}
-                                        successLevel={successLevels[index]}
-                                    />
-
-                                </CardActionArea>
-                                :
-
-                                <TimelineCard
-                                    event={event}
-                                    index={index}
-                                    buttonState={buttonStates[index]}
-                                    handleExpandArticle={handleExpandArticle}
-                                    handleGoToTestNow={handleGoToTestNow}
-                                    successLevel={successLevels[index]}
-                                />
-                            }
+                            <TimelineCard
+                                event={event}
+                                index={index}
+                                buttonState={buttonStates[index]}
+                                handleExpandArticle={handleExpandArticle}
+                                handleGoToTestNow={handleGoToTestNow}
+                                successLevel={successLevels[index]}
+                            />
 
 
                         </Card>
@@ -97,7 +95,7 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
             </VerticalTimeline>
 
 
-        </div>);
+        </Container>);
 };
 
 export default HistoryTimeline;
