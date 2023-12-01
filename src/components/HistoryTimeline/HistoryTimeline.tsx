@@ -10,6 +10,7 @@ import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUnch
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import TimelineCard from "./TimelineCard";
 import {useNavigate} from "react-router-dom";
+import {Helmet} from "react-helmet-async";
 
 
 export interface HistoricalEvent {
@@ -57,7 +58,11 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
 
     return (
         <Container>
-            <Typography className={"main_title"} textAlign={"center"} component={"h1"} variant={"h3"}>Часопростір</Typography>
+            <Helmet>
+                <title>Часопростір</title>
+            </Helmet>
+            <Typography className={"main_title"} textAlign={"center"} component={"h1"}
+                        variant={"h3"}>Часопростір</Typography>
             <VerticalTimeline lineColor={theme.palette.primary.light}>
                 {events.map((event, index) => (
                     <VerticalTimelineElement

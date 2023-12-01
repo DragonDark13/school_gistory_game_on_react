@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from "react";
 import {HistoricalEvent} from "../HistoryTimeline/HistoryTimeline";
-import { UserContext} from "../../App";
+import {UserContext} from "../../App";
 import {
     Button,
     Card, CardActions,
@@ -25,6 +25,7 @@ import StarIcon from '@mui/icons-material/Star';
 
 import "./quiz_style.scss"
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
+import {Helmet} from "react-helmet-async";
 
 
 interface QuizBlockProps {
@@ -61,15 +62,13 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
     const [selectedAnswer, setSelectedAnswer] = useState<string>("");
     const [isNextButtonActive, setIsNextButtonActive] = useState(false);
 
-      const {selectedArticle} = useParams();
+    const {selectedArticle} = useParams();
     console.log(typeof selectedArticle);
 
     const navigate = useNavigate();
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
     console.log(typeof selectedArticleNumber);
-
-
 
 
     console.log(userAnswers);
@@ -139,15 +138,19 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
 
     return (
         <Container>
+            <Helmet>
+                <title> {`Тестування ${selectedArticleNumber}`}</title>
+            </Helmet>
             <Grid className={"back_button_container"} container justifyContent={"space-between"}>
                 <Grid item>
-                    <Button component={RouterLink} to={`/article/${selectedArticleNumber}`}  startIcon={<ArrowBackIosIcon/>} onClick={backToArticleFromTest}>
+                    <Button component={RouterLink} to={`/article/${selectedArticleNumber}`}
+                            startIcon={<ArrowBackIosIcon/>} onClick={backToArticleFromTest}>
                         До бібліотеки
                     </Button>
                 </Grid>
                 <Grid item>
-                    <Button component={RouterLink} to={"/timeline"} endIcon={<ArrowUpwardIcon/>} color={"secondary"} >
-                      До Часопростору
+                    <Button component={RouterLink} to={"/timeline"} endIcon={<ArrowUpwardIcon/>} color={"secondary"}>
+                        До Часопростору
                     </Button>
                 </Grid>
             </Grid>
@@ -213,10 +216,11 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                                         {/*</Grid>*/}
                                     </CardContent>
                                     <CardActions>
-                                        <Button component={RouterLink} to={`/article/${selectedArticleNumber + 1}`} fullWidth startIcon={<ArrowForwardIosIcon/>} color={"secondary"}
+                                        <Button component={RouterLink} to={`/article/${selectedArticleNumber + 1}`}
+                                                fullWidth startIcon={<ArrowForwardIosIcon/>} color={"secondary"}
                                                 endIcon={<ArrowForwardIosIcon/>} variant={"contained"}
                                                 size={"large"}
->{selectedArticleNumber !== null ? events[selectedArticleNumber + 1].date : "Помилка" +
+                                        >{selectedArticleNumber !== null ? events[selectedArticleNumber + 1].date : "Помилка" +
                                             " у машині часу"}</Button>
                                     </CardActions>
 

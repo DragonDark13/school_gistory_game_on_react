@@ -4,6 +4,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import "./article.scss"
 import myImage from "../../static/image/city.jpg";
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
+import {Helmet} from "react-helmet-async";
 
 
 interface ArticleProps {
@@ -28,7 +29,9 @@ const Article: React.FC<ArticleProps> = ({handleCloseArticle, handleShowQuiz}) =
 
     return (
         <Container>
-
+            <Helmet>
+                <title> {`Тема ${selectedArticleNumber}`}</title>
+            </Helmet>
             <Grid className={"back_button_container"} container>
                 <Grid item>
                     <Button component={RouterLink} to={"/timeline"} color={"secondary"} startIcon={<ArrowBackIosIcon/>}

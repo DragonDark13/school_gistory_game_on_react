@@ -31,6 +31,7 @@ import ProfilePage from "./components/ProfilePage/ProfilePage";
 import avatarImg from "./static/image/city.jpg"
 import Grid from "@mui/material/Grid";
 import {Link as RouterLink} from "react-router-dom";
+import {Helmet, HelmetProvider} from "react-helmet-async";
 
 
 export const ColorModeContext = React.createContext({
@@ -199,6 +200,9 @@ function App() {
 
 
                 <MyProviders>
+                    <Helmet>
+                        <title>Головна</title>
+                    </Helmet>
                     <Header/>
 
                     <main>
@@ -239,10 +243,10 @@ function App() {
                             />
 
                             <Route path="/timeline" element={<HistoryTimeline successLevels={successLevels}
-                                                         handleGoToTestNow={handleGoToTestNow}
-                                                         buttonStates={buttonStates}
-                                            // handleExpandArticle={handleExpandArticle}
-                                                         events={data.historyList}/>}/>
+                                                                              handleGoToTestNow={handleGoToTestNow}
+                                                                              buttonStates={buttonStates}
+                                // handleExpandArticle={handleExpandArticle}
+                                                                              events={data.historyList}/>}/>
 
                             <Route path={"/"}
                                    element={
@@ -293,23 +297,25 @@ function MyProviders({children}: MyProvidersProps) {
 
 
     return (
-        <LanguageContext.Provider value={{language, setLanguage}}>
-            <UserContext.Provider
-                value={{
-                    currentUser,
-                    setCurrentUser
-                }}
-            >
-                <ColorModeContext.Provider value={colorMode}>
-                    <ThemeProvider theme={theme}>
-                        <AuthProvider>
-                            <CssBaseline/>
-                            {children}
-                        </AuthProvider>
-                    </ThemeProvider>
-                </ColorModeContext.Provider>
-            </UserContext.Provider>
-        </LanguageContext.Provider>
+        <HelmetProvider>
+            <LanguageContext.Provider value={{language, setLanguage}}>
+                <UserContext.Provider
+                    value={{
+                        currentUser,
+                        setCurrentUser
+                    }}
+                >
+                    <ColorModeContext.Provider value={colorMode}>
+                        <ThemeProvider theme={theme}>
+                            <AuthProvider>
+                                <CssBaseline/>
+                                {children}
+                            </AuthProvider>
+                        </ThemeProvider>
+                    </ColorModeContext.Provider>
+                </UserContext.Provider>
+            </LanguageContext.Provider>
+        </HelmetProvider>
     );
 }
 

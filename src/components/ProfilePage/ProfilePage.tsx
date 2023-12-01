@@ -13,6 +13,7 @@ import {Container, Grid, LinearProgress, List, ListItem, ListItemIcon, ListItemT
 import {HistoricalEvent} from '../HistoryTimeline/HistoryTimeline';
 import './profile_page.scss'
 import UserProfileSettings from "./UserProfileSettings";
+import {Helmet} from "react-helmet-async";
 
 interface ProfilePageProps {
     username: string;
@@ -60,6 +61,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
     return (
         <Container className={"profile_container"}>
+             <Helmet>
+                <title>Профіль</title>
+            </Helmet>
             <Paper className={"profile_block"} elevation={3}>
                 <Avatar className={"profile_block_avatar"} alt={username} src={avatar}
                         sx={{width: 100, height: 100, margin: 'auto'}}/>
