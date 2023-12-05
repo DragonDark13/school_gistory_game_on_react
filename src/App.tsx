@@ -262,12 +262,12 @@ function App() {
 
                         </Routes>
                     </main>
-                    <footer>
-                        <Container>
-                            <div>sociicons</div>
-                            <div>copyright</div>
-                        </Container>
-                    </footer>
+                    {/*<footer>*/}
+                    {/*    <Container>*/}
+                    {/*        <div>sociicons</div>*/}
+                    {/*        <div>copyright</div>*/}
+                    {/*    </Container>*/}
+                    {/*</footer>*/}
                 </MyProviders>
 
             </div>
