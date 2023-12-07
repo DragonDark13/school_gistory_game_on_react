@@ -1,6 +1,6 @@
 // TimelineCard.tsx
 import React from 'react';
-import {Button, CardActions, CardContent, CardHeader, CardMedia, Typography} from '@mui/material';
+import {Button, CardActions, CardContent, CardHeader, CardMedia, Hidden, Typography} from '@mui/material';
 import {useTheme} from '@mui/system';
 import {HistoricalEvent} from "./HistoryTimeline";
 import myImage from '../../static/image/city.jpg';
@@ -27,6 +27,9 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
 
     const textColor = buttonState ? theme.palette.text.secondary : theme.palette.text.disabled;
 
+
+
+
     return (
         <React.Fragment>
             <CardHeader titleTypographyProps={{color: textColor}} title={event.date}/>
@@ -37,11 +40,13 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
                 image={myImage}
                 alt="city"
             />
-            <CardContent>
-                <Typography color={textColor} component={"div"}>
-                    {event.text}
-                </Typography>
-            </CardContent>
+            <Hidden smDown>
+                <CardContent>
+                    <Typography color={textColor} component={"div"}>
+                        {event.text}
+                    </Typography>
+                </CardContent>
+            </Hidden>
             <CardActions disableSpacing sx={{"flexWrap": "wrap"}}>
                 <Button sx={{mb: 1}} size={"large"} fullWidth variant={"contained"} disabled={!buttonState}
                         className="learn-more-button" onClick={(e) => {
@@ -50,7 +55,7 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
                 }}>
                     Дізнатися більше
                 </Button>
-                <Button  color={"secondary"} size={"small"} fullWidth variant={"outlined"} disabled={!buttonState}
+                <Button color={"secondary"} size={"small"} fullWidth variant={"outlined"} disabled={!buttonState}
                         className={"goToTest"} onClick={(e) => {
                     e.stopPropagation();
                     handleGoToTestNow(index);

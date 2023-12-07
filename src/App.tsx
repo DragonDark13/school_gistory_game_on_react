@@ -34,9 +34,17 @@ function App() {
     );
 
 
-    const [subArticleSuccessLevels, setSubArticleSuccessLevels] = useState(
-        data.historyList[selectedArticle]?.subtopics?.map((_, index) => index === -1) || []
-    );
+    const [subArticleSuccessLevels, setSubArticleSuccessLevels] = useState(() => {
+        const initialSuccessLevels = data.historyList.map((article) => {
+            if (article?.subtopics !== undefined && article?.subtopics?.length > 0) {
+                return article.subtopics.map(() => false);
+            }
+            return [];
+        });
+
+        return initialSuccessLevels;
+    });
+
 
     const [successLevels, setSuccessLevels] = useState(data.historyList.map((_, index) => index === -1))
     console.log(successLevels);
@@ -95,7 +103,7 @@ function App() {
 
             setSubArticleSuccessLevels((prevStates) => {
                 const updatedStates = [...prevStates];
-                updatedStates[selectedSubArticle] = true;
+                updatedStates[selectedArticle][selectedSubArticle] = true;
                 return updatedStates;
             });
 
@@ -165,7 +173,7 @@ function App() {
 
 
     return (
-        <Router >
+        <Router>
             <div className="App">
 
 
@@ -229,13 +237,15 @@ function App() {
                                     />}
                             />
 
-                            <Route path="/timeline" element={<HistoryTimeline
-                                setSelectedArticle={setSelectedArticle}
-                                successLevels={successLevels}
-                                handleGoToTestNow={handleGoToTestNow}
-                                buttonStates={buttonStates}
-                                // handleExpandArticle={handleExpandArticle}
-                                events={data.historyList}/>}/>
+                            <Route path="/timeline" element={
+                                <HistoryTimeline
+                                    setSelectedSubArticle={setSelectedSubArticle}
+                                    subArticleSuccessLevels={subArticleSuccessLevels}
+                                    setSelectedArticle={setSelectedArticle}
+                                    successLevels={successLevels}
+                                    buttonStates={buttonStates}
+                                    // handleExpandArticle={handleExpandArticle}
+                                    historyList={data.historyList}/>}/>
 
                             <Route path={"/"}
                                    element={

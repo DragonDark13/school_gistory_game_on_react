@@ -13,7 +13,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 interface ArticleProps {
     historyList: HistoricalEvent[],
     setSelectedArticle: (arg0: number) => void;
-    subArticleSuccessLevels: boolean[];
+    subArticleSuccessLevels: boolean[][];
 
 }
 
@@ -65,7 +65,7 @@ const Article: React.FC<ArticleProps> = ({historyList, setSelectedArticle, subAr
 
 
             {/* Display subtopics as cards */}
-            {(article.subtopics && article.subtopics.length === subArticleSuccessLevels.length) &&
+            {(article.subtopics && article.subtopics.length === subArticleSuccessLevels[selectedArticleNumber].length) &&
             <Grid className={"subtopic_card_list"} container spacing={2}>
                 <Grid item xs={12}>
                     <Typography variant={"h6"}>Пройдіть додаткові завдання перед головним тестом</Typography>
@@ -79,7 +79,7 @@ const Article: React.FC<ArticleProps> = ({historyList, setSelectedArticle, subAr
                 </Grid>
                 {article.subtopics.map((subtopic, index) => (
                     <Grid item key={index + "card"} xs={12} md={4}>
-                        <SubtopicCard done={subArticleSuccessLevels[index]} subArticleIndex={index}
+                        <SubtopicCard done={subArticleSuccessLevels[selectedArticleNumber][index]} subArticleIndex={index}
                                       title={subtopic.title} content={subtopic.content}/>
                     </Grid>
                 ))}

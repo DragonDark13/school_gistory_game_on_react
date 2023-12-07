@@ -26,23 +26,25 @@ export interface HistoricalEvent {
 
 
 interface HistoryTimelineProps {
-    events: HistoricalEvent[];
+    historyList: HistoricalEvent[];
     // handleExpandArticle: (index: number) => void;
     buttonStates: Array<boolean>;
     successLevels: Array<boolean>;
-    handleGoToTestNow: (index: number) => void;
     setSelectedArticle: (arg0: number) => void;
+    subArticleSuccessLevels: boolean[][]
+    setSelectedSubArticle: (arg0: number) => void;
 
 }
 
 
 const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
-                                                             events,
+                                                             historyList,
                                                              // handleExpandArticle,
                                                              buttonStates,
-                                                             handleGoToTestNow,
                                                              successLevels,
-                                                             setSelectedArticle
+                                                             setSelectedArticle,
+                                                             subArticleSuccessLevels,
+                                                             setSelectedSubArticle
                                                          }) => {
 
     const theme = useTheme();
@@ -55,15 +57,40 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
     const navigate = useNavigate();
 
     const handleExpandArticle = (index: number) => {
-
+        setSelectedArticle(index);
         // Перейти на сторінку з параметром
         navigate(`/article/${index}`);
     };
 
-    handleGoToTestNow = (index: number) => {
-        navigate(`/test/${index}`);
-        setSelectedArticle(index)
+    const handleGoToTestNow = (articleIndex: number) => {
+        navigate(`/test/${articleIndex}`);
+        setSelectedArticle(articleIndex)
     }
+
+    const handleGoToSubTestNow = (articleIndex: number, subArticleIndex: number) => {
+        navigate(`/test/${articleIndex}/${subArticleIndex}`);
+        setSelectedArticle(articleIndex)
+        setSelectedSubArticle(subArticleIndex)
+    }
+
+
+    const handleGoToSubArticleTest = (articleIndex: number) => {
+        // Check if the article has subarticles
+        const subArticles = historyList[articleIndex]?.subtopics;
+        if (subArticles && subArticles.length > 0) {
+            // Find the index of the first uncompleted subarticle
+            const firstUncompletedIndex = subArticles.findIndex((subArticle, subIndex) => {
+                return !subArticleSuccessLevels[articleIndex]?.[subIndex];
+            });
+
+            // If there is an uncompleted subarticle, navigate to its test page
+            if (firstUncompletedIndex !== -1) {
+                handleGoToSubTestNow(articleIndex, firstUncompletedIndex);
+            } else {
+                handleGoToTestNow(articleIndex);
+            }
+        }
+    };
 
 
     return (
@@ -74,41 +101,38 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
             <Typography className={"main_title"} textAlign={"center"} component={"h1"}
                         variant={"h3"}>Часопростір</Typography>
             <VerticalTimeline lineColor={theme.palette.primary.light}>
-                {events.map((event, index) => (
-                    <VerticalTimelineElement
-                        key={index + "history-timeline"}
-                        // date={event.date}
-                        dateClassName={"hidden"}
+                {historyList.map((event, index) => (
+                    <React.Fragment>
+                        <VerticalTimelineElement
+                            key={index + "history-timeline"}
+                            // date={event.date}
+                            dateClassName={"hidden"}
 
-                        iconStyle={{
-                            background: theme.palette.primary.light,
-                            color: iconColorState(buttonStates[index]),
+                            iconStyle={{
+                                background: theme.palette.primary.light,
+                                color: iconColorState(buttonStates[index]),
 
-                        }}
-                        contentStyle={{padding: 0, boxShadow: "none"}}
-                        icon={successLevels[index] ? <CheckCircleOutlineIcon/> : <RadioButtonUncheckedRoundedIcon/>}
+                            }}
+                            contentStyle={{padding: 0, boxShadow: "none"}}
+                            icon={successLevels[index] ? <CheckCircleOutlineIcon/> : <RadioButtonUncheckedRoundedIcon/>}
 
-                    >
+                        >
+                            <Card elevation={buttonStates[index] ? 4 : 1}>
+                                <TimelineCard
+                                    event={event}
+                                    index={index}
+                                    buttonState={buttonStates[index]}
+                                    handleExpandArticle={handleExpandArticle}
+                                    handleGoToTestNow={handleGoToSubArticleTest}
+                                    successLevel={successLevels[index]}
+                                />
+                            </Card>
+                        </VerticalTimelineElement>
+                    </React.Fragment>
 
 
-                        <Card elevation={buttonStates[index] ? 4 : 1}>
-
-
-                            <TimelineCard
-                                event={event}
-                                index={index}
-                                buttonState={buttonStates[index]}
-                                handleExpandArticle={handleExpandArticle}
-                                handleGoToTestNow={handleGoToTestNow}
-                                successLevel={successLevels[index]}
-                            />
-
-
-                        </Card>
-                    </VerticalTimelineElement>
                 ))}
             </VerticalTimeline>
-
 
 
         </Container>);
