@@ -92,6 +92,19 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
         }
     };
 
+    const isAllSubtaskDone = (articleIndex: number) => {
+        if (historyList[articleIndex].subtopics !== undefined) {
+            const subArticles = historyList[articleIndex]?.subtopics;
+            return !subArticles ||
+                (subArticles.length > 0 &&
+                    subArticles.every(
+                        (_, subIndex) => subArticleSuccessLevels[articleIndex]?.[subIndex]
+                    ));
+
+        } else return true;
+
+    };
+
 
     return (
         <Container>
@@ -119,11 +132,13 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
                         >
                             <Card elevation={buttonStates[index] ? 4 : 1}>
                                 <TimelineCard
+                                    isAllSubtaskDone={isAllSubtaskDone(index)}
                                     event={event}
                                     index={index}
                                     buttonState={buttonStates[index]}
                                     handleExpandArticle={handleExpandArticle}
-                                    handleGoToTestNow={handleGoToSubArticleTest}
+                                    handleGoToSubArticleTest={handleGoToSubArticleTest}
+                                    handleGoToTestNow={handleGoToTestNow}
                                     successLevel={successLevels[index]}
                                 />
                             </Card>

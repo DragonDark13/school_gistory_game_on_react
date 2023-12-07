@@ -12,7 +12,9 @@ interface TimelineCardProps {
     buttonState: boolean;
     handleExpandArticle: (index: number) => void;
     handleGoToTestNow: (index: number) => void;
+    handleGoToSubArticleTest: (index: number) => void;
     successLevel: boolean;
+    isAllSubtaskDone: boolean;
 }
 
 const TimelineCard: React.FC<TimelineCardProps> = ({
@@ -21,13 +23,13 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
                                                        buttonState,
                                                        handleExpandArticle,
                                                        handleGoToTestNow,
-                                                       successLevel
+                                                       handleGoToSubArticleTest,
+                                                       successLevel,
+                                                       isAllSubtaskDone
                                                    }) => {
     const theme = useTheme();
 
     const textColor = buttonState ? theme.palette.text.secondary : theme.palette.text.disabled;
-
-
 
 
     return (
@@ -48,21 +50,35 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
                 </CardContent>
             </Hidden>
             <CardActions disableSpacing sx={{"flexWrap": "wrap"}}>
-                <Button sx={{mb: 1}} size={"large"} fullWidth variant={"contained"} disabled={!buttonState}
+                <Button variant={"outlined"} color={"secondary"} size={"small"} sx={{mb: 1}} fullWidth disabled={!buttonState}
                         className="learn-more-button" onClick={(e) => {
                     e.stopPropagation();
                     handleExpandArticle(index);
                 }}>
                     Дізнатися більше
                 </Button>
-                <Button color={"secondary"} size={"small"} fullWidth variant={"outlined"} disabled={!buttonState}
-                        className={"goToTest"} onClick={(e) => {
-                    e.stopPropagation();
-                    handleGoToTestNow(index);
-                }}
-                >
-                    Пройти тест
-                </Button>
+
+                {!successLevel && (isAllSubtaskDone ?
+
+                    <Button size={"large"} variant={"contained"} fullWidth disabled={!buttonState}
+                            className={"goToTest"} onClick={(e) => {
+                        e.stopPropagation();
+                        handleGoToTestNow(index);
+                    }}
+                    >
+                        Завершити рівень
+                    </Button>
+                    :
+                    <Button size={"large"} variant={"contained"} fullWidth disabled={!buttonState}
+                            className={"goToTest"} onClick={(e) => {
+                        e.stopPropagation();
+                        handleGoToSubArticleTest(index);
+                    }}
+                    >
+                        Пройти завдання
+                    </Button>
+)
+                }
             </CardActions>
         </React.Fragment>
 

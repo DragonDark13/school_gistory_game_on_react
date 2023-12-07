@@ -31,11 +31,9 @@ const Article: React.FC<ArticleProps> = ({historyList, setSelectedArticle, subAr
 
     const article = historyList[selectedArticleNumber];
 
-    console.log("subArticleSuccessLevels----->", subArticleSuccessLevels);
-
 
     const totalSubtopics = article.subtopics ? article.subtopics.length : 0;
-    const completedSubtopics = subArticleSuccessLevels.filter(done => done).length;
+    const completedSubtopics = subArticleSuccessLevels[selectedArticleNumber].filter(done => done).length;
     const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
 
 
@@ -91,7 +89,7 @@ const Article: React.FC<ArticleProps> = ({historyList, setSelectedArticle, subAr
                     size={"large"} fullWidth variant={"contained"}
                     className="quiz-button"
                     onClick={handleShowQuiz}>
-                Головний тест
+                Завершити рівень
             </Button>
 
         </Container>
