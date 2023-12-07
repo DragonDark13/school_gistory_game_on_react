@@ -1,5 +1,4 @@
 import React, {ReactNode, useContext, useEffect, useState} from "react";
-import {ColorModeContext, LanguageContext, ThemeContext, UserContext} from "../../App";
 import {
     Container,
     Toolbar,
@@ -25,6 +24,7 @@ import "./header.scss"
 import Grid from "@mui/material/Grid";
 import {Link as RouterLink} from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
+import {ColorModeContext, LanguageContext, ThemeContext, UserContext } from "../MyProviders/MyProviders";
 
 
 const Transition = React.forwardRef(function Transition(

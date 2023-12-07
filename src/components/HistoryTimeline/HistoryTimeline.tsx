@@ -12,12 +12,18 @@ import TimelineCard from "./TimelineCard";
 import {useNavigate} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 
+export interface SubtopicsProps {
+    title: string,
+    content: string
+}
 
 export interface HistoricalEvent {
     date: string;
     text: string;
     achieved: string
+    subtopics?: SubtopicsProps[] | undefined;
 }
+
 
 interface HistoryTimelineProps {
     events: HistoricalEvent[];
@@ -25,6 +31,8 @@ interface HistoryTimelineProps {
     buttonStates: Array<boolean>;
     successLevels: Array<boolean>;
     handleGoToTestNow: (index: number) => void;
+    setSelectedArticle: (arg0: number) => void;
+
 }
 
 
@@ -33,7 +41,8 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
                                                              // handleExpandArticle,
                                                              buttonStates,
                                                              handleGoToTestNow,
-                                                             successLevels
+                                                             successLevels,
+                                                             setSelectedArticle
                                                          }) => {
 
     const theme = useTheme();
@@ -53,6 +62,7 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
 
     handleGoToTestNow = (index: number) => {
         navigate(`/test/${index}`);
+        setSelectedArticle(index)
     }
 
 
@@ -98,6 +108,7 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
                     </VerticalTimelineElement>
                 ))}
             </VerticalTimeline>
+
 
 
         </Container>);

@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {HistoricalEvent} from "../HistoryTimeline/HistoryTimeline";
-import {UserContext} from "../../App";
+import {HistoricalEvent, SubtopicsProps} from "../HistoryTimeline/HistoryTimeline";
 import {
     Button,
     Card, CardActions,
@@ -26,19 +25,20 @@ import StarIcon from '@mui/icons-material/Star';
 import "./quiz_style.scss"
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
+import {UserContext} from "../MyProviders/MyProviders";
+import QuizSuccessModal from "../../QuizSuccessModal/QuizSuccessModal";
 
 
 interface QuizBlockProps {
+    testType: 'article' | 'subArticle';
     questions: string[];
     options: string[][];
     correctAnswers: string[];
     onAnswer: (results: { correct: number; incorrect: number }) => void;
-    closeTestPage: () => void;
-    allAnswerIsCorrectFunc: () => void;
     handleNextLevel: () => void;
-    events: HistoricalEvent[];
+    historyList: HistoricalEvent[];
     setAllAnswerIsCorrect: (arg0: boolean) => void
-    backToArticleFromTest: () => void
+    setSelectedSubArticle?: (arg0: number) => void;
 }
 
 
@@ -47,12 +47,10 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                                                  options,
                                                  correctAnswers,
                                                  onAnswer,
-                                                 closeTestPage,
-                                                 allAnswerIsCorrectFunc,
-                                                 handleNextLevel,
-                                                 events,
+                                                 historyList,
                                                  setAllAnswerIsCorrect,
-                                                 backToArticleFromTest
+                                                 testType = "article",
+                                                 setSelectedSubArticle
                                              }) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(""));
@@ -61,23 +59,52 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
     const [nextLevelAvailable, setNextLevelAvailable] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState<string>("");
     const [isNextButtonActive, setIsNextButtonActive] = useState(false);
+    const {selectedArticle, subtopicId} = useParams();
+    const [openModal, setOpenModal] = useState(false);
 
-    const {selectedArticle} = useParams();
-    console.log(typeof selectedArticle);
+
+    const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
+    let selectedSubArticleNumber = 0;  // Default value in case it's not a subArticle
+    let currentArticle;
+    let currentArticleTitle;
 
     const navigate = useNavigate();
 
-    const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
-    console.log(typeof selectedArticleNumber);
+
+    useEffect(() => {
+        if (setSelectedSubArticle && selectedSubArticleNumber !== undefined) {
+            setSelectedSubArticle(selectedSubArticleNumber);
+        }
+    }, [setSelectedSubArticle, selectedSubArticleNumber]);
 
 
-    console.log(userAnswers);
+    if (testType === "subArticle") {
+        selectedSubArticleNumber = parseInt(subtopicId || '0', 10);
+        console.log("selectedSubArticleNumber", selectedSubArticleNumber);
+        console.log("selectedSubArticle", historyList[selectedArticleNumber]?.subtopics?.[selectedSubArticleNumber]);
+        currentArticle = historyList[selectedArticleNumber]?.subtopics?.[selectedSubArticleNumber]
+        currentArticleTitle = currentArticle?.title;
+
+
+    } else {
+        currentArticle = historyList[selectedArticleNumber];
+        currentArticleTitle = currentArticle.text;
+    }
 
 
     useEffect(() => {
         if (results.correct === questions.length) {
             setAllAnswerIsCorrect(true);
             setNextLevelAvailable(true)
+
+            if (testType === "subArticle") {
+                setOpenModal(true);
+                setTimeout(() => {
+                    // Redirect to the main article page after 5 seconds
+                    navigate(`/article/${selectedArticleNumber}`);
+                }, 5000);
+            }
+
         }
     }, [results.correct, questions.length]);
 
@@ -136,6 +163,12 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
     const theme = useTheme();
 
 
+    const handleClose = () => {
+        setOpenModal(false);
+        navigate(`/article/${selectedArticleNumber}`);
+    };
+
+
     return (
         <Container>
             <Helmet>
@@ -144,7 +177,7 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
             <Grid className={"back_button_container"} container justifyContent={"space-between"}>
                 <Grid item>
                     <Button component={RouterLink} to={`/article/${selectedArticleNumber}`}
-                            startIcon={<ArrowBackIosIcon/>} onClick={backToArticleFromTest}>
+                            startIcon={<ArrowBackIosIcon/>}>
                         До бібліотеки
                     </Button>
                 </Grid>
@@ -191,7 +224,7 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                                     </Grid>
                                 </Grid>
 
-                                <Card sx={{background: theme.palette.secondary.light}}>
+                                {testType === "article" && <Card sx={{background: theme.palette.secondary.light}}>
                                     <CardContent>
                                         <Typography sx={{color: theme.palette.text.secondary}}>Вітаю, <Typography
                                             component={"span"}
@@ -203,28 +236,17 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                                             пункт нашої
                                             подорожі у часі.</Typography>
 
-                                        {/*<Grid className={"go_to_next_level_container"} container*/}
-                                        {/*      justifyContent={"space-between"} alignItems={"center"}>*/}
-                                        {/*    <Grid xs={12}>*/}
-
-                                        {/*    </Grid>*/}
-                                        {/*    */}
-                                        {/*    /!*<Grid>*!/*/}
-                                        {/*    /!*    <Typography variant={"subtitle1"}*!/*/}
-                                        {/*    /!*                color={"secondary"}></Typography>*!/*/}
-                                        {/*    /!*</Grid>*!/*/}
-                                        {/*</Grid>*/}
                                     </CardContent>
                                     <CardActions>
                                         <Button component={RouterLink} to={`/article/${selectedArticleNumber + 1}`}
                                                 fullWidth startIcon={<ArrowForwardIosIcon/>} color={"secondary"}
                                                 endIcon={<ArrowForwardIosIcon/>} variant={"contained"}
                                                 size={"large"}
-                                        >{selectedArticleNumber !== null ? events[selectedArticleNumber + 1].date : "Помилка" +
+                                        >{selectedArticleNumber !== null ? historyList[selectedArticleNumber + 1].date : "Помилка" +
                                             " у машині часу"}</Button>
                                     </CardActions>
 
-                                </Card>
+                                </Card>}
 
 
                             </div>
@@ -248,7 +270,7 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
                 <React.Fragment>
 
 
-                    <h1>Тема: {selectedArticle}</h1>
+                    <h1>Тема: {currentArticleTitle && currentArticleTitle}</h1>
                     <p>{questions[currentQuestion]}</p>
                     <RadioGroup
 
@@ -281,6 +303,8 @@ const QuizBlock: React.FC<QuizBlockProps> = ({
 
                 </React.Fragment>
             )}
+
+            <QuizSuccessModal openModal={openModal} handleClose={handleClose}/>
         </Container>
     );
 };

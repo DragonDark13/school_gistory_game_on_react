@@ -1,8 +1,14 @@
+.article_page_container {
+  .MuiButtonBase-root.quiz-button {
+    margin-top: 3rem;
+  }
 
-.MuiButtonBase-root.quiz-button {
-  margin-top: 3rem;
-}
-img{
-  max-width: 100%;
-  margin-bottom: 2rem;
+  img {
+    max-width: 100%;
+    margin-bottom: 2rem;
+  }
+
+  .subtopic_card_list {
+    padding-top: 3rem;
+  }
 }

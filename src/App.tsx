@@ -1,8 +1,4 @@
 import React, {
-    createContext,
-    Dispatch,
-    ReactNode,
-    SetStateAction,
     useCallback, useContext,
     useEffect,
     useState
@@ -13,80 +9,33 @@ import Article from "./components/Article/Article";
 import data from "./data/data.json";
 import Header from "./components/Header/Header";
 import {
-    Button,
     Container,
-    createTheme,
-    CssBaseline,
-    PaletteMode,
-    ThemeProvider,
 } from "@mui/material";
-import getDesignTokens from './themes/getDesignTokens';
-import {AuthProvider} from "./components/AuthContext/AuthContext";
 import "./static/css/normalize.css"
 import "./static/style/main.scss"
 import AboutProject from "./components/AboutProject/AboutProject";
 import AboutFeatureList from "./components/AboutFeatureList/AboutFeatureList";
-import {BrowserRouter, BrowserRouter as Router, HashRouter, Route, Routes, useNavigate} from 'react-router-dom';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import avatarImg from "./static/image/city.jpg"
-import Grid from "@mui/material/Grid";
-import {Link as RouterLink} from "react-router-dom";
-import {Helmet, HelmetProvider} from "react-helmet-async";
-
-
-export const ColorModeContext = React.createContext({
-    toggleColorMode: () => {
-    }
-});
-
-
-export interface IThemeContextProps {
-    theme: 'light' | 'dark';
-    setTheme: Dispatch<SetStateAction<'light' | 'dark'>>;
-}
-
-export const ThemeContext = createContext<IThemeContextProps>({
-    theme: 'light',
-    setTheme: () => null,
-});
-
-export interface ILanguageContextProps {
-    language: 'uk' | 'en';
-    setLanguage: Dispatch<SetStateAction<'uk' | 'en'>>;
-}
-
-export const LanguageContext = createContext<ILanguageContextProps>({
-    language: 'uk',
-    setLanguage: () => null,
-});
-
-export interface IUser {
-    name: string;
-    // Додайте інші властивості користувача, які вам потрібні
-}
-
-export interface UserContextProps {
-    currentUser: null | IUser;
-    setCurrentUser: Dispatch<SetStateAction<null | object>>;
-}
-
-export const UserContext = createContext<UserContextProps>({
-    currentUser: null,
-    setCurrentUser: () => null,
-});
-
-interface MyProvidersProps {
-    children: ReactNode;
-}
+import {Helmet} from "react-helmet-async";
+import MyProviders, {UserContext} from './components/MyProviders/MyProviders';
 
 
 function App() {
     const [showTimeline, setShowTimeline] = useState(true)
     const [showQuiz, setShowQuiz] = useState(false);
     const [expandedArticle, setExpandedArticle] = useState(false);
-    const [selectedArticle, setSelectedArticle] = useState<null | number>(null)
+    const [selectedArticle, setSelectedArticle] = useState<number>(0)
+    const [selectedSubArticle, setSelectedSubArticle] = useState<null | number>(null);
+
     const [buttonStates, setButtonStates] = useState(
         data.historyList.map((_, index) => index === 0) // Початково активна лише перша кнопка
+    );
+
+
+    const [subArticleSuccessLevels, setSubArticleSuccessLevels] = useState(
+        data.historyList[selectedArticle]?.subtopics?.map((_, index) => index === -1) || []
     );
 
     const [successLevels, setSuccessLevels] = useState(data.historyList.map((_, index) => index === -1))
@@ -94,41 +43,29 @@ function App() {
 
     const [achievements, setAchievements] = useState<[] | string[]>([])
     const [allAnswerIsCorrect, setAllAnswerIsCorrect] = useState(false)
-
-    console.log("achievements", achievements);
-
-
-    const handleExpandArticle = (index: number) => {
-
-        // Перейти на сторінку з параметром
-        setExpandedArticle(true);
-        setSelectedArticle(index)
-        setShowTimeline(false)
-        setShowQuiz(false)
-    };
-
-
-    const handleCloseArticle = () => {
-        setExpandedArticle(false);
-        setSelectedArticle(null)
-        setShowTimeline(true)
-    }
-
+    const [subArticleAllAnswerIsCorrect, setSubArticleAllAnswerIsCorrect] = useState(false);
+    console.log(subArticleAllAnswerIsCorrect);
 
     const allAnswerIsCorrectFunc = useCallback(() => {
         if (selectedArticle !== null) {
+
+            console.log("selectedArticle", selectedArticle);
+            console.log(buttonStates);
             setButtonStates((prevStates) => {
                 const updatedStates = [...prevStates];
                 updatedStates[selectedArticle + 1] = true;
                 return updatedStates;
             });
 
+            console.log("selectedArticle", selectedArticle);
 
             setSuccessLevels((prevStates) => {
                 const updatedStates = [...prevStates];
                 updatedStates[selectedArticle] = true;
                 return updatedStates;
             });
+
+            console.log("selectedArticle", selectedArticle);
 
             console.log("successLevels", successLevels);
 
@@ -144,11 +81,42 @@ function App() {
         const effect = () => {
             if (selectedArticle !== null && allAnswerIsCorrect) {
                 allAnswerIsCorrectFunc();
+                setAllAnswerIsCorrect(false);
+                // for new level reload answer
             }
         };
 
         effect();
     }, [allAnswerIsCorrect, selectedArticle, allAnswerIsCorrectFunc]);
+
+
+    const handleSubArticleQuizComplete = useCallback(() => {
+        if (selectedSubArticle !== null) {
+
+            setSubArticleSuccessLevels((prevStates) => {
+                const updatedStates = [...prevStates];
+                updatedStates[selectedSubArticle] = true;
+                return updatedStates;
+            });
+
+        }
+    }, [selectedSubArticle, setSubArticleSuccessLevels]);
+
+
+    useEffect(() => {
+        const effect = () => {
+            if (selectedArticle !== null && selectedSubArticle !== null && subArticleAllAnswerIsCorrect) {
+                console.log('Sub article')
+                handleSubArticleQuizComplete();
+                setSubArticleAllAnswerIsCorrect(false);
+                // for new level reload answer
+            }
+        };
+
+        effect();
+    }, [subArticleAllAnswerIsCorrect, selectedSubArticle, handleSubArticleQuizComplete, selectedArticle]);
+
+    console.log("subArticleSuccessLevels:::", subArticleSuccessLevels);
 
 
     const handleQuizComplete = (results: { correct: number; incorrect: number }) => {
@@ -192,6 +160,7 @@ function App() {
         setShowTimeline(false)
     }
 
+
     const {currentUser} = useContext(UserContext)
 
 
@@ -219,34 +188,53 @@ function App() {
                                            " Сагайдачний"}/>}/>
 
                             <Route path="/article/:selectedArticle"
-                                   element={<Article handleCloseArticle={handleCloseArticle}
-                                                     handleShowQuiz={handleShowQuiz}
-                                       // selectedArticle={selectedArticle}
-                                   />
+                                   element={
+                                       <Article
+                                           subArticleSuccessLevels={subArticleSuccessLevels}
+                                           setSelectedArticle={setSelectedArticle}
+                                           historyList={data.historyList}
+                                           // selectedArticle={selectedArticle}
+                                       />
                                    }
                             />
 
                             <Route path={"/test/:selectedArticle"}
                                    element={
                                        <QuizBlock
-                                           allAnswerIsCorrectFunc={allAnswerIsCorrectFunc}
-                                           events={data.historyList}
+                                           testType="article"
+                                           historyList={data.historyList}
                                            handleNextLevel={handleNextLevel}
                                            setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                           closeTestPage={closeTestPage}
                                            questions={data.questions} options={data.options}
                                            correctAnswers={data.correctAnswers}
                                            onAnswer={handleQuizComplete}
-                                           backToArticleFromTest={backToArticleFromTest}
                                        />
                                    }
                             />
 
-                            <Route path="/timeline" element={<HistoryTimeline successLevels={successLevels}
-                                                                              handleGoToTestNow={handleGoToTestNow}
-                                                                              buttonStates={buttonStates}
+                            <Route
+                                path="/test/:selectedArticle/:subtopicId"
+                                element={
+                                    <QuizBlock
+                                        testType="subArticle"
+                                        historyList={data.historyList}
+                                        handleNextLevel={handleNextLevel}
+                                        setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
+                                        questions={data.subArticleTest.questions}
+                                        options={data.subArticleTest.options}
+                                        correctAnswers={data.subArticleTest.correctAnswers}
+                                        onAnswer={handleQuizComplete}
+                                        setSelectedSubArticle={setSelectedSubArticle}
+                                    />}
+                            />
+
+                            <Route path="/timeline" element={<HistoryTimeline
+                                setSelectedArticle={setSelectedArticle}
+                                successLevels={successLevels}
+                                handleGoToTestNow={handleGoToTestNow}
+                                buttonStates={buttonStates}
                                 // handleExpandArticle={handleExpandArticle}
-                                                                              events={data.historyList}/>}/>
+                                events={data.historyList}/>}/>
 
                             <Route path={"/"}
                                    element={
@@ -272,50 +260,6 @@ function App() {
 
             </div>
         </BrowserRouter>
-    );
-}
-
-function MyProviders({children}: MyProvidersProps) {
-    const [currentUser, setCurrentUser] = useState<any>(null);
-    // const [theme, setTheme] = useState<'light' | 'dark'>('light');
-    const [language, setLanguage] = useState<'uk' | 'en'>('uk');
-
-    const [mode, setMode] = React.useState<PaletteMode>('light');
-    const colorMode = React.useMemo(
-        () => ({
-            // The dark mode switch would invoke this method
-            toggleColorMode: () => {
-                setMode((prevMode: PaletteMode) =>
-                    prevMode === 'light' ? 'dark' : 'light',
-                );
-            },
-        }),
-        [],
-    );
-
-    const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
-
-
-    return (
-        <HelmetProvider>
-            <LanguageContext.Provider value={{language, setLanguage}}>
-                <UserContext.Provider
-                    value={{
-                        currentUser,
-                        setCurrentUser
-                    }}
-                >
-                    <ColorModeContext.Provider value={colorMode}>
-                        <ThemeProvider theme={theme}>
-                            <AuthProvider>
-                                <CssBaseline/>
-                                {children}
-                            </AuthProvider>
-                        </ThemeProvider>
-                    </ColorModeContext.Provider>
-                </UserContext.Provider>
-            </LanguageContext.Provider>
-        </HelmetProvider>
     );
 }
 
