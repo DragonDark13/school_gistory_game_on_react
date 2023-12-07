@@ -15,7 +15,7 @@ import "./static/css/normalize.css"
 import "./static/style/main.scss"
 import AboutProject from "./components/AboutProject/AboutProject";
 import AboutFeatureList from "./components/AboutFeatureList/AboutFeatureList";
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, HashRouter as Router} from 'react-router-dom';
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import avatarImg from "./static/image/city.jpg"
 import {Helmet} from "react-helmet-async";
@@ -164,7 +164,8 @@ function App() {
     const {currentUser} = useContext(UserContext)
 
 
-    return (<BrowserRouter basename={process.env.PUBLIC_URL}>
+    return (
+        <Router >
             <div className="App">
 
 
@@ -259,7 +260,7 @@ function App() {
                 </MyProviders>
 
             </div>
-        </BrowserRouter>
+        </Router>
     );
 }
 
