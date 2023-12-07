@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/school_gistory_game_on_react/static/css/main.32315420.css",
-    "main.js": "/school_gistory_game_on_react/static/js/main.382b804e.js",
+    "main.js": "/school_gistory_game_on_react/static/js/main.494ae7af.js",
     "static/js/787.aee4433d.chunk.js": "/school_gistory_game_on_react/static/js/787.aee4433d.chunk.js",
     "static/media/city.jpg": "/school_gistory_game_on_react/static/media/city.d20fbb73aee94aad1ccd.jpg",
     "index.html": "/school_gistory_game_on_react/index.html",
     "main.32315420.css.map": "/school_gistory_game_on_react/static/css/main.32315420.css.map",
-    "main.382b804e.js.map": "/school_gistory_game_on_react/static/js/main.382b804e.js.map",
+    "main.494ae7af.js.map": "/school_gistory_game_on_react/static/js/main.494ae7af.js.map",
     "787.aee4433d.chunk.js.map": "/school_gistory_game_on_react/static/js/787.aee4433d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.32315420.css",
-    "static/js/main.382b804e.js"
+    "static/js/main.494ae7af.js"
   ]
 }
