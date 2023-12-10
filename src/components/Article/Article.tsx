@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Container, Grid, LinearProgress, Typography} from "@mui/material";
+import {Button, Container, Grid, LinearProgress, Typography, useMediaQuery} from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import "./article.scss"
 import myImage from "../../static/image/city.jpg";
@@ -7,6 +7,7 @@ import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 import SubtopicCard from "./components/SubtopicCard/SubtopicCard";
 import {IArticleProps} from "../../types/types";
+import {useTheme} from "@mui/system";
 
 
 const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subArticleSuccessLevels}) => {
@@ -28,6 +29,9 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
     const completedSubtopics = subArticleSuccessLevels[selectedArticleNumber].filter(done => done).length;
     const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
 
+
+    const theme = useTheme();
+    const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
     return (
         <Container className={"article_page_container"}>
@@ -56,34 +60,46 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
 
             {/* Display subtopics as cards */}
             {(article.subtopics && article.subtopics.length === subArticleSuccessLevels[selectedArticleNumber].length) &&
-            <Grid className={"subtopic_card_list"} container spacing={2}>
-                <Grid item xs={12}>
+            <Grid className={"subtopic_card_list"} container spacing={2} justifyContent={"center"}>
+
+                <Grid item xs={12} sm={6} md={6} xl={6}>
                     <Typography variant={"h6"}>Пройдіть додаткові завдання перед головним тестом</Typography>
                     {/* Display the progress bar */}
+                </Grid>
+
+                <Grid container justifyContent={"center"}><Grid item xs={12} sm={6} md={6} xl={4}>
                     <LinearProgress color={"primary"} variant="determinate" value={completionPercentage}/>
 
                     {/* Display the progress percentage */}
                     <Typography variant="body2" gutterBottom>
                         Виконано: {completedSubtopics} із {totalSubtopics} ({completionPercentage.toFixed(2)}%)
                     </Typography>
-                </Grid>
-                {article.subtopics.map((subtopic, index) => (
-                    <Grid item key={index + "card"} xs={12} md={4}>
+
+                </Grid></Grid>
+
+                <Grid item container xs={12} spacing={2}>{article.subtopics.map((subtopic, index) => (
+                    <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
                         <SubtopicCard done={subArticleSuccessLevels[selectedArticleNumber][index]}
                                       subArticleIndex={index}
                                       title={subtopic.title} content={subtopic.content}/>
                     </Grid>
-                ))}
+                ))}</Grid>
             </Grid>
             }
 
 
-            <Button disabled={article.subtopics !== undefined && !subArticleSuccessLevels.every(done => done)}
-                    size={"large"} fullWidth variant={"contained"}
-                    className="quiz-button"
-                    onClick={handleShowQuiz}>
+            <Grid container justifyContent={"center"}>
+                <Grid item xs={12} sm={6} md={"auto"}>
+                <Button
+
+                disabled={article.subtopics !== undefined && !subArticleSuccessLevels.every(done => done)}
+                size={"large"}
+                fullWidth={!mdUp}
+                variant={"contained"}
+                className="quiz-button"
+                onClick={handleShowQuiz}>
                 Завершити рівень
-            </Button>
+            </Button></Grid></Grid>
 
         </Container>
     )

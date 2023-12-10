@@ -1,4 +1,4 @@
-import {Button, Typography} from "@mui/material";
+import {Button, Grid, Typography} from "@mui/material";
 import LogoIcon from "../../icon/Logo";
 import React, {useEffect} from "react";
 import "./about.scss"
@@ -15,7 +15,7 @@ const useStyles = makeStyles()((theme) => ({
     },
 }));
 
-interface IAboutProject extends IHandleClickOpenModalSignIn{
+interface IAboutProject extends IHandleClickOpenModalSignIn {
 }
 
 
@@ -31,15 +31,25 @@ const AboutProject: React.FC<IAboutProject> = ({handleClickOpenModalSignIn}) => 
             <Typography className={"subtitle"} variant={"h6"}>Грай та Навчайся</Typography>
 
 
-            <Button className={"start_button"} onClick={handleClickOpenModalSignIn} fullWidth
-                    size={"large"}
-                    variant={"contained"}>Почати</Button>
+            <Grid container justifyContent={"center"}>
+                <Grid item xs={12} sm={9} md={6} xl={3}>
+                    <Button
+                        className={"start_button"} onClick={handleClickOpenModalSignIn} fullWidth
+                        size={"large"}
+                        variant={"contained"}>Почати</Button>
+                </Grid>
+            </Grid>
 
-            <Typography>
-                <Typography variant={"subtitle1"} component={"span"}>"Шкала Історіі: Грай та Навчайся"</Typography> - це
-                інноваційний веб-додаток, спрямований на учнів, який робить
-                процес вивчення історії захоплюючим та ефективним. Додаток пропонує вам:
-            </Typography>
+            <Grid container justifyContent={"center"}>
+                <Grid item xs={12} sm={9} md={6} xl={5}>
+                    <Typography>
+                        <Typography variant={"subtitle1"} component={"span"}>"Шкала Історіі: Грай та
+                            Навчайся"</Typography> - це
+                        інноваційний веб-додаток, спрямований на учнів, який робить
+                        процес вивчення історії захоплюючим та ефективним. Додаток пропонує вам:
+                    </Typography>
+                </Grid>
+            </Grid>
 
         </div>
 

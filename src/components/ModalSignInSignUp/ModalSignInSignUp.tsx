@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
-import {Dialog, IconButton, Slide, Toolbar} from "@mui/material";
+import {Dialog, IconButton, Slide, Toolbar, useMediaQuery} from "@mui/material";
 import MyAppBar from "../MyAppBar/MyAppBar";
 import CloseIcon from "@mui/icons-material/Close";
 import SignIn from "./components/SignIn/SignIn";
@@ -8,6 +8,7 @@ import SignUp from "./components/SignUp/SignUp";
 import {TransitionProps} from "@mui/material/transitions";
 import {useAuth} from "../AuthContext/AuthContext";
 import {IModalSignInSignUp} from "../../types/types";
+import {useTheme} from "@mui/system";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -19,7 +20,6 @@ const Transition = React.forwardRef(function Transition(
 });
 
 
-
 const ModalSignInSignUp = ({
                                setOpenModal,
                                openModal,
@@ -28,7 +28,7 @@ const ModalSignInSignUp = ({
                                showSignUpForm,
                                setShowSignUpForm,
                                setShowSignInForm,
-    goToHistoryTimeLine
+                               goToHistoryTimeLine
                            }: IModalSignInSignUp) => {
 
     const {isAuthenticated} = useAuth();
@@ -40,27 +40,43 @@ const ModalSignInSignUp = ({
         }
     }, [isAuthenticated]);
 
+
+    const theme = useTheme();
+    const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+
+    const toolbar = <Toolbar sx={{"justifyContent": "end"}}>
+        <IconButton
+            edge="start"
+            color="inherit"
+            onClick={handleCloseModal}
+            aria-label="close"
+        >
+            <CloseIcon/>
+        </IconButton>
+    </Toolbar>;
+
     return (
         <Dialog
-            fullScreen
+            fullScreen={!smUp}
             open={openModal}
             onClose={handleCloseModal}
             TransitionComponent={Transition}
         >
-            <MyAppBar position={"static"}>
-                <Toolbar sx={{"justifyContent": "end"}}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        onClick={handleCloseModal}
-                        aria-label="close"
-                    >
-                        <CloseIcon/>
-                    </IconButton>
-                </Toolbar>
-            </MyAppBar>
+
+            {!smUp ?
+                <MyAppBar position={"static"}>
+                    {toolbar}
+                </MyAppBar>
+                :
+                <React.Fragment>
+                    {toolbar}
+                </React.Fragment>
+            }
+
+
             {showSignInForm &&
-            <SignIn goToHistoryTimeLine={goToHistoryTimeLine} setShowSignUpForm={setShowSignUpForm} setShowSignInForm={setShowSignInForm}/>}
+            <SignIn goToHistoryTimeLine={goToHistoryTimeLine} setShowSignUpForm={setShowSignUpForm}
+                    setShowSignInForm={setShowSignInForm}/>}
             {showSignUpForm &&
             <SignUp setShowSignInForm={setShowSignInForm} setShowSignUpForm={setShowSignUpForm}/>}
 

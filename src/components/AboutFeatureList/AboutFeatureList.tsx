@@ -1,5 +1,5 @@
 import React from 'react';
-import {List, ListItem, Typography, Paper, Grid} from '@mui/material';
+import {List, ListItem, Typography, Paper, Grid, Hidden} from '@mui/material';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import EventNoteIcon from '@mui/icons-material/EventNote';
@@ -101,12 +101,16 @@ const useStyles = makeStyles()((theme) => ({
 
     }
 
-}));
+}))
+
+interface IFeaturedListItemContent {
+    title: string,
+    name: string
+    description: string
+}
 
 
-const AboutFeatureList = () => {
-
-    const {cx, classes} = useStyles();
+const FeaturedListItemContent = ({name, title, description}: IFeaturedListItemContent) => {
 
     const getIcon = (iconClass: string) => {
         switch (iconClass) {
@@ -126,6 +130,28 @@ const AboutFeatureList = () => {
                 return null;
         }
     };
+
+    return (
+        <Paper elevation={1}>
+            <Grid alignItems={"center"} columnSpacing={1} container>
+                <Grid item xs={"auto"} sm={"auto"}>
+                    <Paper className={"icon_container"}
+                           elevation={0}>{getIcon(name)}</Paper></Grid>
+                <Grid item xs={"auto"} sm={10} md={8}>
+                    <Typography variant={"subtitle1"}>{title}</Typography>
+                    {/*<Hidden smDown><Typography>{description}</Typography></Hidden>*/}
+                </Grid>
+            </Grid>
+        </Paper>
+    )
+
+}
+
+
+const AboutFeatureList = () => {
+
+    const {cx, classes} = useStyles();
+
 
     const getItemColorClass = (iconClass: string) => {
         switch (iconClass) {
@@ -150,27 +176,30 @@ const AboutFeatureList = () => {
     return (
         <div className={cx(classes.aboutFeatureListContainer, "about_feature_list_container")}>
             <Container>
-                <List disablePadding className={"about_feature_list"}>
-                    {featureList.map((feature, index) => (
-                        <ListItem className={cx(getItemColorClass(feature.name))} disableGutters disablePadding
+                <Hidden mdUp>
+                    <List disablePadding className={"about_feature_list"}>
+                        {featureList.map((feature, index) => (
+                            <ListItem className={cx(getItemColorClass(feature.name))} disableGutters disablePadding
+                                      title={feature.description} key={index + "feature.title"}>
+                                <FeaturedListItemContent description={feature.description} name={feature.name}
+                                                         title={feature.title}/>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Hidden>
+                <Hidden mdDown>
+                    <Grid container rowSpacing={4} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                        {featureList.map((feature, index) => (
+                            <Grid item sm={6} xl={4} className={cx(getItemColorClass(feature.name))}
                                   title={feature.description} key={index + "feature.title"}>
-                            {/*<ListItemIcon>{feature.icon}</ListItemIcon>*/}
-                            {/*<ListItemText*/}
-                            {/*    primary={}*/}
-                            {/*/>*/}
-                            <Paper elevation={1}>
-                                <Grid alignItems={"center"} gap={3} container>
-                                    <Grid>
-                                        <Paper className={"icon_container"}
-                                               elevation={0}>{getIcon(feature.name)}</Paper></Grid>
-                                    <Grid>
-                                        <Typography variant={"subtitle1"}>{feature.title}</Typography>
-                                    </Grid>
-                                </Grid>
-                            </Paper>
-                        </ListItem>
-                    ))}
-                </List></Container></div>
+                                <FeaturedListItemContent description={feature.description} name={feature.name}
+                                                         title={feature.title}/>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Hidden>
+            </Container>
+        </div>
     );
 };
 

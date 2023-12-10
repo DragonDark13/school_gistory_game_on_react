@@ -23,6 +23,7 @@ import MyProviders, {UserContext} from './components/MyProviders/MyProviders';
 import {useAuth} from "./components/AuthContext/AuthContext";
 import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp";
 import MainPageContent from "./components/MainPageContent/MainPageContent";
+import Footer from "./components/Footer/Footer";
 
 
 function App() {
@@ -251,12 +252,7 @@ function App() {
                             {/*        historyList={data.historyList}/>}/>*/}
                         </Routes>
                     </main>
-                    {/*<footer>*/}
-                    {/*    <Container>*/}
-                    {/*        <div>sociicons</div>*/}
-                    {/*        <div>copyright</div>*/}
-                    {/*    </Container>*/}
-                    {/*</footer>*/}
+                  <Footer/>
                 </MyProviders>
 
             </div>
