@@ -17,7 +17,7 @@ import MyAppBar from "../MyAppBar/MyAppBar";
 import LogoIcon from "../../icon/Logo"
 import "./header.scss"
 import Grid from "@mui/material/Grid";
-import {Link as RouterLink} from "react-router-dom";
+import {Link as RouterLink, useNavigate} from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
 import {ColorModeContext, LanguageContext, ThemeContext, UserContext} from "../MyProviders/MyProviders";
 import {IHandleClickOpenModalSignIn} from "../../types/types";
@@ -44,12 +44,11 @@ const useStyles = makeStyles()((theme) => ({
 
 }));
 
-interface IHeader extends IHandleClickOpenModalSignIn{
+interface IHeader extends IHandleClickOpenModalSignIn {
 }
 
 
-
-const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn})=> {
+const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
 
     // const {theme, setTheme} = useContext(ThemeContext)
     const {language} = useContext(LanguageContext)
@@ -66,8 +65,15 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn})=> {
     const {isAuthenticated, logout} = useAuth();
 
 
-
     const {cx, classes} = useStyles();
+
+    const navigate = useNavigate();
+
+
+    const logoutOnClick = () => {
+        logout()
+        navigate("/");
+    }
 
 
     return (
@@ -75,7 +81,7 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn})=> {
             <MyAppBar position={"static"} className={cx(classes.customAppBar, "header")}>
                 <Container>
                     <Toolbar disableGutters sx={{"justifyContent": "space-between"}}>
-                        {smUp && <WelcomePanel/>}
+
 
                         <Link component={RouterLink} underline={"none"} to="/">
                             <Grid gap={2} container alignItems={"center"}>
@@ -140,7 +146,7 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn})=> {
                                             <AccountCircleIcon/>
                                         </IconButton>
                                     </RouterLink>
-                                    <IconButton onClick={logout} className={cx(classes.headerLogoIcon)} title={"Вийти"}>
+                                    <IconButton onClick={logoutOnClick} className={cx(classes.headerLogoIcon)} title={"Вийти"}>
                                         <LogoutIcon/>
                                     </IconButton>
                                 </React.Fragment>
