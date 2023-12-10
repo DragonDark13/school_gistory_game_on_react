@@ -22,6 +22,7 @@ import {Helmet} from "react-helmet-async";
 import MyProviders, {UserContext} from './components/MyProviders/MyProviders';
 import {useAuth} from "./components/AuthContext/AuthContext";
 import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp";
+import MainPageContent from "./components/MainPageContent/MainPageContent";
 
 
 function App() {
@@ -136,26 +137,6 @@ function App() {
         console.log(`Неправильних відповідей: ${results.incorrect}`);
     };
 
-
-    const handleShowQuiz = () => {
-        setShowQuiz(true);
-        setExpandedArticle(false);
-    };
-
-    const closeTestPage = () => {
-        setShowQuiz(false);
-        setShowTimeline(true)
-        // Виконати дії для переходу на головну сторінку
-        // Наприклад, перенаправлення на іншу сторінку або зміна URL
-        // Може залежати від вашої архітектури додатку
-        console.log("Перехід на головну сторінку");
-    };
-
-    const backToArticleFromTest = () => {
-        setShowQuiz(false);
-        setExpandedArticle(true);
-    }
-
     const handleNextLevel = () => {
         if (selectedArticle !== null) {
             setShowQuiz(false);
@@ -163,7 +144,6 @@ function App() {
             setExpandedArticle(true);
         }
     };
-
 
     const [openModal, setOpenModal] = React.useState(false);
     const [showSignInForm, setShowSignInForm] = React.useState(false)
@@ -174,44 +154,40 @@ function App() {
         setShowSignInForm(true);
     };
 
-
     const handleCloseModal = () => {
         setOpenModal(false);
     };
 
-
     const {currentUser} = useContext(UserContext)
-
 
     return (
         <Router>
             <div className="App">
-
-
                 <MyProviders>
                     <Helmet>
                         <title>Головна</title>
                     </Helmet>
                     <Header handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
 
-                    <ModalSignInSignUp setOpenModal={setOpenModal} openModal={openModal} handleCloseModal={handleCloseModal}
-                                       showSignInForm={showSignInForm} showSignUpForm={showSignUpForm}
-                                       setShowSignInForm={setShowSignInForm}
-                                       setShowSignUpForm={setShowSignUpForm}/>
-
+                    <ModalSignInSignUp
+                        goToHistoryTimeLine={true}
+                        setOpenModal={setOpenModal} openModal={openModal}
+                        handleCloseModal={handleCloseModal}
+                        showSignInForm={showSignInForm} showSignUpForm={showSignUpForm}
+                        setShowSignInForm={setShowSignInForm}
+                        setShowSignUpForm={setShowSignUpForm}/>
                     <main>
 
                         <Routes>
 
                             <Route path={"/"}
                                    element={
-                                       <div className={"main_page"}>
-                                           <Container>
-                                               <AboutProject handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
-                                           </Container>
-
-                                           <AboutFeatureList/>
-                                       </div>
+                                       <MainPageContent buttonStates={buttonStates} successLevels={successLevels}
+                                                        subArticleSuccessLevels={subArticleSuccessLevels}
+                                                        setSelectedSubArticle={setSelectedSubArticle}
+                                                        historyList={data.historyList}
+                                                        setSelectedArticle={setSelectedArticle}
+                                                        handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
                                    }
                             />
                             <Route path="/profile"
@@ -265,14 +241,14 @@ function App() {
                                     />}
                             />
 
-                            <Route path="/timeline" element={
-                                <HistoryTimeline
-                                    setSelectedSubArticle={setSelectedSubArticle}
-                                    subArticleSuccessLevels={subArticleSuccessLevels}
-                                    setSelectedArticle={setSelectedArticle}
-                                    successLevels={successLevels}
-                                    buttonStates={buttonStates}
-                                    historyList={data.historyList}/>}/>
+                            {/*<Route path="/timeline" element={*/}
+                            {/*    <HistoryTimeline*/}
+                            {/*        setSelectedSubArticle={setSelectedSubArticle}*/}
+                            {/*        subArticleSuccessLevels={subArticleSuccessLevels}*/}
+                            {/*        setSelectedArticle={setSelectedArticle}*/}
+                            {/*        successLevels={successLevels}*/}
+                            {/*        buttonStates={buttonStates}*/}
+                            {/*        historyList={data.historyList}/>}/>*/}
                         </Routes>
                     </main>
                     {/*<footer>*/}

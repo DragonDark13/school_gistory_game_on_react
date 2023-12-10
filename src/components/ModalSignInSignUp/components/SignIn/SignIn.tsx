@@ -11,15 +11,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {useAuth} from "../../../AuthContext/AuthContext";
 import {useEffect, useState} from 'react';
-import {redirect} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 import {ISignInForms} from "../../../../types/types";
 
 
-
-
-
-export default function SignIn({setShowSignInForm, setShowSignUpForm}: ISignInForms) {
+export default function SignIn({setShowSignInForm, setShowSignUpForm, goToHistoryTimeLine}: ISignInForms) {
 
     const gotoSignUp = () => {
         setShowSignInForm(false)
@@ -27,17 +23,6 @@ export default function SignIn({setShowSignInForm, setShowSignUpForm}: ISignInFo
     }
 
     const navigate = useNavigate();
-
-
-    // const handleSubmit = (event: any) => {
-    //     event.preventDefault();
-    //     const data = new FormData(event.currentTarget);
-    //     console.log({
-    //         email: data.get('email'),
-    //         password: data.get('password'),
-    //     });
-    // };
-
 
     const {login, isAuthenticated} = useAuth();
 
@@ -104,7 +89,10 @@ export default function SignIn({setShowSignInForm, setShowSignUpForm}: ISignInFo
     useEffect(() => {
         if (isAuthenticated) {
             setShowSignInForm(false)
-            navigate("/profile");
+
+            if (!goToHistoryTimeLine) {
+                navigate("/profile");
+            }
         }
     }, [isAuthenticated, navigate]);
 

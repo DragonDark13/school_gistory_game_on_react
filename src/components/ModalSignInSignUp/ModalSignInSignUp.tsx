@@ -27,7 +27,8 @@ const ModalSignInSignUp = ({
                                showSignInForm,
                                showSignUpForm,
                                setShowSignUpForm,
-                               setShowSignInForm
+                               setShowSignInForm,
+    goToHistoryTimeLine
                            }: IModalSignInSignUp) => {
 
     const {isAuthenticated} = useAuth();
@@ -59,7 +60,7 @@ const ModalSignInSignUp = ({
                 </Toolbar>
             </MyAppBar>
             {showSignInForm &&
-            <SignIn setShowSignUpForm={setShowSignUpForm} setShowSignInForm={setShowSignInForm}/>}
+            <SignIn goToHistoryTimeLine={goToHistoryTimeLine} setShowSignUpForm={setShowSignUpForm} setShowSignInForm={setShowSignInForm}/>}
             {showSignUpForm &&
             <SignUp setShowSignInForm={setShowSignInForm} setShowSignUpForm={setShowSignUpForm}/>}
 

@@ -14,10 +14,6 @@ import {Helmet} from "react-helmet-async";
 import { IHistoryTimelineProps} from "../../types/types";
 
 
-
-
-
-
 const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                                              historyList,
                                                              // handleExpandArticle,
