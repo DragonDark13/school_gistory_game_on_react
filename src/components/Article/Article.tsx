@@ -9,8 +9,6 @@ import SubtopicCard from "./components/SubtopicCard/SubtopicCard";
 import {IArticleProps} from "../../types/types";
 
 
-
-
 const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subArticleSuccessLevels}) => {
     const {selectedArticle} = useParams();
 
@@ -38,7 +36,7 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
             </Helmet>
             <Grid className={"back_button_container"} container>
                 <Grid item>
-                    <Button component={RouterLink} to={"/timeline"} color={"secondary"} startIcon={<ArrowBackIosIcon/>}
+                    <Button component={RouterLink} to={"/"} color={"secondary"} startIcon={<ArrowBackIosIcon/>}
                             className="close-button">
                         До Часопростору
                     </Button>
@@ -71,7 +69,8 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
                 </Grid>
                 {article.subtopics.map((subtopic, index) => (
                     <Grid item key={index + "card"} xs={12} md={4}>
-                        <SubtopicCard done={subArticleSuccessLevels[selectedArticleNumber][index]} subArticleIndex={index}
+                        <SubtopicCard done={subArticleSuccessLevels[selectedArticleNumber][index]}
+                                      subArticleIndex={index}
                                       title={subtopic.title} content={subtopic.content}/>
                     </Grid>
                 ))}

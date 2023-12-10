@@ -172,7 +172,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                     </Button>
                 </Grid>
                 <Grid item>
-                    <Button component={RouterLink} to={"/timeline"} endIcon={<ArrowUpwardIcon/>} color={"secondary"}>
+                    <Button component={RouterLink} to={"/"} endIcon={<ArrowUpwardIcon/>} color={"secondary"}>
                         До Часопростору
                     </Button>
                 </Grid>
