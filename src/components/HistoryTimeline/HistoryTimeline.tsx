@@ -11,28 +11,15 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import TimelineCard from "./components/TimelineCard/TimelineCard";
 import {useNavigate} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
-
-export interface SubtopicsProps {
-    title: string,
-    content: string
-}
-
-export interface HistoricalEvent {
-    date: string;
-    text: string;
-    achieved: string
-    subtopics?: SubtopicsProps[] | undefined;
-}
+import {IHistoryListArray, ISetSelectedArticle} from "../../types/types";
 
 
-interface HistoryTimelineProps {
-    historyList: HistoricalEvent[];
-    // handleExpandArticle: (index: number) => void;
+
+interface HistoryTimelineProps extends IHistoryListArray,ISetSelectedArticle{
     buttonStates: Array<boolean>;
     successLevels: Array<boolean>;
-    setSelectedArticle: (arg0: number) => void;
     subArticleSuccessLevels: boolean[][]
-    setSelectedSubArticle: (arg0: number) => void;
+    readonly setSelectedSubArticle: (arg0: number) => void;
 
 }
 

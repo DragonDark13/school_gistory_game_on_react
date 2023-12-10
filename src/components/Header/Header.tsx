@@ -20,6 +20,7 @@ import Grid from "@mui/material/Grid";
 import {Link as RouterLink} from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
 import {ColorModeContext, LanguageContext, ThemeContext, UserContext} from "../MyProviders/MyProviders";
+import {IHandleClickOpenModalSignIn} from "../../types/types";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -43,8 +44,7 @@ const useStyles = makeStyles()((theme) => ({
 
 }));
 
-interface IHeader {
-    handleClickOpenModalSignIn:() => void;
+interface IHeader extends IHandleClickOpenModalSignIn{
 }
 
 

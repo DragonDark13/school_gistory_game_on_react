@@ -5,19 +5,13 @@ import "./article.scss"
 import myImage from "../../static/image/city.jpg";
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
-import {HistoricalEvent} from "../HistoryTimeline/HistoryTimeline";
 import SubtopicCard from "./components/SubtopicCard/SubtopicCard";
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import {IArticleProps} from "../../types/types";
 
 
-interface ArticleProps {
-    historyList: HistoricalEvent[],
-    setSelectedArticle: (arg0: number) => void;
-    subArticleSuccessLevels: boolean[][];
 
-}
 
-const Article: React.FC<ArticleProps> = ({historyList, setSelectedArticle, subArticleSuccessLevels}) => {
+const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subArticleSuccessLevels}) => {
     const {selectedArticle} = useParams();
 
     const navigate = useNavigate();

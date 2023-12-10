@@ -7,6 +7,7 @@ import SignIn from "./components/SignIn/SignIn";
 import SignUp from "./components/SignUp/SignUp";
 import {TransitionProps} from "@mui/material/transitions";
 import {useAuth} from "../AuthContext/AuthContext";
+import {IModalSignInSignUp} from "../../types/types";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -17,16 +18,6 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
-interface IModalSignInSignUp {
-    openModal: boolean
-    handleCloseModal: () => void
-    showSignInForm: boolean
-    showSignUpForm: boolean
-    setShowSignInForm: (value: boolean) => void;
-    setShowSignUpForm: (value: boolean) => void;
-    setOpenModal: (value: boolean) => void;
-}
 
 
 const ModalSignInSignUp = ({

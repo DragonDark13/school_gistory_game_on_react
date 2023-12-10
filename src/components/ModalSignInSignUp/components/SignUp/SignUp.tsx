@@ -10,14 +10,10 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import {ISignInForms} from "../../../../types/types";
 
 
-interface ISignUPProps {
-    setShowSignInForm: (value: boolean) => void;
-    setShowSignUpForm: (value: boolean) => void;
-}
-
-export default function SignUp({setShowSignInForm, setShowSignUpForm}: ISignUPProps) {
+export default function SignUp({setShowSignInForm, setShowSignUpForm}: ISignInForms) {
 
     const goToSignInForm = () => {
         setShowSignUpForm(false);

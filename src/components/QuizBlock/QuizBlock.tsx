@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from "react";
-import {HistoricalEvent, SubtopicsProps} from "../HistoryTimeline/HistoryTimeline";
 import {
     Button,
     Card, CardActions,
@@ -27,22 +26,13 @@ import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 import {UserContext} from "../MyProviders/MyProviders";
 import QuizSuccessModal from "../../QuizSuccessModal/QuizSuccessModal";
+import {IQuizBlockProps} from "../../types/types";
 
 
-interface QuizBlockProps {
-    testType: 'article' | 'subArticle';
-    questions: string[];
-    options: string[][];
-    correctAnswers: string[];
-    onAnswer: (results: { correct: number; incorrect: number }) => void;
-    handleNextLevel: () => void;
-    historyList: HistoricalEvent[];
-    setAllAnswerIsCorrect: (arg0: boolean) => void
-    setSelectedSubArticle?: (arg0: number) => void;
-}
 
 
-const QuizBlock: React.FC<QuizBlockProps> = ({
+
+const QuizBlock: React.FC<IQuizBlockProps> = ({
                                                  questions,
                                                  options,
                                                  correctAnswers,

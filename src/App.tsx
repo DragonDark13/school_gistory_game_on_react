@@ -272,10 +272,7 @@ function App() {
                                     setSelectedArticle={setSelectedArticle}
                                     successLevels={successLevels}
                                     buttonStates={buttonStates}
-                                    // handleExpandArticle={handleExpandArticle}
                                     historyList={data.historyList}/>}/>
-
-
                         </Routes>
                     </main>
                     {/*<footer>*/}

@@ -11,25 +11,12 @@ import {
     Typography
 } from '@mui/material';
 import {useTheme} from '@mui/system';
-import {HistoricalEvent} from "../../HistoryTimeline";
 import myImage from '../../../../static/image/city.jpg';
 import "./timeline_card.scss"
+import {ITimelineCardProps} from "../../../../types/types";
 
 
-interface TimelineCardProps {
-    event: HistoricalEvent;
-    index: number;
-    buttonState: boolean;
-    handleExpandArticle: (index: number) => void;
-    handleGoToTestNow: (index: number) => void;
-    handleGoToSubArticleTest: (index: number) => void;
-    successLevel: boolean;
-    isAllSubtaskDone: boolean;
-    totalSubtopics: number,
-    completedSubtopics: number,
-}
-
-const TimelineCard: React.FC<TimelineCardProps> = ({
+const TimelineCard: React.FC<ITimelineCardProps> = ({
                                                        event,
                                                        index,
                                                        buttonState,

@@ -13,15 +13,13 @@ import {useAuth} from "../../../AuthContext/AuthContext";
 import {useEffect, useState} from 'react';
 import {redirect} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
+import {ISignInForms} from "../../../../types/types";
 
 
-interface ISignIn {
-    setShowSignInForm: (value: boolean) => void;
-    setShowSignUpForm: (value: boolean) => void;
-}
 
 
-export default function SignIn({setShowSignInForm, setShowSignUpForm}: ISignIn) {
+
+export default function SignIn({setShowSignInForm, setShowSignUpForm}: ISignInForms) {
 
     const gotoSignUp = () => {
         setShowSignInForm(false)

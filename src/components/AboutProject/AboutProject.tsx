@@ -4,6 +4,7 @@ import React, {useEffect} from "react";
 import "./about.scss"
 import {makeStyles} from "tss-react/mui";
 import {useAuth} from "../AuthContext/AuthContext";
+import {IHandleClickOpenModalSignIn} from "../../types/types";
 
 const useStyles = makeStyles()((theme) => ({
 
@@ -14,8 +15,7 @@ const useStyles = makeStyles()((theme) => ({
     },
 }));
 
-interface IAboutProject {
-    handleClickOpenModalSignIn: () => void;
+interface IAboutProject extends IHandleClickOpenModalSignIn{
 }
 
 

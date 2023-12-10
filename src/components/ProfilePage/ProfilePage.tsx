@@ -3,26 +3,15 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import Badge from '@mui/material/Badge';
 import SettingsIcon from '@mui/icons-material/Settings';
-import HistoryIcon from '@mui/icons-material/History';
 import EmojiEvents from '@mui/icons-material/EmojiEvents';
-import CommentIcon from '@mui/icons-material/Comment';
-import {Link} from 'react-router-dom';
-import {Container, Grid, LinearProgress, List, ListItem, ListItemIcon, ListItemText} from "@mui/material";
-import {HistoricalEvent} from '../HistoryTimeline/HistoryTimeline';
+import {Container, Grid, LinearProgress} from "@mui/material";
 import './profile_page.scss'
 import UserProfileSettings from "./UserProfileSettings";
 import {Helmet} from "react-helmet-async";
+import {ProfilePageProps} from "../../types/types";
 
-interface ProfilePageProps {
-    username: string;
-    avatar: string;
-    lessonsVisited: number;
-    achievementLevel: string;
-    achievements: string[];
-    historyList: HistoricalEvent[]
-}
+
 
 const ProfilePage: React.FC<ProfilePageProps> = ({
                                                      username,
@@ -61,7 +50,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
     return (
         <Container className={"profile_container"}>
-             <Helmet>
+            <Helmet>
                 <title>Профіль</title>
             </Helmet>
             <Paper className={"profile_block"} elevation={3}>
@@ -112,7 +101,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
                 <Grid container className={"achievement_icon_list"}>
                     {achievementIconArray.map((achievement, index) => (
-                        <Grid  key={index + "test"} item xs={6}>
+                        <Grid key={index + "test"} item xs={6}>
                             <Paper variant={"outlined"}>
                                 {/*<ListItemIcon>*/}
                                 <EmojiEvents color={achievementActiveCount > index ? "primary" : "disabled"}
@@ -148,7 +137,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             {/* Modal for Settings */}
             {openSettings && (
                 <Paper className={"profile_block profile_block_settings"} elevation={3}>
-                     <Grid container justifyContent={"flex-end"}>
+                    <Grid container justifyContent={"flex-end"}>
                         <Grid item>
                             <Button onClick={handleCloseSettings}>Close Settings</Button>
                         </Grid>
