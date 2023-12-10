@@ -11,8 +11,8 @@ import {
     Typography
 } from '@mui/material';
 import {useTheme} from '@mui/system';
-import {HistoricalEvent} from "../HistoryTimeline/HistoryTimeline";
-import myImage from '../../static/image/city.jpg';
+import {HistoricalEvent} from "../../HistoryTimeline";
+import myImage from '../../../../static/image/city.jpg';
 import "./timeline_card.scss"
 
 

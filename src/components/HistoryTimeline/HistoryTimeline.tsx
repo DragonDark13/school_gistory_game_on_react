@@ -8,7 +8,7 @@ import React from 'react';
 import {VerticalTimeline, VerticalTimelineElement} from 'react-vertical-timeline-component';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import TimelineCard from "../TimelineCard/TimelineCard";
+import TimelineCard from "./components/TimelineCard/TimelineCard";
 import {useNavigate} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 

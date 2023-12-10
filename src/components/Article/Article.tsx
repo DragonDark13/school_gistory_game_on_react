@@ -6,7 +6,7 @@ import myImage from "../../static/image/city.jpg";
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 import {HistoricalEvent} from "../HistoryTimeline/HistoryTimeline";
-import SubtopicCard from "../SubtopicCard/SubtopicCard";
+import SubtopicCard from "./components/SubtopicCard/SubtopicCard";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 
