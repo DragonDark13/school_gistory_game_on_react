@@ -8,7 +8,7 @@ import React from 'react';
 import {VerticalTimeline, VerticalTimelineElement} from 'react-vertical-timeline-component';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import TimelineCard from "./TimelineCard";
+import TimelineCard from "../TimelineCard/TimelineCard";
 import {useNavigate} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 
@@ -105,6 +105,16 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
 
     };
 
+    const getTotalSubtopics = (articleIndex: number) => {
+        const article = historyList[articleIndex];
+        return article.subtopics ? article.subtopics.length : 0;
+    }
+
+    const getCompletedSubtopics = (articleIndex: number) => {
+        const article = historyList[articleIndex];
+        return subArticleSuccessLevels[articleIndex].filter(done => done).length;
+    }
+
 
     return (
         <Container>
@@ -115,7 +125,7 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
                         variant={"h3"}>Часопростір</Typography>
             <VerticalTimeline lineColor={theme.palette.primary.light}>
                 {historyList.map((event, index) => (
-                    <React.Fragment>
+                    <React.Fragment key={index + "TimelineCard"}>
                         <VerticalTimelineElement
                             key={index + "history-timeline"}
                             // date={event.date}
@@ -132,6 +142,8 @@ const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
                         >
                             <Card elevation={buttonStates[index] ? 4 : 1}>
                                 <TimelineCard
+                                    completedSubtopics={getCompletedSubtopics(index)}
+                                    totalSubtopics={getTotalSubtopics(index)}
                                     isAllSubtaskDone={isAllSubtaskDone(index)}
                                     event={event}
                                     index={index}
