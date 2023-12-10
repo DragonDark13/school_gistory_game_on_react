@@ -49,7 +49,13 @@ const useStyles = makeStyles()((theme) => ({
 
 }));
 
-const Header: React.FC = (): React.ReactElement => {
+interface IHeader {
+    handleClickOpenModalSignIn:() => void;
+}
+
+
+
+const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn})=> {
 
     // const {theme, setTheme} = useContext(ThemeContext)
     const {language} = useContext(LanguageContext)
@@ -170,7 +176,7 @@ const Header: React.FC = (): React.ReactElement => {
                                     </IconButton>
                                 </React.Fragment>
                                 :
-                                <IconButton onClick={handleClickOpenModal} className={cx(classes.headerLogoIcon)}
+                                <IconButton onClick={handleClickOpenModalSignIn} className={cx(classes.headerLogoIcon)}
                                             title={"Увійти"}>
                                     <LoginIcon/>
                                 </IconButton>
@@ -183,8 +189,7 @@ const Header: React.FC = (): React.ReactElement => {
                     </Toolbar>
                 </Container>
             </MyAppBar>
-            <ModalSignInSignUp openModal={openModal} handleCloseModal={handleCloseModal} showSignInForm={showSignInForm} showSignUpForm={showSignUpForm} setShowSignInForm={setShowSignInForm}
-                               setShowSignUpForm={setShowSignUpForm}/>
+
 
         </React.Fragment>)
 

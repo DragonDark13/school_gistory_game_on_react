@@ -20,6 +20,8 @@ import ProfilePage from "./components/ProfilePage/ProfilePage";
 import avatarImg from "./static/image/city.jpg"
 import {Helmet} from "react-helmet-async";
 import MyProviders, {UserContext} from './components/MyProviders/MyProviders';
+import {useAuth} from "./components/AuthContext/AuthContext";
+import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp";
 
 
 function App() {
@@ -162,11 +164,20 @@ function App() {
         }
     };
 
-    const handleGoToTestNow = (index: number) => {
-        setSelectedArticle(index);
-        handleShowQuiz();
-        setShowTimeline(false)
-    }
+
+    const [openModal, setOpenModal] = React.useState(false);
+    const [showSignInForm, setShowSignInForm] = React.useState(false)
+    const [showSignUpForm, setShowSignUpForm] = React.useState(false)
+
+    const handleClickOpenModalSignIn = () => {
+        setOpenModal(true);
+        setShowSignInForm(true);
+    };
+
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
 
 
     const {currentUser} = useContext(UserContext)
@@ -181,7 +192,12 @@ function App() {
                     <Helmet>
                         <title>Головна</title>
                     </Helmet>
-                    <Header/>
+                    <Header handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
+
+                    <ModalSignInSignUp setOpenModal={setOpenModal} openModal={openModal} handleCloseModal={handleCloseModal}
+                                       showSignInForm={showSignInForm} showSignUpForm={showSignUpForm}
+                                       setShowSignInForm={setShowSignInForm}
+                                       setShowSignUpForm={setShowSignUpForm}/>
 
                     <main>
 
@@ -191,7 +207,7 @@ function App() {
                                    element={
                                        <div className={"main_page"}>
                                            <Container>
-                                               <AboutProject/>
+                                               <AboutProject handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
                                            </Container>
 
                                            <AboutFeatureList/>

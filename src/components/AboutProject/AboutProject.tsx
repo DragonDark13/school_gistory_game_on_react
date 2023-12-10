@@ -16,8 +16,12 @@ const useStyles = makeStyles()((theme) => ({
     },
 }));
 
+interface IAboutProject {
+    handleClickOpenModalSignIn: () => void;
+}
 
-const AboutProject = () => {
+
+const AboutProject: React.FC<IAboutProject> = ({handleClickOpenModalSignIn}) => {
 
     const {cx, classes} = useStyles();
 
@@ -52,7 +56,7 @@ const AboutProject = () => {
             <Typography className={"subtitle"} variant={"h6"}>Грай та Навчайся</Typography>
 
 
-            <Button className={"start_button"} onClick={handleClickOpenModal} fullWidth
+            <Button className={"start_button"} onClick={handleClickOpenModalSignIn} fullWidth
                     size={"large"}
                     variant={"contained"}>Почати</Button>
 
@@ -61,10 +65,6 @@ const AboutProject = () => {
                 інноваційний веб-додаток, спрямований на учнів, який робить
                 процес вивчення історії захоплюючим та ефективним. Додаток пропонує вам:
             </Typography>
-
-            <ModalSignInSignUp openModal={openModal} handleCloseModal={handleCloseModal} showSignInForm={showSignInForm}
-                               showSignUpForm={showSignUpForm} setShowSignInForm={setShowSignInForm}
-                               setShowSignUpForm={setShowSignUpForm}/>
 
         </div>
 

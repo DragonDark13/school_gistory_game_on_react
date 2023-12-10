@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {Dialog, IconButton, Slide, Toolbar} from "@mui/material";
 import MyAppBar from "../MyAppBar/MyAppBar";
@@ -6,6 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SignIn from "./components/SignIn/SignIn";
 import SignUp from "./components/SignUp/SignUp";
 import {TransitionProps} from "@mui/material/transitions";
+import {useAuth} from "../AuthContext/AuthContext";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -24,10 +25,12 @@ interface IModalSignInSignUp {
     showSignUpForm: boolean
     setShowSignInForm: (value: boolean) => void;
     setShowSignUpForm: (value: boolean) => void;
+    setOpenModal: (value: boolean) => void;
 }
 
 
 const ModalSignInSignUp = ({
+                               setOpenModal,
                                openModal,
                                handleCloseModal,
                                showSignInForm,
@@ -35,6 +38,16 @@ const ModalSignInSignUp = ({
                                setShowSignUpForm,
                                setShowSignInForm
                            }: IModalSignInSignUp) => {
+
+    const {isAuthenticated} = useAuth();
+
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            setOpenModal(false);
+        }
+    }, [isAuthenticated]);
+
     return (
         <Dialog
             fullScreen
