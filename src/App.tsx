@@ -186,6 +186,18 @@ function App() {
                     <main>
 
                         <Routes>
+
+                            <Route path={"/"}
+                                   element={
+                                       <div className={"main_page"}>
+                                           <Container>
+                                               <AboutProject/>
+                                           </Container>
+
+                                           <AboutFeatureList/>
+                                       </div>
+                                   }
+                            />
                             <Route path="/profile"
                                    element={<ProfilePage
                                        historyList={data.historyList}
@@ -247,17 +259,6 @@ function App() {
                                     // handleExpandArticle={handleExpandArticle}
                                     historyList={data.historyList}/>}/>
 
-                            <Route path={"/"}
-                                   element={
-                                       <div className={"main_page"}>
-                                           <Container>
-                                               <AboutProject/>
-                                           </Container>
-
-                                           <AboutFeatureList/>
-                                       </div>
-                                   }
-                            />
 
                         </Routes>
                     </main>
