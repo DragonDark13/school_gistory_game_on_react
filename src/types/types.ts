@@ -32,13 +32,20 @@ export interface IHistoryListArray {
     readonly historyList: HistoricalEvent[],
 }
 
+export interface IHistoryTimelineProps extends IHistoryListArray,ISetSelectedArticle{
+    buttonStates: Array<boolean>;
+    successLevels: Array<boolean>;
+    subArticleSuccessLevels: boolean[][]
+    readonly setSelectedSubArticle: (arg0: number) => void;
+}
+
 export interface ITimelineCardProps {
     event: HistoricalEvent;
     index: number;
     buttonState: boolean;
-    handleExpandArticle: (index: number) => void;
-    handleGoToTestNow: (index: number) => void;
-    handleGoToSubArticleTest: (index: number) => void;
+    readonly handleExpandArticle: (index: number) => void;
+    readonly handleGoToTestNow: (index: number) => void;
+    readonly handleGoToSubArticleTest: (index: number) => void;
     successLevel: boolean;
     isAllSubtaskDone: boolean;
     totalSubtopics: number,

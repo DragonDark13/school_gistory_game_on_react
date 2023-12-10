@@ -1,7 +1,7 @@
 import 'react-vertical-timeline-component/style.min.css';
 import './timeline-ovveriders.scss'
 import {
-    Card, CardActionArea, Container, Typography,
+    Card, Container, Typography,
     useTheme
 } from '@mui/material';
 import React from 'react';
@@ -11,20 +11,14 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import TimelineCard from "./components/TimelineCard/TimelineCard";
 import {useNavigate} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
-import {IHistoryListArray, ISetSelectedArticle} from "../../types/types";
+import { IHistoryTimelineProps} from "../../types/types";
 
 
 
-interface HistoryTimelineProps extends IHistoryListArray,ISetSelectedArticle{
-    buttonStates: Array<boolean>;
-    successLevels: Array<boolean>;
-    subArticleSuccessLevels: boolean[][]
-    readonly setSelectedSubArticle: (arg0: number) => void;
-
-}
 
 
-const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
+
+const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                                              historyList,
                                                              // handleExpandArticle,
                                                              buttonStates,
