@@ -5,18 +5,13 @@ import {
     Button,
     useTheme,
     useMediaQuery,
-    IconButton,
-    Dialog, Slide, Typography, Link
+    IconButton, Typography, Link
 } from "@mui/material";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import LoginIcon from '@mui/icons-material/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {useAuth} from "../AuthContext/AuthContext";
-import {TransitionProps} from '@mui/material/transitions';
-import CloseIcon from '@mui/icons-material/Close';
-import SignIn from "../ModalSignInSignUp/components/SignIn/SignIn";
-import SignUp from "../ModalSignInSignUp/components/SignUp/SignUp";
 import {makeStyles} from 'tss-react/mui';
 import MyAppBar from "../MyAppBar/MyAppBar";
 import LogoIcon from "../../icon/Logo"
@@ -25,7 +20,6 @@ import Grid from "@mui/material/Grid";
 import {Link as RouterLink} from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
 import {ColorModeContext, LanguageContext, ThemeContext, UserContext} from "../MyProviders/MyProviders";
-import ModalSignInSignUp from "../ModalSignInSignUp/ModalSignInSignUp";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -71,33 +65,8 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn})=> {
 
     const {isAuthenticated, logout} = useAuth();
 
-    const [openModal, setOpenModal] = React.useState(false);
-    const [showSignInForm, setShowSignInForm] = React.useState(false)
-    const [showSignUpForm, setShowSignUpForm] = React.useState(false)
-
-    const handleClickOpenModal = () => {
-        setOpenModal(true);
-        setShowSignInForm(true);
-    };
 
 
-    const handleCloseModal = () => {
-        setOpenModal(false);
-    };
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            setOpenModal(false);
-        }
-    }, [isAuthenticated]);
-
-
-    // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    //     setAnchorEl(event.currentTarget);
-    // };
-    // const handleClose = () => {
-    //     setAnchorEl(null);
-    // };
     const {cx, classes} = useStyles();
 
 
