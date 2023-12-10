@@ -15,8 +15,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {useAuth} from "../AuthContext/AuthContext";
 import {TransitionProps} from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
-import SignIn from "../SignIn/SignIn";
-import SignUp from "../SignUp/SignUp";
+import SignIn from "../ModalSignInSignUp/components/SignIn/SignIn";
+import SignUp from "../ModalSignInSignUp/components/SignUp/SignUp";
 import {makeStyles} from 'tss-react/mui';
 import MyAppBar from "../MyAppBar/MyAppBar";
 import LogoIcon from "../../icon/Logo"
@@ -27,14 +27,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import {ColorModeContext, LanguageContext, ThemeContext, UserContext } from "../MyProviders/MyProviders";
 
 
-const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & {
-        children: React.ReactElement;
-    },
-    ref: React.Ref<unknown>,
-) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const useStyles = makeStyles()((theme) => ({
     customAppBar: {
@@ -184,30 +176,6 @@ const Header: React.FC = (): React.ReactElement => {
                         }
                     </Grid>
 
-                    <Dialog
-                        fullScreen
-                        open={openModal}
-                        onClose={handleCloseModal}
-                        TransitionComponent={Transition}
-                    >
-                        <MyAppBar position={"static"}>
-                            <Toolbar sx={{"justifyContent": "end"}}>
-                                <IconButton
-                                    edge="start"
-                                    color="inherit"
-                                    onClick={handleCloseModal}
-                                    aria-label="close"
-                                >
-                                    <CloseIcon/>
-                                </IconButton>
-                            </Toolbar>
-                        </MyAppBar>
-                        {showSignInForm &&
-                        <SignIn setShowSignUpForm={setShowSignUpForm} setShowSignInForm={setShowSignInForm}/>}
-                        {showSignUpForm &&
-                        <SignUp setShowSignInForm={setShowSignInForm} setShowSignUpForm={setShowSignUpForm}/>}
-
-                    </Dialog>
 
 
                     {/*<Button variant="contained">Увійти</Button>*/}
