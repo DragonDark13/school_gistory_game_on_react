@@ -1,6 +1,7 @@
 export interface ISignInForms {
     setShowSignInForm: (value: boolean) => void;
     setShowSignUpForm: (value: boolean) => void;
+    goToHistoryTimeLine?:boolean;
 }
 
 export interface IModalSignInSignUp extends ISignInForms {
@@ -77,4 +78,8 @@ export interface IQuizBlockProps extends IHistoryListArray{
     readonly handleNextLevel: () => void;
     readonly setAllAnswerIsCorrect: (arg0: boolean) => void
     readonly setSelectedSubArticle?: (arg0: number) => void;
+}
+
+export  interface IMainPageContent extends IHistoryTimelineProps,IHandleClickOpenModalSignIn{
+
 }
