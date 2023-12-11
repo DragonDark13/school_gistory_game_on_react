@@ -40,7 +40,7 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
             </Helmet>
             <Grid className={"back_button_container"} container>
                 <Grid item>
-                    <Button component={RouterLink} to={"/"} color={"secondary"} startIcon={<ArrowBackIosIcon/>}
+                    <Button component={RouterLink} to={"/timeline"} color={"secondary"} startIcon={<ArrowBackIosIcon/>}
                             className="close-button">
                         До Часопростору
                     </Button>

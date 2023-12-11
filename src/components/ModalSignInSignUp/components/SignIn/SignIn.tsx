@@ -92,6 +92,8 @@ export default function SignIn({setShowSignInForm, setShowSignUpForm, goToHistor
 
             if (!goToHistoryTimeLine) {
                 navigate("/profile");
+            } else {
+                navigate("/timeline");
             }
         }
     }, [isAuthenticated, navigate]);

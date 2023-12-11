@@ -80,6 +80,6 @@ export interface IQuizBlockProps extends IHistoryListArray{
     readonly setSelectedSubArticle?: (arg0: number) => void;
 }
 
-export  interface IMainPageContent extends IHistoryTimelineProps,IHandleClickOpenModalSignIn{
+export  interface IMainPageContent extends IHandleClickOpenModalSignIn{
 
 }

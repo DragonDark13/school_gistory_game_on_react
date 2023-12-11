@@ -183,23 +183,19 @@ function App() {
 
                             <Route path={"/"}
                                    element={
-                                       <MainPageContent buttonStates={buttonStates} successLevels={successLevels}
-                                                        subArticleSuccessLevels={subArticleSuccessLevels}
-                                                        setSelectedSubArticle={setSelectedSubArticle}
-                                                        historyList={data.historyList}
-                                                        setSelectedArticle={setSelectedArticle}
-                                                        handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
+                                       <MainPageContent handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
                                    }
                             />
                             <Route path="/profile"
-                                   element={<ProfilePage
-                                       historyList={data.historyList}
-                                       achievementLevel={"test"}
-                                       achievements={achievements}
-                                       avatar={avatarImg}
-                                       lessonsVisited={7}
-                                       username={currentUser ? currentUser.name : "Петро" +
-                                           " Сагайдачний"}/>}/>
+                                   element={
+                                       <ProfilePage
+                                           historyList={data.historyList}
+                                           achievementLevel={"test"}
+                                           achievements={achievements}
+                                           avatar={avatarImg}
+                                           lessonsVisited={7}
+                                           username={currentUser ? currentUser.name : "Петро" +
+                                               " Сагайдачний"}/>}/>
 
                             <Route path="/article/:selectedArticle"
                                    element={
@@ -242,17 +238,17 @@ function App() {
                                     />}
                             />
 
-                            {/*<Route path="/timeline" element={*/}
-                            {/*    <HistoryTimeline*/}
-                            {/*        setSelectedSubArticle={setSelectedSubArticle}*/}
-                            {/*        subArticleSuccessLevels={subArticleSuccessLevels}*/}
-                            {/*        setSelectedArticle={setSelectedArticle}*/}
-                            {/*        successLevels={successLevels}*/}
-                            {/*        buttonStates={buttonStates}*/}
-                            {/*        historyList={data.historyList}/>}/>*/}
+                            <Route path="/timeline" element={
+                                <HistoryTimeline
+                                    setSelectedSubArticle={setSelectedSubArticle}
+                                    subArticleSuccessLevels={subArticleSuccessLevels}
+                                    setSelectedArticle={setSelectedArticle}
+                                    successLevels={successLevels}
+                                    buttonStates={buttonStates}
+                                    historyList={data.historyList}/>}/>
                         </Routes>
                     </main>
-                  <Footer/>
+                    <Footer/>
                 </MyProviders>
 
             </div>

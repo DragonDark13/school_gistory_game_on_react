@@ -29,19 +29,16 @@ import QuizSuccessModal from "../../QuizSuccessModal/QuizSuccessModal";
 import {IQuizBlockProps} from "../../types/types";
 
 
-
-
-
 const QuizBlock: React.FC<IQuizBlockProps> = ({
-                                                 questions,
-                                                 options,
-                                                 correctAnswers,
-                                                 onAnswer,
-                                                 historyList,
-                                                 setAllAnswerIsCorrect,
-                                                 testType = "article",
-                                                 setSelectedSubArticle
-                                             }) => {
+                                                  questions,
+                                                  options,
+                                                  correctAnswers,
+                                                  onAnswer,
+                                                  historyList,
+                                                  setAllAnswerIsCorrect,
+                                                  testType = "article",
+                                                  setSelectedSubArticle
+                                              }) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(""));
     const [results, setResults] = useState({correct: 0, incorrect: 0});
@@ -172,7 +169,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                     </Button>
                 </Grid>
                 <Grid item>
-                    <Button component={RouterLink} to={"/"} endIcon={<ArrowUpwardIcon/>} color={"secondary"}>
+                    <Button component={RouterLink} to={"/timeline"} endIcon={<ArrowUpwardIcon/>} color={"secondary"}>
                         До Часопростору
                     </Button>
                 </Grid>
