@@ -8,26 +8,19 @@ import QuizBlock from "./components/QuizBlock/QuizBlock";
 import Article from "./components/Article/Article";
 import data from "./data/data.json";
 import Header from "./components/Header/Header";
-import {
-    Container,
-} from "@mui/material";
 import "./static/css/normalize.css"
 import "./static/style/main.scss"
-import AboutProject from "./components/AboutProject/AboutProject";
-import AboutFeatureList from "./components/AboutFeatureList/AboutFeatureList";
-import {BrowserRouter, Route, Routes, HashRouter as Router} from 'react-router-dom';
+import { Route, Routes, HashRouter as Router} from 'react-router-dom';
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import avatarImg from "./static/image/city.jpg"
 import {Helmet} from "react-helmet-async";
 import MyProviders, {UserContext} from './components/MyProviders/MyProviders';
-import {useAuth} from "./components/AuthContext/AuthContext";
 import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp";
 import MainPageContent from "./components/MainPageContent/MainPageContent";
 import Footer from "./components/Footer/Footer";
 
 
 function App() {
-    const [showTimeline, setShowTimeline] = useState(true)
     const [showQuiz, setShowQuiz] = useState(false);
     const [expandedArticle, setExpandedArticle] = useState(false);
     const [selectedArticle, setSelectedArticle] = useState<number>(0)
