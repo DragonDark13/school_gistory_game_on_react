@@ -28,6 +28,7 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
     const totalSubtopics = article.subtopics ? article.subtopics.length : 0;
     const completedSubtopics = subArticleSuccessLevels[selectedArticleNumber].filter(done => done).length;
     const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
+    const finalTestIsNotOpen = article.subtopics !== undefined && !subArticleSuccessLevels[selectedArticleNumber].every(done => done);
 
 
     const theme = useTheme();
@@ -60,14 +61,15 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
 
             {/* Display subtopics as cards */}
             {(article.subtopics && article.subtopics.length === subArticleSuccessLevels[selectedArticleNumber].length) &&
-            <Grid className={"subtopic_card_list"} container spacing={2} justifyContent={"center"}>
+            <Grid className={"subtopic_card_list"} container  justifyContent={"center"}>
 
                 <Grid item xs={12} sm={6} md={6} xl={6}>
                     <Typography variant={"h6"}>Пройдіть додаткові завдання перед головним тестом</Typography>
                     {/* Display the progress bar */}
                 </Grid>
 
-                <Grid container justifyContent={"center"}><Grid item xs={12} sm={6} md={6} xl={4}>
+                <Grid container justifyContent={"center"}>
+                    <Grid item xs={12} sm={6} md={6} xl={4}>
                     <LinearProgress color={"primary"} variant="determinate" value={completionPercentage}/>
 
                     {/* Display the progress percentage */}
@@ -92,7 +94,7 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
                 <Grid item xs={12} sm={6} md={"auto"}>
                 <Button
 
-                disabled={article.subtopics !== undefined && !subArticleSuccessLevels.every(done => done)}
+                disabled={finalTestIsNotOpen}
                 size={"large"}
                 fullWidth={!mdUp}
                 variant={"contained"}
