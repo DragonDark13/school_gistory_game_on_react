@@ -21,8 +21,8 @@ import Footer from "./components/Footer/Footer";
 
 
 function App() {
-    const [showQuiz, setShowQuiz] = useState(false);
-    const [expandedArticle, setExpandedArticle] = useState(false);
+    // const [showQuiz, setShowQuiz] = useState(false);
+    // const [expandedArticle, setExpandedArticle] = useState(false);
     const [selectedArticle, setSelectedArticle] = useState<number>(0)
     const [selectedSubArticle, setSelectedSubArticle] = useState<null | number>(null);
 
@@ -133,9 +133,9 @@ function App() {
 
     const handleNextLevel = () => {
         if (selectedArticle !== null) {
-            setShowQuiz(false);
+            // setShowQuiz(false);
             setSelectedArticle(selectedArticle + 1);
-            setExpandedArticle(true);
+            // setExpandedArticle(true);
         }
     };
 

@@ -1,15 +1,11 @@
 import React from 'react';
 import {
-    Button, ButtonProps,
+    Button,
     Card, CardActions,
     CardContent,
     CardHeader,
     CardMedia,
-    CardProps,
     Collapse,
-    IconButton,
-    IconButtonProps,
-    styled,
     Typography
 } from '@mui/material';
 import myImage from "../../../../static/image/city.jpg";
