@@ -5,6 +5,7 @@ import "./about.scss"
 import {makeStyles} from "tss-react/mui";
 import {useAuth} from "../AuthContext/AuthContext";
 import {IHandleClickOpenModalSignIn} from "../../types/types";
+import {useNavigate} from "react-router-dom";
 
 const useStyles = makeStyles()((theme) => ({
 
@@ -21,6 +22,15 @@ interface IAboutProject extends IHandleClickOpenModalSignIn {
 
 const AboutProject: React.FC<IAboutProject> = ({handleClickOpenModalSignIn}) => {
 
+    const {isAuthenticated} = useAuth();
+
+    const navigate = useNavigate();
+
+    const goToTimeline = () => {
+        navigate("/timeline");
+    }
+
+
     const {cx, classes} = useStyles();
     return (
         <div className={"about"}>
@@ -34,7 +44,8 @@ const AboutProject: React.FC<IAboutProject> = ({handleClickOpenModalSignIn}) => 
             <Grid container justifyContent={"center"}>
                 <Grid item xs={12} sm={9} md={6} xl={3}>
                     <Button
-                        className={"start_button"} onClick={handleClickOpenModalSignIn} fullWidth
+                        className={"start_button"} onClick={isAuthenticated ? goToTimeline : handleClickOpenModalSignIn}
+                        fullWidth
                         size={"large"}
                         variant={"contained"}>Почати</Button>
                 </Grid>
