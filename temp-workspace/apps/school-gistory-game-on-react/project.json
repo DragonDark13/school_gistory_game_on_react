@@ -1,0 +1,68 @@
+{
+  "name": "school-gistory-game-on-react",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/school-gistory-game-on-react/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/school-gistory-game-on-react"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "school-gistory-game-on-react:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "school-gistory-game-on-react:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "school-gistory-game-on-react:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "school-gistory-game-on-react:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "school-gistory-game-on-react:build:development"
+        },
+        "production": {
+          "buildTarget": "school-gistory-game-on-react:build:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../coverage/apps/school-gistory-game-on-react"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    }
+  },
+  "tags": []
+}
