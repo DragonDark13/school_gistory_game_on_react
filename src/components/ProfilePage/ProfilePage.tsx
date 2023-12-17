@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
@@ -13,6 +13,8 @@ import {ProfilePageProps} from "../../types/types";
 import {useTheme} from "@mui/system";
 import {makeStyles} from "tss-react/mui";
 import {amber, blueGrey, deepOrange, lightBlue} from "@mui/material/colors";
+import {useAuth} from "../AuthContext/AuthContext";
+import {useNavigate} from "react-router-dom";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -33,6 +35,20 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                                      achievements,
                                                      historyList,
                                                  }) => {
+
+    const {isAuthenticated} = useAuth();
+
+    const navigate = useNavigate();
+
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate("/");
+
+        }
+    }, [isAuthenticated])
+
+
     const [openSettings, setOpenSettings] = useState(false);
 
     const handleOpenSettings = () => {
@@ -42,6 +58,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     const handleCloseSettings = () => {
         setOpenSettings(false);
     };
+
 
     const progress = Math.round(historyList.length / 100 * lessonsVisited);
     const progressAnswer = 30;
@@ -75,7 +92,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                     <Paper className={"profile_block"} elevation={3}>
                         <Avatar className={"profile_block_avatar"} alt={username} src={avatar}
                                 sx={{width: 100, height: 100, margin: 'auto'}}/>
-                        <Typography variant={mdUp ? "h4" : "h5"}  className={"username"} >
+                        <Typography variant={mdUp ? "h4" : "h5"} className={"username"}>
                             {username}
                         </Typography>
                         <Grid gap={2} className={"level_container"} container alignItems={"center"}
