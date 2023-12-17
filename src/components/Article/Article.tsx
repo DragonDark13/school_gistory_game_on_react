@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Button, Container, Grid, LinearProgress, Typography, useMediaQuery} from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import "./article.scss"
@@ -8,6 +8,7 @@ import {Helmet} from "react-helmet-async";
 import SubtopicCard from "./components/SubtopicCard/SubtopicCard";
 import {IArticleProps} from "../../types/types";
 import {useTheme} from "@mui/system";
+import {useAuth} from "../AuthContext/AuthContext";
 
 
 const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subArticleSuccessLevels}) => {
@@ -33,6 +34,16 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
 
     const theme = useTheme();
     const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+
+    const {isAuthenticated} = useAuth();
+
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate("/");
+
+        }
+    }, [isAuthenticated])
 
     return (
         <Container className={"article_page_container"}>
@@ -61,7 +72,7 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
 
             {/* Display subtopics as cards */}
             {(article.subtopics && article.subtopics.length === subArticleSuccessLevels[selectedArticleNumber].length) &&
-            <Grid className={"subtopic_card_list"} container  justifyContent={"center"}>
+            <Grid className={"subtopic_card_list"} container justifyContent={"center"}>
 
                 <Grid item xs={12} sm={6} md={6} xl={6}>
                     <Typography variant={"h6"}>Пройдіть додаткові завдання перед головним тестом</Typography>
@@ -70,14 +81,14 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
 
                 <Grid container justifyContent={"center"}>
                     <Grid item xs={12} sm={6} md={6} xl={4}>
-                    <LinearProgress color={"primary"} variant="determinate" value={completionPercentage}/>
+                        <LinearProgress color={"primary"} variant="determinate" value={completionPercentage}/>
 
-                    {/* Display the progress percentage */}
-                    <Typography variant="body2" gutterBottom>
-                        Виконано: {completedSubtopics} із {totalSubtopics} ({completionPercentage.toFixed(2)}%)
-                    </Typography>
+                        {/* Display the progress percentage */}
+                        <Typography variant="body2" gutterBottom>
+                            Виконано: {completedSubtopics} із {totalSubtopics} ({completionPercentage.toFixed(2)}%)
+                        </Typography>
 
-                </Grid></Grid>
+                    </Grid></Grid>
 
                 <Grid item container xs={12} spacing={2}>{article.subtopics.map((subtopic, index) => (
                     <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
@@ -92,16 +103,16 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
 
             <Grid container justifyContent={"center"}>
                 <Grid item xs={12} sm={6} md={"auto"}>
-                <Button
+                    <Button
 
-                disabled={finalTestIsNotOpen}
-                size={"large"}
-                fullWidth={!mdUp}
-                variant={"contained"}
-                className="quiz-button"
-                onClick={handleShowQuiz}>
-                Завершити рівень
-            </Button></Grid></Grid>
+                        disabled={finalTestIsNotOpen}
+                        size={"large"}
+                        fullWidth={!mdUp}
+                        variant={"contained"}
+                        className="quiz-button"
+                        onClick={handleShowQuiz}>
+                        Завершити рівень
+                    </Button></Grid></Grid>
 
         </Container>
     )

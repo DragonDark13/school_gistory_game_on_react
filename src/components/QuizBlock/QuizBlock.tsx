@@ -27,6 +27,7 @@ import {Helmet} from "react-helmet-async";
 import {UserContext} from "../MyProviders/MyProviders";
 import QuizSuccessModal from "../../QuizSuccessModal/QuizSuccessModal";
 import {IQuizBlockProps} from "../../types/types";
+import {useAuth} from "../AuthContext/AuthContext";
 
 
 const QuizBlock: React.FC<IQuizBlockProps> = ({
@@ -56,6 +57,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     let currentArticleTitle;
 
     const navigate = useNavigate();
+    const {isAuthenticated} = useAuth();
 
 
     useEffect(() => {
@@ -76,6 +78,15 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     } else {
         currentArticle = historyList[selectedArticleNumber];
         currentArticleTitle = currentArticle.text;
+
+
+        useEffect(() => {
+            if (!isAuthenticated) {
+                navigate("/");
+
+            }
+        }, [isAuthenticated])
+
     }
 
 

@@ -159,7 +159,7 @@ function App() {
     return (
         <Router>
             <div className="App">
-                <MyProviders>
+
                     <Helmet>
                         <title>Головна</title>
                     </Helmet>
@@ -244,7 +244,6 @@ function App() {
                         </Routes>
                     </main>
                     <Footer/>
-                </MyProviders>
 
             </div>
         </Router>

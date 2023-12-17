@@ -4,25 +4,26 @@ import {
     Card, Container, Typography,
     useTheme
 } from '@mui/material';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {VerticalTimeline, VerticalTimelineElement} from 'react-vertical-timeline-component';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import TimelineCard from "./components/TimelineCard/TimelineCard";
 import {useNavigate} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
-import { IHistoryTimelineProps} from "../../types/types";
+import {IHistoryTimelineProps} from "../../types/types";
+import {useAuth} from "../AuthContext/AuthContext";
 
 
 const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
-                                                             historyList,
-                                                             // handleExpandArticle,
-                                                             buttonStates,
-                                                             successLevels,
-                                                             setSelectedArticle,
-                                                             subArticleSuccessLevels,
-                                                             setSelectedSubArticle
-                                                         }) => {
+                                                              historyList,
+                                                              // handleExpandArticle,
+                                                              buttonStates,
+                                                              successLevels,
+                                                              setSelectedArticle,
+                                                              subArticleSuccessLevels,
+                                                              setSelectedSubArticle
+                                                          }) => {
 
     const theme = useTheme();
 
@@ -91,6 +92,16 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
         const article = historyList[articleIndex];
         return subArticleSuccessLevels[articleIndex].filter(done => done).length;
     }
+
+    const {isAuthenticated} = useAuth();
+
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate("/");
+
+        }
+    }, [isAuthenticated])
 
 
     return (
