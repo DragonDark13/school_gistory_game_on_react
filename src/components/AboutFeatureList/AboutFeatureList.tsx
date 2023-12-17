@@ -133,11 +133,11 @@ const FeaturedListItemContent = ({name, title, description}: IFeaturedListItemCo
     };
 
     return (
-        <Paper elevation={1}>
+        <Paper elevation={0} variant={"outlined"}>
             <Grid alignItems={"center"} columnSpacing={1} container>
                 <Grid item xs={"auto"} sm={"auto"}>
-                    <Paper className={"icon_container"}
-                           elevation={0}>
+                    <Paper elevation={0}  className={"icon_container"}
+                           >
                         {getIcon(name)}</Paper></Grid>
                 <Grid item xs={"auto"} sm={10} md={8}>
                     <Typography variant={"subtitle1"}>{title}</Typography>

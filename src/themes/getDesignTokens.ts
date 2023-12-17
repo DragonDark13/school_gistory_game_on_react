@@ -53,11 +53,34 @@ const getDesignTokens = (mode: PaletteMode) => ({
     },
 
     typography: {
-        subtitle1:{
-            fontWeight:"bold",
+        subtitle1: {
+            fontWeight: "bold",
         },
+    },
+    components: {
+        // Name of the component
+        MuiButton: {
+            styleOverrides: {
+                // Name of the slot
+                outlinedPrimary: {
 
-    }
+                    "&.MuiButton-outlinedSizeLarge": {
+                        borderWidth: 2,
+                        padding: "1rem",
+                        fontWeight: "600",
+                        fontSize: "1.2rem",
+
+                        "&:hover": {
+                            borderWidth: 2,
+
+                        }
+                    }
+
+                },
+
+            },
+        },
+    },
 });
 
 export default getDesignTokens;

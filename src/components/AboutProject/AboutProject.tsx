@@ -47,7 +47,9 @@ const AboutProject: React.FC<IAboutProject> = ({handleClickOpenModalSignIn}) => 
                         className={"start_button"} onClick={isAuthenticated ? goToTimeline : handleClickOpenModalSignIn}
                         fullWidth
                         size={"large"}
-                        variant={"contained"}>Почати</Button>
+                        variant={"outlined"}>Почати
+                        <span></span><span></span><span></span><span></span>
+                    </Button>
                 </Grid>
             </Grid>
 
