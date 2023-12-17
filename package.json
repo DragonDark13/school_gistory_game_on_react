@@ -3,6 +3,7 @@
   "homepage": "http://dragondark13.github.io/school_gistory_game_on_react",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -12,26 +13,26 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.59",
     "@types/react": "^18.2.33",
     "@types/react-dom": "^18.2.14",
-    "flag-icon-css": "^4.1.7",
+    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react-refresh": "^1.3.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.1",
     "react-router-dom": "^6.20.0",
-    "react-scripts": "5.0.1",
     "react-vertical-timeline-component": "^3.6.0",
     "sass": "^1.69.5",
     "tss-react": "^4.9.3",
     "typescript": "^4.9.5",
+    "vite": "^5.0.10",
+    "vite-plugin-svgr": "^4.2.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "nx exec -- vite",
-    "build": "nx exec -- vite build",
-    "test": "nx exec -- vitest",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
@@ -54,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "@types/node": "^20.10.4",
     "@types/react-vertical-timeline-component": "^3.3.5",
     "gh-pages": "^6.1.0"
   }
