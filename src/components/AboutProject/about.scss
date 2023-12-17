@@ -22,12 +22,16 @@
   }
 
   .start_button {
-    animation: pulse 1.5s ease infinite;
     margin-bottom: 3rem;
     position: relative;
     overflow: hidden;
     z-index: 1;
     transition: all 0.5s;
+
+        @media (min-width: 1536px) {
+         animation: pulse 1.5s ease infinite;
+
+      }
 
     span {
       position: absolute;
