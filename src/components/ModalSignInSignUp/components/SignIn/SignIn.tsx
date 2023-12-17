@@ -13,6 +13,22 @@ import {useAuth} from "../../../AuthContext/AuthContext";
 import {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {ISignInForms} from "../../../../types/types";
+import {makeStyles} from "tss-react/mui";
+
+const useStyles = makeStyles()((theme) => ({
+
+    signInContainer: {
+        marginTop: "8rem",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        [theme.breakpoints.up('sm')]: {
+            marginTop: "1rem",
+            paddingBottom: "1rem",
+        },
+    }
+
+}))
 
 
 export default function SignIn({setShowSignInForm, setShowSignUpForm, goToHistoryTimeLine}: ISignInForms) {
@@ -26,14 +42,14 @@ export default function SignIn({setShowSignInForm, setShowSignUpForm, goToHistor
 
     const {login, isAuthenticated} = useAuth();
 
-    console.log("isAuthenticated", isAuthenticated);
-
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const [emailErrorState, setEmailErrorState] = useState<boolean>(false)
     const [emailErrorText, setEmailErrorText] = useState<string>("")
     const [passwordErrorState, setPasswordErrorState] = useState<boolean>(false)
     const [passwordErrorText, setPasswordErrorText] = useState<string>("")
+
+    const {cx, classes} = useStyles();
 
 
     const validateEmail = () => {
@@ -102,12 +118,7 @@ export default function SignIn({setShowSignInForm, setShowSignUpForm, goToHistor
     return (
         <Container component="main" maxWidth="xs">
             <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
+                className={cx(classes.signInContainer)}
             >
                 <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
                     <LockOutlinedIcon/>

@@ -150,6 +150,8 @@ function App() {
 
     const handleCloseModal = () => {
         setOpenModal(false);
+         setShowSignInForm(false);
+         setShowSignUpForm(false);
     };
 
     const {currentUser} = useContext(UserContext)
