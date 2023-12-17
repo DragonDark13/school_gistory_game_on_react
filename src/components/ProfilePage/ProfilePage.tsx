@@ -5,12 +5,24 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import SettingsIcon from '@mui/icons-material/Settings';
 import EmojiEvents from '@mui/icons-material/EmojiEvents';
-import {Container, Grid, LinearProgress} from "@mui/material";
+import {alpha, Container, Grid, LinearProgress, useMediaQuery} from "@mui/material";
 import './profile_page.scss'
 import UserProfileSettings from "./UserProfileSettings";
 import {Helmet} from "react-helmet-async";
 import {ProfilePageProps} from "../../types/types";
+import {useTheme} from "@mui/system";
+import {makeStyles} from "tss-react/mui";
+import {amber, blueGrey, deepOrange, lightBlue} from "@mui/material/colors";
 
+
+const useStyles = makeStyles()((theme) => ({
+
+    levelCounter: {
+        background: theme.palette.primary.light,
+    },
+
+
+}))
 
 
 const ProfilePage: React.FC<ProfilePageProps> = ({
@@ -34,6 +46,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     const progress = Math.round(historyList.length / 100 * lessonsVisited);
     const progressAnswer = 30;
 
+    const {cx, classes} = useStyles();
+
     let achievementIconArray = [
         <EmojiEvents fontSize={"large"}/>,
         <EmojiEvents fontSize={"large"}/>,
@@ -48,111 +62,146 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
     const achievementActiveCount = 3;
 
+    const theme = useTheme();
+    const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+
     return (
         <Container className={"profile_container"}>
             <Helmet>
                 <title>Профіль</title>
             </Helmet>
-            <Paper className={"profile_block"} elevation={3}>
-                <Avatar className={"profile_block_avatar"} alt={username} src={avatar}
-                        sx={{width: 100, height: 100, margin: 'auto'}}/>
-                <Typography variant="h5" component="div" sx={{marginTop: '10px'}}>
-                    {username}
-                </Typography>
-                <Grid gap={2} container alignItems={"center"} justifyContent={"center"}>
-                    <Grid item>
-                        {/*<KeyboardDoubleArrowUpIcon className={"block_icon"}/>*/}
-                        <Avatar> {lessonsVisited}</Avatar>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="subtitle1" color="text.secondary">
-                            Рівень
+            <Grid spacing={mdUp ? 2 : 0} container direction={mdUp ? "row-reverse" : "row"}>
+                <Grid item xs={12} lg={9}>
+                    <Paper className={"profile_block"} elevation={3}>
+                        <Avatar className={"profile_block_avatar"} alt={username} src={avatar}
+                                sx={{width: 100, height: 100, margin: 'auto'}}/>
+                        <Typography variant={mdUp ? "h4" : "h5"}  className={"username"} >
+                            {username}
                         </Typography>
-                    </Grid>
-                </Grid>
-
-                <Typography>Локація у часі</Typography>
-                <Typography variant={"h6"} color="text.secondary" sx={{marginTop: '5px'}}>
-                    {historyList[lessonsVisited].date}
-                </Typography>
-
-                <Typography>Загальгний прогресс</Typography>
-                <Typography variant={"h6"} color="text.secondary">{progressAnswer + "%"}</Typography>
-
-                <LinearProgress
-                    color={"primary"}
-                    value={progressAnswer}
-                    variant={"determinate"}
-                />
-
-
-                <Typography>Загальгний прогресс</Typography>
-                <Typography variant={"h6"} color="text.secondary">{progress + "%"}</Typography>
-
-                <LinearProgress
-                    color={"primary"}
-                    value={progress}
-                    variant={"determinate"}
-                />
-
-                <Typography>
-                    Ваші знахідки
-                </Typography>
-
-                <Grid container className={"achievement_icon_list"}>
-                    {achievementIconArray.map((achievement, index) => (
-                        <Grid key={index + "test"} item xs={6} sm={4} xl={3}>
-                            <Paper variant={"outlined"}>
-                                {/*<ListItemIcon>*/}
-                                <EmojiEvents color={achievementActiveCount > index ? "primary" : "disabled"}
-                                             fontSize={"large"}/>
-                                {/*</ListItemIcon>*/}
-                                <Typography>
-                                    {historyList[index].achieved}
+                        <Grid gap={2} className={"level_container"} container alignItems={"center"}
+                              justifyContent={"center"}>
+                            <Grid item>
+                                {/*<KeyboardDoubleArrowUpIcon className={"block_icon"}/>*/}
+                                <Avatar className={cx(classes.levelCounter)}> {lessonsVisited}</Avatar>
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="subtitle1" color="text.secondary">
+                                    Рівень
                                 </Typography>
-
-                                {/*<ListItemText secondary={historyList[index].achieved}*/}
-                                {/*              title={historyList[index].achieved}/>*/}
-                            </Paper>
+                            </Grid>
                         </Grid>
-                    ))}
+
+                        <Grid container alignItems={"center"} justifyContent={"center"}>
+                            <Paper className={"time_location_container"}>
+                                <Grid item container xs={"auto"} alignItems={"center"}>
+                                    <Grid item xs={12} lg={"auto"}>
+                                        <Typography className={"time_label"}>Локація у часі:</Typography>
+                                    </Grid>
+                                    <Grid item xs={12} lg={"auto"}>
+                                        <Typography className={"time"} variant={"h6"} color="text.secondary"
+                                                    sx={{marginTop: '5px'}}>
+                                            {historyList[lessonsVisited].date}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+
+                        </Grid>
+
+                        <Grid className={"profile_progress_panel_container"} container alignItems={"center"}
+                              justifyContent={"center"} spacing={mdUp ? 2 : 0}>
+                            <Grid item xs={12} lg={6}>
+                                <Typography variant={"h5"}>Прогресс на поточному рівні</Typography>
+                                <Typography variant={"h6"} color="text.secondary">{progressAnswer + "%"}</Typography>
+
+                                <LinearProgress
+                                    color={"primary"}
+                                    value={progressAnswer}
+                                    variant={"determinate"}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} lg={6}>
+                                <Typography variant={"h5"}>Загальгний прогресс</Typography>
+                                <Typography variant={"h6"} color="text.secondary">{progress + "%"}</Typography>
+
+                                <LinearProgress
+                                    color={"primary"}
+                                    value={progress}
+                                    variant={"determinate"}
+                                />
+                            </Grid>
+                        </Grid>
+
+
+                        <div className="achievement_container">
+                            <Typography variant={"h5"}>
+                                Ваші знахідки
+                            </Typography>
+
+                            <Grid container className={"achievement_icon_list"}>
+
+                                {achievementIconArray.map((achievement, index) => (
+                                    <Grid key={index + "test"} item xs={6} sm={4} xl={3}>
+                                        <Paper variant={"outlined"}>
+                                            {/*<ListItemIcon>*/}
+                                            <EmojiEvents color={achievementActiveCount > index ? "primary" : "disabled"}
+                                                         fontSize={"large"}/>
+                                            {/*</ListItemIcon>*/}
+                                            <Typography>
+                                                {historyList[index].achieved}
+                                            </Typography>
+
+                                            {/*<ListItemText secondary={historyList[index].achieved}*/}
+                                            {/*              title={historyList[index].achieved}/>*/}
+                                        </Paper>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        </div>
+
+                    </Paper>
                 </Grid>
 
+                <Grid item xs={12} lg={3}>
+                    {(!mdUp && !openSettings) && <Button
+                        className={"settings_button"}
+                        fullWidth
+                        variant="outlined"
+                        color={"primary"}
+                        onClick={handleOpenSettings}
+                        startIcon={<SettingsIcon/>}
+                    >
+                        Налаштування
+                    </Button>
+                    }
+                    {(openSettings || mdUp) && (
+                        <Paper className={"profile_block profile_block_settings"} elevation={3}>
+                            {!mdUp && <Grid container justifyContent={"flex-end"}>
+                                <Grid item>
+                                    <Button onClick={handleCloseSettings}>Close Settings</Button>
+                                </Grid>
+                            </Grid>}
+                            <UserProfileSettings/>
+                        </Paper>
+                    )}
 
-            </Paper>
+                    <Grid container justifyContent={"flex-end"}>
+                        <Grid item lg={12}>
+                            <Button fullWidth variant="outlined" color={"secondary"}>
+                                Видалити профіль
+                            </Button>
+                        </Grid>
+                    </Grid>
 
+                </Grid>
 
-            {!openSettings && <Button
-                className={"settings_button"}
-                fullWidth
-                variant="outlined"
-                color={"primary"}
-                onClick={handleOpenSettings}
-                startIcon={<SettingsIcon/>}
-            >
-                Налаштування
-            </Button>
-            }
+            </Grid>
+
 
             {/* Modal for Settings */}
-            {openSettings && (
-                <Paper className={"profile_block profile_block_settings"} elevation={3}>
-                    <Grid container justifyContent={"flex-end"}>
-                        <Grid item>
-                            <Button onClick={handleCloseSettings}>Close Settings</Button>
-                        </Grid>
-                    </Grid>
-                    <UserProfileSettings/>
-                </Paper>
-            )}
 
-            <Grid container justifyContent={"flex-end"}>
-                <Grid item>
-                    <Button variant="outlined" color={"secondary"}>
-                        Видалити профіль
-                    </Button>
-                </Grid>
-            </Grid>
+
         </Container>
     );
 };
