@@ -1,5 +1,5 @@
 import React from 'react';
-import {List, ListItem, Typography, Paper, Grid, Hidden} from '@mui/material';
+import {List, ListItem, Typography, Paper, Grid, Hidden, alpha} from '@mui/material';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import EventNoteIcon from '@mui/icons-material/EventNote';
@@ -55,49 +55,50 @@ const useStyles = makeStyles()((theme) => ({
     itemColor1: {
 
         "& .icon_container": {
-            background: theme.palette.primary.light,
-            color: theme.palette.primary.main,
+            background: alpha(theme.palette.primary.light, 0.3),
+            color: alpha(theme.palette.primary.main, 0.5),
         }
 
     },
     itemColor2: {
 
         "& .icon_container": {
-            background: theme.palette.secondary.light,
-            color: theme.palette.secondary.main,
+            background: alpha(theme.palette.secondary.light, 0.3),
+            color: alpha(theme.palette.secondary.main, 0.5),
         }
 
     },
     itemColor3: {
 
         "& .icon_container": {
-            background: amber[100],
-            color: amber[700],
+            background: alpha(amber[100], 0.3),
+            color: alpha(amber[700], 0.5),
         }
 
     },
     itemColor4: {
 
         "& .icon_container": {
-            background: deepOrange[100],
-            color: deepOrange[700],
+            background: alpha(deepOrange[100], 0.3),
+            color: alpha(deepOrange[700], 0.5),
         }
 
     },
     itemColor5: {
 
         "& .icon_container": {
-            background: lightBlue[100],
-            color: lightBlue[700],
+            background: alpha(lightBlue[100], 0.3),
+            color: alpha(lightBlue[700], 0.5),
         }
 
     },
     itemColor6: {
 
-        "& .icon_container": {
-            background: blueGrey[100],
-            color: blueGrey[700],
-        }
+        "& .icon_container":
+            {
+                background: alpha(blueGrey[100], 0.3),
+                color: alpha(blueGrey[700], 0.5),
+            }
 
     }
 
@@ -136,7 +137,8 @@ const FeaturedListItemContent = ({name, title, description}: IFeaturedListItemCo
             <Grid alignItems={"center"} columnSpacing={1} container>
                 <Grid item xs={"auto"} sm={"auto"}>
                     <Paper className={"icon_container"}
-                           elevation={0}>{getIcon(name)}</Paper></Grid>
+                           elevation={0}>
+                        {getIcon(name)}</Paper></Grid>
                 <Grid item xs={"auto"} sm={10} md={8}>
                     <Typography variant={"subtitle1"}>{title}</Typography>
                     {/*<Hidden smDown><Typography>{description}</Typography></Hidden>*/}
@@ -188,7 +190,7 @@ const AboutFeatureList = () => {
                     </List>
                 </Hidden>
                 <Hidden mdDown>
-                    <Grid container rowSpacing={4} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                    <Grid container rowSpacing={4} columnSpacing={{xs: 1, sm: 2, md: 3}}>
                         {featureList.map((feature, index) => (
                             <Grid item sm={6} xl={4} className={cx(getItemColorClass(feature.name))}
                                   title={feature.description} key={index + "feature.title"}>
