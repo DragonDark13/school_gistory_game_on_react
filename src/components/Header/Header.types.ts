@@ -3,7 +3,6 @@ export type THeaderStateProps = {
     setTheme: (theme: "light" | "dark") => void;
 };
 
-
 export type THeaderProps = THeaderStateProps;
 
 

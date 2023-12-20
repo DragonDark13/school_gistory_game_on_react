@@ -1,11 +1,21 @@
-import React, {ReactNode, useContext,  useState} from "react";
+import React, {ReactNode, useContext, useState} from "react";
 import {
     Container,
     Toolbar,
     Button,
     useTheme,
     useMediaQuery,
-    IconButton, Typography, Link
+    IconButton,
+    Typography,
+    Link,
+    Popover,
+    Popper,
+    Grow,
+    ClickAwayListener,
+    MenuList,
+    MenuItem,
+    ListItemIcon,
+    ListItemText
 } from "@mui/material";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
@@ -21,6 +31,11 @@ import {Link as RouterLink, useNavigate} from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
 import {ColorModeContext, LanguageContext, ThemeContext, UserContext} from "../MyProviders/MyProviders";
 import {IHandleClickOpenModalSignIn} from "../../types/types";
+import Paper from "@mui/material/Paper";
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ProfilePopper from "./ProfilePopper";
+
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -62,7 +77,9 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
     // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     // const open = Boolean(anchorEl);
 
-    const {isAuthenticated, logout} = useAuth();
+    let {isAuthenticated, logout} = useAuth();
+
+    isAuthenticated = true;
 
 
     const {cx, classes} = useStyles();
@@ -76,6 +93,19 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
     }
 
 
+    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+
+    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    const openProfileMenu = Boolean(anchorEl);
+
+
     return (
         <React.Fragment>
             <MyAppBar position={"static"} className={cx(classes.customAppBar, "header")}>
@@ -85,7 +115,8 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
 
                         <Link component={RouterLink} underline={"none"} to="/">
                             <Grid gap={2} container alignItems={"center"}>
-                                <Grid item><LogoIcon className={cx(classes.headerLogoIcon, "logo_icon")}/></Grid>
+                                <Grid item>
+                                    <LogoIcon className={cx(classes.headerLogoIcon, "logo_icon")}/></Grid>
                                 <Grid item>
                                     <Typography className={cx(classes.headerLogoText)}
                                                 variant={"h5"}>
@@ -96,59 +127,35 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
                         </Link>
 
 
-                        {/*<label>*/}
-                        {/*    <input*/}
-                        {/*        type="checkbox"*/}
-                        {/*        checked={theme === 'dark'}*/}
-                        {/*        onChange={(e) => {*/}
-                        {/*            setTheme(e.target.checked ? 'dark' : 'light')*/}
-                        {/*        }}*/}
-                        {/*    />*/}
-                        {/*    Use dark mode*/}
-                        {/*</label>*/}
-                        {/*{!smUp &&*/}
-                        {/*<p>language: {language}*/}
-                        {/*</p>}*/}
-
-                        {/*<Button*/}
-                        {/*    color="secondary"*/}
-                        {/*    id="basic-button"*/}
-                        {/*    aria-controls={open ? 'basic-menu' : undefined}*/}
-                        {/*    aria-haspopup="true"*/}
-                        {/*    aria-expanded={open ? 'true' : undefined}*/}
-                        {/*    onClick={handleClick}*/}
-                        {/*>*/}
-                        {/*    Dashboard*/}
-                        {/*</Button>*/}
-
-                        {/*<Menu*/}
-                        {/*    id="basic-menu"*/}
-                        {/*    anchorEl={anchorEl}*/}
-                        {/*    open={open}*/}
-                        {/*    onClose={handleClose}*/}
-                        {/*    MenuListProps={{*/}
-                        {/*        'aria-labelledby': 'basic-button',*/}
-                        {/*    }}*/}
-                        {/*>*/}
-                        {/*    <MenuItem onClick={handleClose}>Profile</MenuItem>*/}
-                        {/*    <MenuItem onClick={handleClose}>My account</MenuItem>*/}
-                        {/*    <MenuItem onClick={handleClose}>Logout</MenuItem>*/}
-                        {/*</Menu>*/}
-
                         <Grid>
+                            {!smUp &&
                             <IconButton onClick={colorMode.toggleColorMode}>
                                 {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}
                             </IconButton>
+                            }
                             {isAuthenticated ?
                                 <React.Fragment>
-                                    <RouterLink to={"/profile"}>
-                                        <IconButton className={cx(classes.headerLogoIcon)} title={"Профіль"}>
-                                            <AccountCircleIcon/>
-                                        </IconButton>
-                                    </RouterLink>
-                                    <IconButton onClick={logoutOnClick} className={cx(classes.headerLogoIcon)} title={"Вийти"}>
+                                    <div
+                                        onMouseEnter={handlePopoverOpen}
+                                        onMouseLeave={handlePopoverClose}
+                                    >
+                                        <RouterLink to={"/profile"}>
+                                            <IconButton
+
+                                                className={cx(classes.headerLogoIcon)} title={"Профіль"}>
+                                                <AccountCircleIcon fontSize={"large"}/>
+                                            </IconButton>
+
+
+                                        </RouterLink>
+
+<ProfilePopper anchorEl={anchorEl} handlePopoverClose={handlePopoverClose} openProfileMenu={openProfileMenu} />
+
+                                    </div>
+                                    {!smUp && <IconButton onClick={logoutOnClick} className={cx(classes.headerLogoIcon)}
+                                                          title={"Вийти"}>
                                         <LogoutIcon/>
-                                    </IconButton>
+                                    </IconButton>}
                                 </React.Fragment>
                                 :
                                 <IconButton onClick={handleClickOpenModalSignIn} className={cx(classes.headerLogoIcon)}

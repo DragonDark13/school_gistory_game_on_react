@@ -1,7 +1,7 @@
 export interface ISignInForms {
     setShowSignInForm: (value: boolean) => void;
     setShowSignUpForm: (value: boolean) => void;
-    goToHistoryTimeLine?:boolean;
+    goToHistoryTimeLine?: boolean;
 }
 
 export interface IModalSignInSignUp extends ISignInForms {
@@ -33,7 +33,7 @@ export interface IHistoryListArray {
     readonly historyList: HistoricalEvent[],
 }
 
-export interface IHistoryTimelineProps extends IHistoryListArray,ISetSelectedArticle{
+export interface IHistoryTimelineProps extends IHistoryListArray, ISetSelectedArticle {
     buttonStates: Array<boolean>;
     successLevels: Array<boolean>;
     subArticleSuccessLevels: boolean[][]
@@ -65,11 +65,11 @@ export interface ProfilePageProps extends IHistoryListArray {
     achievements: string[];
 }
 
-export interface IArticleProps extends IHistoryListArray,ISetSelectedArticle{
+export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
     subArticleSuccessLevels: boolean[][];
 }
 
-export interface IQuizBlockProps extends IHistoryListArray{
+export interface IQuizBlockProps extends IHistoryListArray {
     testType: 'article' | 'subArticle';
     readonly questions: string[];
     readonly options: string[][];
@@ -80,6 +80,12 @@ export interface IQuizBlockProps extends IHistoryListArray{
     readonly setSelectedSubArticle?: (arg0: number) => void;
 }
 
-export  interface IMainPageContent extends IHandleClickOpenModalSignIn{
+export interface IMainPageContent extends IHandleClickOpenModalSignIn {
 
+}
+
+export interface IProfilePopper {
+    anchorEl: HTMLElement | null,
+    openProfileMenu: boolean
+    handlePopoverClose: () => void
 }
