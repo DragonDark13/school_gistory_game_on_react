@@ -6,12 +6,22 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import LogoutIcon from "@mui/icons-material/Logout";
 import {IProfilePopper} from "../../types/types";
+import {useAuth} from "../AuthContext/AuthContext";
+import {Link as RouterLink, useNavigate} from "react-router-dom";
 
 
+const ProfilePopper = ({
+                           openProfileMenu,
+                           anchorEl,
+                           handlePopoverClose,
+                           logoutOnClick,
+                           toggleColorModeFunc
+                       }: IProfilePopper) => {
 
-const ProfilePopper = ({openProfileMenu,anchorEl,handlePopoverClose}:IProfilePopper) => {
+// openProfileMenu=true;
     return (
-        <Popper   
+        <Popper
+            className={"header_profile_popover"}
             open={openProfileMenu}
             anchorEl={anchorEl}
             placement={'bottom-end'}
@@ -33,27 +43,30 @@ const ProfilePopper = ({openProfileMenu,anchorEl,handlePopoverClose}:IProfilePop
                                 id="composition-menu"
                                 aria-labelledby="composition-button"
                             >
-                                <MenuItem onClick={handlePopoverClose}>
+
+                                <MenuItem component={RouterLink}
+                                          to={"/profile"}>
                                     <ListItemIcon>
                                         <PermIdentityIcon/>
+
                                     </ListItemIcon>
                                     <ListItemText>Profile</ListItemText>
                                 </MenuItem>
-                                <MenuItem
-                                    onClick={handlePopoverClose}>
+                                <MenuItem onClick={handlePopoverClose}>
                                     <ListItemIcon>
                                         <SettingsIcon/>
                                     </ListItemIcon>
                                     <ListItemText>Settings</ListItemText>
                                 </MenuItem>
-                                <MenuItem onClick={handlePopoverClose}>
+                                <MenuItem onClick={toggleColorModeFunc}>
                                     <ListItemIcon>
                                         <Brightness7Icon/>
                                     </ListItemIcon>
-                                    <ListItemText>Dark
-                                        Mode</ListItemText>
+                                    <ListItemText>
+                                        Dark Mode
+                                    </ListItemText>
                                 </MenuItem>
-                                <MenuItem onClick={handlePopoverClose}>
+                                <MenuItem onClick={logoutOnClick}>
                                     <ListItemIcon>
                                         <LogoutIcon/>
                                     </ListItemIcon>

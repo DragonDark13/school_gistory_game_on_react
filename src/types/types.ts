@@ -88,4 +88,6 @@ export interface IProfilePopper {
     anchorEl: HTMLElement | null,
     openProfileMenu: boolean
     handlePopoverClose: () => void
+    logoutOnClick: () => void;
+    toggleColorModeFunc:() => void;
 }

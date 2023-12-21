@@ -1,9 +1,29 @@
-.header{
+.header {
   $padding: 16px;
   padding-bottom: $padding;
   padding-top: $padding;
+
+  .MuiToolbar-root{
+    z-index: 2;
+  }
+
   .logo_icon {
     font-size: 56px;
     display: block;
   }
+
+  .header_profile_popover {
+
+    .MuiPaper-root {
+      padding: 0.5rem 1rem;;
+    }
+
+    .MuiMenuItem-root {
+      padding: 0.7rem;
+      border-radius: 8px;
+    }
+
+  }
+
 }
+

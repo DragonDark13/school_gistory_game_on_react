@@ -21,6 +21,7 @@ const useStyles = makeStyles()((theme) => ({
 
     levelCounter: {
         background: theme.palette.primary.light,
+        fontWeight: 800,
     },
 
 
@@ -139,7 +140,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                             </Grid>
 
                             <Grid item xs={12} lg={6}>
-                                <Typography variant={"h5"}>Загальгний прогресс</Typography>
+                                <Typography variant={"h5"}>Загаьний прогресс</Typography>
                                 <Typography variant={"h6"} color="text.secondary">{progress + "%"}</Typography>
 
                                 <LinearProgress
