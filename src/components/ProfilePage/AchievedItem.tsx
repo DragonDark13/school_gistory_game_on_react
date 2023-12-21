@@ -1,9 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import {Grid, Hidden, Icon, Tooltip, TooltipProps} from "@mui/material";
+import {Grid,  Icon, Tooltip, TooltipProps} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import EmojiEvents from "@mui/icons-material/EmojiEvents";
 import Typography from "@mui/material/Typography";
 import {styled} from "@mui/material/styles";
 import {tooltipClasses} from "@mui/material/Tooltip";

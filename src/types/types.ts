@@ -1,8 +1,4 @@
-import AchievedItem from "../components/ProfilePage/AchievedItem";
-import SvgIcon, {SvgIconOwnProps} from "@mui/material/SvgIcon/SvgIcon";
-import React, {ReactElement} from "react";
 import {SvgIconComponent} from "@mui/icons-material";
-import {SvgIconProps} from "@mui/material/SvgIcon";
 
 export interface ISignInForms {
     setShowSignInForm: (value: boolean) => void;

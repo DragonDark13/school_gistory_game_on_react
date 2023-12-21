@@ -1,21 +1,13 @@
-import React, {ReactNode, useContext, useState} from "react";
+import React, { useContext} from "react";
 import {
     Container,
     Toolbar,
-    Button,
     useTheme,
     useMediaQuery,
     IconButton,
     Typography,
     Link,
-    Popover,
-    Popper,
-    Grow,
-    ClickAwayListener,
-    MenuList,
-    MenuItem,
-    ListItemIcon,
-    ListItemText
+
 } from "@mui/material";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
@@ -29,11 +21,8 @@ import "./header.scss"
 import Grid from "@mui/material/Grid";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
-import {ColorModeContext, LanguageContext, ThemeContext, UserContext} from "../MyProviders/MyProviders";
+import {ColorModeContext, LanguageContext} from "../MyProviders/MyProviders";
 import {IHandleClickOpenModalSignIn} from "../../types/types";
-import Paper from "@mui/material/Paper";
-import PermIdentityIcon from '@mui/icons-material/PermIdentity';
-import SettingsIcon from '@mui/icons-material/Settings';
 import ProfilePopper from "./ProfilePopper";
 
 
@@ -137,8 +126,8 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
                                 {isAuthenticated ?
                                     <React.Fragment>
                                         <div
-                                            onMouseEnter={smUp ? handlePopoverOpen : null}
-                                            onMouseLeave={smUp ? handlePopoverClose : null}
+                                            onMouseEnter={handlePopoverOpen}
+                                            onMouseLeave={handlePopoverClose}
                                         >
                                             <RouterLink to={"/profile"}>
                                                 <IconButton
@@ -155,7 +144,8 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
                                                 logoutOnClick={logoutOnClick}
                                                 anchorEl={anchorEl}
                                                 handlePopoverClose={handlePopoverClose}
-                                                openProfileMenu={openProfileMenu}/>}
+                                                openProfileMenu={openProfileMenu}/>
+                                            }
 
                                         </div>
                                         {!smUp &&

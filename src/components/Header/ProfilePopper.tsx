@@ -26,7 +26,6 @@ const ProfilePopper = ({
             anchorEl={anchorEl}
             placement={'bottom-end'}
             transition
-            onClose={handlePopoverClose}
             disablePortal
         >
             {({TransitionProps, placement}) => (
