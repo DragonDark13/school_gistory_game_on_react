@@ -1,3 +1,9 @@
+import AchievedItem from "../components/ProfilePage/AchievedItem";
+import SvgIcon, {SvgIconOwnProps} from "@mui/material/SvgIcon/SvgIcon";
+import React, {ReactElement} from "react";
+import {SvgIconComponent} from "@mui/icons-material";
+import {SvgIconProps} from "@mui/material/SvgIcon";
+
 export interface ISignInForms {
     setShowSignInForm: (value: boolean) => void;
     setShowSignUpForm: (value: boolean) => void;
@@ -57,12 +63,18 @@ export interface ISetSelectedArticle {
     readonly setSelectedArticle: (arg0: number) => void;
 }
 
+interface IAchievedListItem {
+    name: string,
+    description: string
+}
+
 export interface ProfilePageProps extends IHistoryListArray {
     username: string;
     avatar: string;
     lessonsVisited: number;
     achievementLevel: string;
     achievements: string[];
+    achievedList: IAchievedListItem[];
 }
 
 export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
@@ -89,5 +101,16 @@ export interface IProfilePopper {
     openProfileMenu: boolean
     handlePopoverClose: () => void
     logoutOnClick: () => void;
-    toggleColorModeFunc:() => void;
+    toggleColorModeFunc: () => void;
+}
+
+interface ColoredSvgIconProps extends SvgIconComponent {
+}
+
+
+export interface IAchievedItem{
+    description:string
+    name:string
+    active: boolean
+    icon: ColoredSvgIconProps
 }

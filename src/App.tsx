@@ -10,7 +10,7 @@ import data from "./data/data.json";
 import Header from "./components/Header/Header";
 import "./static/css/normalize.css"
 import "./static/style/main.scss"
-import { Route, Routes, HashRouter as Router} from 'react-router-dom';
+import {Route, Routes, HashRouter as Router} from 'react-router-dom';
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import avatarImg from "./static/image/city.jpg"
 import {Helmet} from "react-helmet-async";
@@ -150,8 +150,8 @@ function App() {
 
     const handleCloseModal = () => {
         setOpenModal(false);
-         setShowSignInForm(false);
-         setShowSignUpForm(false);
+        setShowSignInForm(false);
+        setShowSignUpForm(false);
     };
 
     const {currentUser} = useContext(UserContext)
@@ -160,91 +160,91 @@ function App() {
         <Router>
             <div className="App">
 
-                    <Helmet>
-                        <title>Головна</title>
-                    </Helmet>
-                    <Header handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
+                <Helmet>
+                    <title>Головна</title>
+                </Helmet>
+                <Header handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
 
-                    <ModalSignInSignUp
-                        goToHistoryTimeLine={true}
-                        setOpenModal={setOpenModal} openModal={openModal}
-                        handleCloseModal={handleCloseModal}
-                        showSignInForm={showSignInForm} showSignUpForm={showSignUpForm}
-                        setShowSignInForm={setShowSignInForm}
-                        setShowSignUpForm={setShowSignUpForm}/>
-                    <main>
+                <ModalSignInSignUp
+                    goToHistoryTimeLine={true}
+                    setOpenModal={setOpenModal} openModal={openModal}
+                    handleCloseModal={handleCloseModal}
+                    showSignInForm={showSignInForm} showSignUpForm={showSignUpForm}
+                    setShowSignInForm={setShowSignInForm}
+                    setShowSignUpForm={setShowSignUpForm}/>
+                <main>
 
-                        <Routes>
+                    <Routes>
 
-                            <Route path={"/"}
-                                   element={
-                                       <MainPageContent handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
-                                   }
-                            />
-                            <Route path="/profile"
-                                   element={
-                                       <ProfilePage
-                                           historyList={data.historyList}
-                                           achievementLevel={"test"}
-                                           achievements={achievements}
-                                           avatar={avatarImg}
-                                           lessonsVisited={7}
-                                           username={currentUser ? currentUser.name : "Петро" +
-                                               " Сагайдачний"}/>}/>
+                        <Route path={"/"}
+                               element={
+                                   <MainPageContent handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
+                               }
+                        />
+                        <Route path="/profile"
+                               element={
+                                   <ProfilePage
+                                       historyList={data.historyList}
+                                       achievementLevel={"test"}
+                                       achievements={achievements}
+                                       achievedList={data.achievedList}
+                                       avatar={avatarImg}
+                                       lessonsVisited={7}
+                                       username={currentUser ? currentUser.name : "Петро" +
+                                           " Сагайдачний"}/>}/>
 
-                            <Route path="/article/:selectedArticle"
-                                   element={
-                                       <Article
-                                           subArticleSuccessLevels={subArticleSuccessLevels}
-                                           setSelectedArticle={setSelectedArticle}
-                                           historyList={data.historyList}
-                                           // selectedArticle={selectedArticle}
-                                       />
-                                   }
-                            />
+                        <Route path="/article/:selectedArticle"
+                               element={
+                                   <Article
+                                       subArticleSuccessLevels={subArticleSuccessLevels}
+                                       setSelectedArticle={setSelectedArticle}
+                                       historyList={data.historyList}
+                                       // selectedArticle={selectedArticle}
+                                   />
+                               }
+                        />
 
-                            <Route path={"/test/:selectedArticle"}
-                                   element={
-                                       <QuizBlock
-                                           testType="article"
-                                           historyList={data.historyList}
-                                           handleNextLevel={handleNextLevel}
-                                           setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                           questions={data.questions} options={data.options}
-                                           correctAnswers={data.correctAnswers}
-                                           onAnswer={handleQuizComplete}
-                                       />
-                                   }
-                            />
+                        <Route path={"/test/:selectedArticle"}
+                               element={
+                                   <QuizBlock
+                                       testType="article"
+                                       historyList={data.historyList}
+                                       handleNextLevel={handleNextLevel}
+                                       setAllAnswerIsCorrect={setAllAnswerIsCorrect}
+                                       questions={data.questions} options={data.options}
+                                       correctAnswers={data.correctAnswers}
+                                       onAnswer={handleQuizComplete}
+                                   />
+                               }
+                        />
 
-                            <Route
-                                path="/test/:selectedArticle/:subtopicId"
-                                element={
-                                    <QuizBlock
-                                        testType="subArticle"
-                                        historyList={data.historyList}
-                                        handleNextLevel={handleNextLevel}
-                                        setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
-                                        questions={data.subArticleTest.questions}
-                                        options={data.subArticleTest.options}
-                                        correctAnswers={data.subArticleTest.correctAnswers}
-                                        onAnswer={handleQuizComplete}
-                                        setSelectedSubArticle={setSelectedSubArticle}
-                                    />}
-                            />
-
-                            <Route path="/timeline" element={
-                                <HistoryTimeline
+                        <Route
+                            path="/test/:selectedArticle/:subtopicId"
+                            element={
+                                <QuizBlock
+                                    testType="subArticle"
+                                    historyList={data.historyList}
+                                    handleNextLevel={handleNextLevel}
+                                    setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
+                                    questions={data.subArticleTest.questions}
+                                    options={data.subArticleTest.options}
+                                    correctAnswers={data.subArticleTest.correctAnswers}
+                                    onAnswer={handleQuizComplete}
                                     setSelectedSubArticle={setSelectedSubArticle}
-                                    subArticleSuccessLevels={subArticleSuccessLevels}
-                                    setSelectedArticle={setSelectedArticle}
-                                    successLevels={successLevels}
-                                    buttonStates={buttonStates}
-                                    historyList={data.historyList}/>}/>
-                        </Routes>
-                    </main>
-                    <Footer/>
+                                />}
+                        />
 
+                        <Route path="/timeline" element={
+                            <HistoryTimeline
+                                setSelectedSubArticle={setSelectedSubArticle}
+                                subArticleSuccessLevels={subArticleSuccessLevels}
+                                setSelectedArticle={setSelectedArticle}
+                                successLevels={successLevels}
+                                buttonStates={buttonStates}
+                                historyList={data.historyList}/>}/>
+                    </Routes>
+                </main>
+                <Footer/>
             </div>
         </Router>
     );

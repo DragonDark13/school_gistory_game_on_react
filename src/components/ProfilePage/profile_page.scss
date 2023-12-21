@@ -34,8 +34,33 @@
       margin-top: 1rem;
 
       .MuiPaper-root {
-        padding: 10px;
+        padding: 20px 10px;
+        position: relative;
+
+        .achievement_icon_container {
+          width: 55px;
+          height: 55px;
+          background: rgba(0, 0, 0, 0.10);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: auto auto 15px;
+        }
+
+        .tooltip_icon {
+          cursor: pointer;
+          position: absolute;
+          top: 10px;
+          right: 10px;
+        }
+
+        .name {
+          font-weight: bold;
+          margin-bottom: 0.3rem;
+        }
       }
+
     }
 
     &.profile_block_settings {
@@ -65,15 +90,23 @@
   }
 
   .profile_progress_panel_container {
+    margin-top: 1rem;
+
     @media (min-width: 1536px) {
       margin-top: 2rem;
     }
+
+    .profile_progress_item {
+      margin-top: 1rem;
+    }
+
   }
 
-  .username{
-          margin-top: 1rem;
+  .username {
+    margin-top: 1rem;
+    margin-bottom: .5rem;
 
-      @media (min-width: 1536px) {
+    @media (min-width: 1536px) {
       margin-top: 2rem;
     }
   }
@@ -117,5 +150,9 @@
     margin-top: 3rem;
   }
 
+}
 
+.tooltip_my .MuiTooltip-tooltip{
+  font-size: 14px;
+  padding: 8px 16px;
 }

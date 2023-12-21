@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import SettingsIcon from '@mui/icons-material/Settings';
 import EmojiEvents from '@mui/icons-material/EmojiEvents';
-import {alpha, Container, Grid, LinearProgress, useMediaQuery} from "@mui/material";
+import {alpha, Container, Grid, Hidden, LinearProgress, Tooltip, TooltipProps, useMediaQuery} from "@mui/material";
 import './profile_page.scss'
 import UserProfileSettings from "./UserProfileSettings";
 import {Helmet} from "react-helmet-async";
@@ -15,6 +15,10 @@ import {makeStyles} from "tss-react/mui";
 import {amber, blueGrey, deepOrange, lightBlue} from "@mui/material/colors";
 import {useAuth} from "../AuthContext/AuthContext";
 import {useNavigate} from "react-router-dom";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import {styled} from '@mui/material/styles';
+import {tooltipClasses} from '@mui/material/tooltip';
+import AchievedItem from "./AchievedItem";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -27,6 +31,17 @@ const useStyles = makeStyles()((theme) => ({
 
 }))
 
+const BootstrapTooltip = styled(({className, ...props}: TooltipProps) => (
+    <Tooltip {...props} arrow classes={{popper: className}}/>
+))(({theme}) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+        color: theme.palette.common.black,
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: theme.palette.common.black,
+    },
+}));
+
 
 const ProfilePage: React.FC<ProfilePageProps> = ({
                                                      username,
@@ -35,6 +50,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                                      achievementLevel,
                                                      achievements,
                                                      historyList,
+                                                     achievedList
                                                  }) => {
 
     const {isAuthenticated} = useAuth();
@@ -67,15 +83,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     const {cx, classes} = useStyles();
 
     let achievementIconArray = [
-        <EmojiEvents fontSize={"large"}/>,
-        <EmojiEvents fontSize={"large"}/>,
-        <EmojiEvents fontSize={"large"}/>,
-        <EmojiEvents fontSize={"large"}/>,
-        <EmojiEvents fontSize={"large"}/>,
-        <EmojiEvents fontSize={"large"}/>,
-        <EmojiEvents fontSize={"large"}/>,
-        <EmojiEvents fontSize={"large"}/>,
-        <EmojiEvents fontSize={"large"}/>,
+        EmojiEvents,
+        EmojiEvents,
+        EmojiEvents,
+        EmojiEvents,
+        EmojiEvents,
+        EmojiEvents,
+        EmojiEvents,
+        EmojiEvents,
+        EmojiEvents,
     ]
 
     const achievementActiveCount = 3;
@@ -128,7 +144,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
                         <Grid className={"profile_progress_panel_container"} container alignItems={"center"}
                               justifyContent={"center"} spacing={mdUp ? 2 : 0}>
-                            <Grid item xs={12} lg={6}>
+                            <Grid item xs={12} lg={6} className={"profile_progress_item"}>
                                 <Typography variant={"h5"}>Прогресс на поточному рівні</Typography>
                                 <Typography variant={"h6"} color="text.secondary">{progressAnswer + "%"}</Typography>
 
@@ -139,8 +155,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                 />
                             </Grid>
 
-                            <Grid item xs={12} lg={6}>
-                                <Typography variant={"h5"}>Загаьний прогресс</Typography>
+                            <Grid item xs={12} lg={6} className={"profile_progress_item"}>
+                                <Typography variant={"h5"}>Загальний прогресс</Typography>
                                 <Typography variant={"h6"} color="text.secondary">{progress + "%"}</Typography>
 
                                 <LinearProgress
@@ -159,21 +175,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
                             <Grid container className={"achievement_icon_list"}>
 
-                                {achievementIconArray.map((achievement, index) => (
-                                    <Grid key={index + "test"} item xs={6} sm={4} xl={3}>
-                                        <Paper variant={"outlined"}>
-                                            {/*<ListItemIcon>*/}
-                                            <EmojiEvents color={achievementActiveCount > index ? "primary" : "disabled"}
-                                                         fontSize={"large"}/>
-                                            {/*</ListItemIcon>*/}
-                                            <Typography>
-                                                {historyList[index].achieved}
-                                            </Typography>
-
-                                            {/*<ListItemText secondary={historyList[index].achieved}*/}
-                                            {/*              title={historyList[index].achieved}/>*/}
-                                        </Paper>
-                                    </Grid>
+                                {achievedList.map(({name, description}, index) => (
+                                    <AchievedItem key={index + "achievedList"} icon={achievementIconArray[index]}
+                                                  name={name} description={description}
+                                                  active={achievementActiveCount > index}/>
                                 ))}
                             </Grid>
                         </div>

@@ -275,5 +275,31 @@
       "c) Африка",
       "b) Використання інструментів"
     ]
-  }
+  },
+  "achievedList": [
+    {
+      "name": "Achieved",
+      "description": "Achieved description"
+    },
+    {
+      "name": "Achieved",
+      "description": "Achieved description"
+    },
+    {
+      "name": "Achieved",
+      "description": "Achieved description"
+    },
+    {
+      "name": "Achieved",
+      "description": "Achieved description"
+    },
+    {
+      "name": "Achieved",
+      "description": "Achieved description"
+    },
+    {
+      "name": "Achieved",
+      "description": "Achieved description"
+    }
+  ]
 }
