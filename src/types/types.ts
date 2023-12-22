@@ -104,9 +104,7 @@ interface ColoredSvgIconProps extends SvgIconComponent {
 }
 
 
-export interface IAchievedItem{
-    description:string
-    name:string
+export interface IAchievedItem extends IAchievedListItem{
     active: boolean
     icon: ColoredSvgIconProps
 }
