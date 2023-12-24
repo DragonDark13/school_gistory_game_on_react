@@ -3,21 +3,22 @@ import React, {
     useEffect,
     useState
 } from 'react';
-import HistoryTimeline from './components/HistoryTimeline/HistoryTimeline';
-import QuizBlock from "./components/QuizBlock/QuizBlock";
-import Article from "./components/Article/Article";
 import data from "./data/data.json";
-import Header from "./components/Header/Header";
 import "./static/css/normalize.css"
 import "./static/style/main.scss"
 import {Route, Routes, HashRouter as Router} from 'react-router-dom';
-import ProfilePage from "./components/ProfilePage/ProfilePage";
 import avatarImg from "./static/image/city.jpg"
 import {Helmet} from "react-helmet-async";
-import  {UserContext} from './components/MyProviders/MyProviders';
+import {UserContext} from './components/MyProviders/MyProviders';
 import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp";
-import MainPageContent from "./components/MainPageContent/MainPageContent";
-import Footer from "./components/Footer/Footer";
+
+const HistoryTimeline = React.lazy(() => import('./components/HistoryTimeline/HistoryTimeline'));
+const QuizBlock = React.lazy(() => import('./components/QuizBlock/QuizBlock'));
+const Article = React.lazy(() => import('./components/Article/Article'));
+const Header = React.lazy(() => import('./components/Header/Header'));
+const ProfilePage = React.lazy(() => import('./components/ProfilePage/ProfilePage'));
+const MainPageContent = React.lazy(() => import('./components/MainPageContent/MainPageContent'));
+const Footer = React.lazy(() => import('./components/Footer/Footer'));
 
 
 function App() {
@@ -50,39 +51,38 @@ function App() {
     console.log(subArticleAllAnswerIsCorrect);
 
     const allAnswerIsCorrectFunc = useCallback(() => {
-        if (selectedArticle !== 0) {
 
-            console.log("selectedArticle", selectedArticle);
-            console.log(buttonStates);
-            setButtonStates((prevStates) => {
-                const updatedStates = [...prevStates];
-                updatedStates[selectedArticle + 1] = true;
-                return updatedStates;
-            });
+        console.log("selectedArticle", selectedArticle);
+        console.log(buttonStates);
+        setButtonStates((prevStates) => {
+            const updatedStates = [...prevStates];
+            updatedStates[selectedArticle + 1] = true;
+            return updatedStates;
+        });
 
-            console.log("selectedArticle", selectedArticle);
+        console.log("selectedArticle", selectedArticle);
 
-            setSuccessLevels((prevStates) => {
-                const updatedStates = [...prevStates];
-                updatedStates[selectedArticle] = true;
-                return updatedStates;
-            });
+        setSuccessLevels((prevStates) => {
+            const updatedStates = [...prevStates];
+            updatedStates[selectedArticle] = true;
+            return updatedStates;
+        });
 
-            console.log("selectedArticle", selectedArticle);
+        console.log("selectedArticle", selectedArticle);
 
-            console.log("successLevels", successLevels);
+        console.log("successLevels", successLevels);
 
-            setAchievements((prevAchievements) => {
-                const newAchievements = [...prevAchievements];
-                newAchievements[selectedArticle] = data.historyList[selectedArticle].achieved;
-                return newAchievements;
-            });
-        }
+        setAchievements((prevAchievements) => {
+            const newAchievements = [...prevAchievements];
+            newAchievements[selectedArticle] = data.historyList[selectedArticle].achieved;
+            return newAchievements;
+        });
+
     }, [selectedArticle, setButtonStates, setAchievements]);
 
     useEffect(() => {
         const effect = () => {
-            if (selectedArticle !== 0 && allAnswerIsCorrect) {
+            if (allAnswerIsCorrect) {
                 allAnswerIsCorrectFunc();
                 setAllAnswerIsCorrect(false);
                 // for new level reload answer
@@ -94,21 +94,20 @@ function App() {
 
 
     const handleSubArticleQuizComplete = useCallback(() => {
-        if (selectedSubArticle !== null) {
 
-            setSubArticleSuccessLevels((prevStates) => {
-                const updatedStates = [...prevStates];
-                updatedStates[selectedArticle][selectedSubArticle] = true;
-                return updatedStates;
-            });
+        setSubArticleSuccessLevels((prevStates) => {
+            const updatedStates = [...prevStates];
+            updatedStates[selectedArticle][selectedSubArticle] = true;
+            return updatedStates;
+        });
 
-        }
+
     }, [selectedSubArticle, setSubArticleSuccessLevels]);
 
 
     useEffect(() => {
         const effect = () => {
-            if (selectedArticle !== 0 && selectedSubArticle !== null && subArticleAllAnswerIsCorrect) {
+            if (selectedSubArticle !== null && subArticleAllAnswerIsCorrect) {
                 console.log('Sub article')
                 handleSubArticleQuizComplete();
                 setSubArticleAllAnswerIsCorrect(false);
@@ -130,11 +129,7 @@ function App() {
     };
 
     const handleNextLevel = () => {
-        if (selectedArticle !== 0) {
-            // setShowQuiz(false);
-            setSelectedArticle(selectedArticle + 1);
-            // setExpandedArticle(true);
-        }
+        setSelectedArticle(selectedArticle + 1);
     };
 
     const [openModal, setOpenModal] = React.useState(false);
@@ -170,78 +165,80 @@ function App() {
                     showSignInForm={showSignInForm} showSignUpForm={showSignUpForm}
                     setShowSignInForm={setShowSignInForm}
                     setShowSignUpForm={setShowSignUpForm}/>
+
+
                 <main>
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                        <Routes>
+                            <Route path={"/"}
+                                   element={
+                                       <MainPageContent handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
+                                   }
+                            />
+                            <Route path="/profile"
+                                   element={
+                                       <ProfilePage
+                                           historyList={data.historyList}
+                                           achievementLevel={"test"}
+                                           achievements={achievements}
+                                           achievedList={data.achievedList}
+                                           avatar={avatarImg}
+                                           lessonsVisited={7}
+                                           username={currentUser ? currentUser.name : "Петро" +
+                                               " Сагайдачний"}/>}/>
 
-                    <Routes>
+                            <Route path="/article/:selectedArticle"
+                                   element={
+                                       <Article
+                                           subArticleSuccessLevels={subArticleSuccessLevels}
+                                           setSelectedArticle={setSelectedArticle}
+                                           historyList={data.historyList}
+                                       />
+                                   }
+                            />
 
-                        <Route path={"/"}
-                               element={
-                                   <MainPageContent handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
-                               }
-                        />
-                        <Route path="/profile"
-                               element={
-                                   <ProfilePage
-                                       historyList={data.historyList}
-                                       achievementLevel={"test"}
-                                       achievements={achievements}
-                                       achievedList={data.achievedList}
-                                       avatar={avatarImg}
-                                       lessonsVisited={7}
-                                       username={currentUser ? currentUser.name : "Петро" +
-                                           " Сагайдачний"}/>}/>
+                            <Route path={"/test/:selectedArticle"}
+                                   element={
+                                       <QuizBlock
+                                           testType="article"
+                                           historyList={data.historyList}
+                                           handleNextLevel={handleNextLevel}
+                                           setAllAnswerIsCorrect={setAllAnswerIsCorrect}
+                                           questions={data.questions} options={data.options}
+                                           correctAnswers={data.correctAnswers}
+                                           onAnswer={handleQuizComplete}
+                                       />
+                                   }
+                            />
 
-                        <Route path="/article/:selectedArticle"
-                               element={
-                                   <Article
-                                       subArticleSuccessLevels={subArticleSuccessLevels}
-                                       setSelectedArticle={setSelectedArticle}
-                                       historyList={data.historyList}
-                                       // selectedArticle={selectedArticle}
-                                   />
-                               }
-                        />
+                            <Route
+                                path="/test/:selectedArticle/:subtopicId"
+                                element={
+                                    <QuizBlock
+                                        testType="subArticle"
+                                        historyList={data.historyList}
+                                        handleNextLevel={handleNextLevel}
+                                        setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
+                                        questions={data.subArticleTest.questions}
+                                        options={data.subArticleTest.options}
+                                        correctAnswers={data.subArticleTest.correctAnswers}
+                                        onAnswer={handleQuizComplete}
+                                        setSelectedSubArticle={setSelectedSubArticle}
+                                    />}
+                            />
 
-                        <Route path={"/test/:selectedArticle"}
-                               element={
-                                   <QuizBlock
-                                       testType="article"
-                                       historyList={data.historyList}
-                                       handleNextLevel={handleNextLevel}
-                                       setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                       questions={data.questions} options={data.options}
-                                       correctAnswers={data.correctAnswers}
-                                       onAnswer={handleQuizComplete}
-                                   />
-                               }
-                        />
-
-                        <Route
-                            path="/test/:selectedArticle/:subtopicId"
-                            element={
-                                <QuizBlock
-                                    testType="subArticle"
-                                    historyList={data.historyList}
-                                    handleNextLevel={handleNextLevel}
-                                    setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
-                                    questions={data.subArticleTest.questions}
-                                    options={data.subArticleTest.options}
-                                    correctAnswers={data.subArticleTest.correctAnswers}
-                                    onAnswer={handleQuizComplete}
+                            <Route path="/timeline" element={
+                                <HistoryTimeline
                                     setSelectedSubArticle={setSelectedSubArticle}
-                                />}
-                        />
-
-                        <Route path="/timeline" element={
-                            <HistoryTimeline
-                                setSelectedSubArticle={setSelectedSubArticle}
-                                subArticleSuccessLevels={subArticleSuccessLevels}
-                                setSelectedArticle={setSelectedArticle}
-                                successLevels={successLevels}
-                                buttonStates={buttonStates}
-                                historyList={data.historyList}/>}/>
-                    </Routes>
+                                    subArticleSuccessLevels={subArticleSuccessLevels}
+                                    setSelectedArticle={setSelectedArticle}
+                                    successLevels={successLevels}
+                                    buttonStates={buttonStates}
+                                    historyList={data.historyList}/>}/>
+                        </Routes>
+                    </React.Suspense>
                 </main>
+
                 <Footer/>
             </div>
         </Router>
