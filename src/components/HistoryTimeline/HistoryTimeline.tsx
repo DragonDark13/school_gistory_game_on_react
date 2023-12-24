@@ -105,7 +105,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
 
     return (
-        <Container>
+        <Container className={"history_timeline_page"}>
             <Helmet>
                 <title>Часопростір</title>
             </Helmet>
