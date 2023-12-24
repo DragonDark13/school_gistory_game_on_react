@@ -20,7 +20,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     // Реалізуйте функціонал для аутентифікації, наприклад, використовуючи API
 
     // При успішній аутентифікації встановлюємо isAuthenticated в true
-    setIsAuthenticated(true);
+    setIsAuthenticated(false);
   };
 
   const logout = () => {

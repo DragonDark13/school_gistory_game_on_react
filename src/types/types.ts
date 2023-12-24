@@ -70,7 +70,7 @@ export interface ProfilePageProps extends IHistoryListArray {
     lessonsVisited: number;
     achievementLevel: string;
     achievements: string[];
-    achievedList: IAchievedListItem[];
+    readonly achievedList: IAchievedListItem[];
 }
 
 export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
