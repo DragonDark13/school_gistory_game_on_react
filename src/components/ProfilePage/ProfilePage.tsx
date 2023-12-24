@@ -14,9 +14,7 @@ import {useTheme} from "@mui/system";
 import {makeStyles} from "tss-react/mui";
 import {useAuth} from "../AuthContext/AuthContext";
 import {useNavigate} from "react-router-dom";
-import {styled} from '@mui/material/styles';
 import AchievedItem from "./AchievedItem";
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 
 
 
@@ -30,16 +28,6 @@ const useStyles = makeStyles()((theme) => ({
 
 }))
 
-const BootstrapTooltip = styled(({className, ...props}: TooltipProps) => (
-    <Tooltip {...props} arrow classes={{popper: className}}/>
-))(({theme}) => ({
-    [`& .${tooltipClasses.arrow}`]: {
-        color: theme.palette.common.black,
-    },
-    [`& .${tooltipClasses.tooltip}`]: {
-        backgroundColor: theme.palette.common.black,
-    },
-}));
 
 
 const ProfilePage: React.FC<ProfilePageProps> = ({

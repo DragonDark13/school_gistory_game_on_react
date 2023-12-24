@@ -14,15 +14,13 @@ import {Route, Routes, HashRouter as Router} from 'react-router-dom';
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import avatarImg from "./static/image/city.jpg"
 import {Helmet} from "react-helmet-async";
-import MyProviders, {UserContext} from './components/MyProviders/MyProviders';
+import  {UserContext} from './components/MyProviders/MyProviders';
 import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp";
 import MainPageContent from "./components/MainPageContent/MainPageContent";
 import Footer from "./components/Footer/Footer";
 
 
 function App() {
-    // const [showQuiz, setShowQuiz] = useState(false);
-    // const [expandedArticle, setExpandedArticle] = useState(false);
     const [selectedArticle, setSelectedArticle] = useState<number>(0)
     const [selectedSubArticle, setSelectedSubArticle] = useState<null | number>(null);
 
@@ -52,7 +50,7 @@ function App() {
     console.log(subArticleAllAnswerIsCorrect);
 
     const allAnswerIsCorrectFunc = useCallback(() => {
-        if (selectedArticle !== null) {
+        if (selectedArticle !== 0) {
 
             console.log("selectedArticle", selectedArticle);
             console.log(buttonStates);
@@ -84,7 +82,7 @@ function App() {
 
     useEffect(() => {
         const effect = () => {
-            if (selectedArticle !== null && allAnswerIsCorrect) {
+            if (selectedArticle !== 0 && allAnswerIsCorrect) {
                 allAnswerIsCorrectFunc();
                 setAllAnswerIsCorrect(false);
                 // for new level reload answer
@@ -110,7 +108,7 @@ function App() {
 
     useEffect(() => {
         const effect = () => {
-            if (selectedArticle !== null && selectedSubArticle !== null && subArticleAllAnswerIsCorrect) {
+            if (selectedArticle !== 0 && selectedSubArticle !== null && subArticleAllAnswerIsCorrect) {
                 console.log('Sub article')
                 handleSubArticleQuizComplete();
                 setSubArticleAllAnswerIsCorrect(false);
@@ -132,7 +130,7 @@ function App() {
     };
 
     const handleNextLevel = () => {
-        if (selectedArticle !== null) {
+        if (selectedArticle !== 0) {
             // setShowQuiz(false);
             setSelectedArticle(selectedArticle + 1);
             // setExpandedArticle(true);

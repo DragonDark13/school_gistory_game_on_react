@@ -1,11 +1,12 @@
 import React from 'react';
-import {Grid,  Icon, Tooltip, TooltipProps} from "@mui/material";
+import {Grid,  Icon} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Typography from "@mui/material/Typography";
 import {styled} from "@mui/material/styles";
-import {tooltipClasses} from "@mui/material/Tooltip";
 import {IAchievedItem} from "../../types/types";
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+
 
 const BootstrapTooltip = styled(({className, ...props}: TooltipProps) => (
     <Tooltip {...props} arrow classes={{popper: className}}/>
