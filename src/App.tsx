@@ -95,12 +95,14 @@ function App() {
 
     const handleSubArticleQuizComplete = useCallback(() => {
 
-        setSubArticleSuccessLevels((prevStates) => {
-            const updatedStates = [...prevStates];
-            updatedStates[selectedArticle][selectedSubArticle] = true;
-            return updatedStates;
-        });
+        if (selectedSubArticle !== null) {
 
+            setSubArticleSuccessLevels((prevStates) => {
+                const updatedStates = [...prevStates];
+                updatedStates[selectedArticle][selectedSubArticle] = true;
+                return updatedStates;
+            });
+        }
 
     }, [selectedSubArticle, setSubArticleSuccessLevels]);
 
