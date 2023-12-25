@@ -1,15 +1,29 @@
 import React, {useState} from 'react';
-import {Paper, Typography, Grid, Button, TextField, useMediaQuery} from '@mui/material';
+import {
+    Paper,
+    Typography,
+    Grid,
+    Button,
+    TextField,
+    useMediaQuery,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl, Autocomplete
+} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import {useTheme} from "@mui/system";
+import countries from "i18n-iso-countries";
+// Import the languages you want to use
+import enLocale from "i18n-iso-countries/langs/en.json";
+import itLocale from "i18n-iso-countries/langs/it.json";
 
 const UserProfileSettings: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [userName, setUserName] = useState('JohnDoe'); // Початкові значення
     const [email, setEmail] = useState('john@example.com');
     const [password, setPassword] = useState('********');
-    const [country, setCountry] = useState('Country');
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -22,6 +36,26 @@ const UserProfileSettings: React.FC = () => {
 
     const theme = useTheme();
     const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+
+    const [selectedCountry, setSelectedCountry] = useState({
+        "label": "Ukrainian",
+        "value": "UK"
+    });
+
+    const selectCountryHandler = (value) => setSelectedCountry(value);
+
+    // Have to register the languages you want to use
+    countries.registerLocale(enLocale);
+    countries.registerLocale(itLocale);
+
+    const countryObj = countries.getNames("en", {select: "official"});
+
+    const countryArr = Object.entries(countryObj).map(([key, value]) => {
+        return {
+            label: value,
+            value: key
+        };
+    });
 
     return (
         <React.Fragment>
@@ -39,8 +73,39 @@ const UserProfileSettings: React.FC = () => {
                            onChange={(e) => setPassword(e.target.value)}/>
 
 
-                <TextField label={"Country:"} disabled={!isEditing} fullWidth value={country}
-                           onChange={(e) => setCountry(e.target.value)}/>
+                {/*<TextField label={"Country:"} disabled={!isEditing} fullWidth value={country}*/}
+                {/*           onChange={(e) => setCountry(e.target.value)}/>*/}
+
+                <Autocomplete
+                    disabled={!isEditing}
+                    fullWidth
+                    disablePortal
+                    id="combo-box-demo"
+                    options={countryArr}
+                    value={selectedCountry}
+                    onChange={(event: any, newValue: string | null) => {
+                        selectCountryHandler(newValue);
+                    }}
+                    renderInput={(params) => <TextField {...params} fullWidth label="Country:"/>}
+                />
+
+                {/*<FormControl focused fullWidth>*/}
+                {/*    <InputLabel id="demo-simple-select-helper-label">Country:</InputLabel>*/}
+                {/*    <Select*/}
+                {/*        label="Country"*/}
+                {/*        labelId="demo-simple-select-helper-label"*/}
+                {/*        fullWidth*/}
+                {/*        value={selectedCountry}*/}
+                {/*        onChange={(e) => selectCountryHandler(e.target.value)}*/}
+                {/*    >*/}
+                {/*        {!!countryArr?.length &&*/}
+                {/*        countryArr.map(({label, value}) => (*/}
+                {/*            <MenuItem key={value} value={value}>*/}
+                {/*                {label}*/}
+                {/*            </MenuItem>*/}
+                {/*        ))}*/}
+                {/*    </Select>*/}
+                {/*</FormControl>*/}
 
             </div>
 

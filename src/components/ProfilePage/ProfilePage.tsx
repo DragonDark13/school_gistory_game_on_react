@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import SettingsIcon from '@mui/icons-material/Settings';
 import EmojiEvents from '@mui/icons-material/EmojiEvents';
-import { Container, Grid, LinearProgress, useMediaQuery} from "@mui/material";
+import {Container, Grid, LinearProgress, useMediaQuery} from "@mui/material";
 import './profile_page.scss'
 import UserProfileSettings from "./UserProfileSettings";
 import {Helmet} from "react-helmet-async";
@@ -15,6 +15,9 @@ import {makeStyles} from "tss-react/mui";
 import {useAuth} from "../AuthContext/AuthContext";
 import {useNavigate} from "react-router-dom";
 import AchievedItem from "./AchievedItem";
+import AnchorIcon from '@mui/icons-material/Anchor';
+import CelebrationIcon from '@mui/icons-material/Celebration';
+import RocketIcon from '@mui/icons-material/Rocket';
 
 
 
@@ -27,7 +30,6 @@ const useStyles = makeStyles()((theme) => ({
 
 
 }))
-
 
 
 const ProfilePage: React.FC<ProfilePageProps> = ({
@@ -71,9 +73,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
     let achievementIconArray = [
         EmojiEvents,
-        EmojiEvents,
-        EmojiEvents,
-        EmojiEvents,
+        AnchorIcon,
+        CelebrationIcon,
+        RocketIcon,
         EmojiEvents,
         EmojiEvents,
         EmojiEvents,
@@ -85,6 +87,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
     const theme = useTheme();
     const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+
+
+
 
     return (
         <Container className={"profile_container"}>

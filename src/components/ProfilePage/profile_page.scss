@@ -124,7 +124,8 @@
     margin-top: 2rem;
     //margin-bottom: 2rem;
 
-    & > .MuiFormControl-root {
+    & > .MuiFormControl-root,
+    &>.MuiAutocomplete-root{
       margin-bottom: 2rem;
     }
 

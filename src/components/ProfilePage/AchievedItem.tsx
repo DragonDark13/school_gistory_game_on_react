@@ -32,7 +32,7 @@ const AchievedItem = ({description, active, name, icon}: IAchievedItem) => {
                 <BootstrapTooltip sx={{display: {xs: "none", md: "block"}}} className={"tooltip_my"}
                                   placement={"top-start"}
                                   title={description}>
-                    <HelpOutlineIcon className={"tooltip_icon"}
+                    <HelpOutlineIcon sx={{display: {xs: "none", md: "block"}}} className={"tooltip_icon"}
                                      color={"disabled"}
                                      fontSize={"small"}/>
                 </BootstrapTooltip>
