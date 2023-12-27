@@ -11,4 +11,18 @@
   .subtopic_card_list {
     padding-top: 3rem;
   }
+
+  .additional_test_progress_container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .content_container .MuiTypography-body1.text {
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
 }

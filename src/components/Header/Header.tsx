@@ -1,4 +1,4 @@
-import React, { useContext} from "react";
+import React, {useContext} from "react";
 import {
     Container,
     Toolbar,
@@ -104,20 +104,20 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
 
                         <Grid container justifyContent={"space-between"}>
                             <Grid item xs={"auto"}>
-                                <Link component={RouterLink} underline={"none"} to="/">
-                                <Grid gap={2} container alignItems={"center"}>
-                                    <Grid item>
-                                        <LogoIcon className={cx(classes.headerLogoIcon, "logo_icon")}/></Grid>
-                                    <Grid item>
-                                        <Typography className={cx(classes.headerLogoText)}
-                                                    variant={"h5"}>
-                                            <span className={"first"}>Вчись</span><span>Грай</span>
-                                        </Typography>
+                                <Link component={RouterLink} underline={"none"} to={!isAuthenticated ? "/" :"/timeline"}>
+                                    <Grid gap={2} container alignItems={"center"}>
+                                        <Grid item>
+                                            <LogoIcon className={cx(classes.headerLogoIcon, "logo_icon")}/></Grid>
+                                        <Grid item>
+                                            <Typography className={cx(classes.headerLogoText)}
+                                                        variant={"h5"}>
+                                                <span className={"first"}>Вчись</span><span>Грай</span>
+                                            </Typography>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </Link>
+                                </Link>
                             </Grid>
-                            <Grid container item  xs={"auto"} alignItems={"center"}>
+                            <Grid container item xs={"auto"} alignItems={"center"}>
                                 {!smUp &&
                                 <IconButton onClick={toggleColorModeFunc}>
                                     {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}

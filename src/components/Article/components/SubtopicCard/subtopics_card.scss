@@ -7,4 +7,12 @@
   img {
     margin-bottom: 0;
   }
+
+  .MuiCardContent-root .MuiTypography-body1.text {
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }

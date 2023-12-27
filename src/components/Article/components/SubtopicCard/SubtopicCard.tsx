@@ -17,17 +17,13 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import {useNavigate, useParams} from "react-router-dom";
 import CheckIcon from '@mui/icons-material/Check';
+import {ISubtopicCardProps} from "../../../../types/types";
+import {contentRenderFunction} from "../../../../utils/utils";
 
 
-interface SubtopicCardProps {
-    subArticleIndex: number;
-    title: string,
-    content: string,
-    done: boolean,
-}
 
 
-const SubtopicCard = ({content, title, subArticleIndex, done}: SubtopicCardProps) => {
+const SubtopicCard = ({content, title, subArticleIndex, done}: ISubtopicCardProps) => {
 
     const [expanded, setExpanded] = React.useState(false);
 
@@ -76,7 +72,7 @@ const SubtopicCard = ({content, title, subArticleIndex, done}: SubtopicCardProps
             &&
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                    <Typography>{content}</Typography>
+                    {contentRenderFunction(content)}
                 </CardContent>
             </Collapse>
             }

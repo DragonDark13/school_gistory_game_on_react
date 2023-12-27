@@ -21,14 +21,22 @@ export interface IHandleClickOpenModalSignIn {
 
 export interface SubtopicsProps {
     title: string,
-    content: string
+    content: string | IArticleContentArrayItem[]
+    subArticleTest?: IDataForQuiz
+}
+
+interface IArticleContentArrayItem {
+    type?: string,
+    text: string
 }
 
 export interface HistoricalEvent {
-    date: string;
-    text: string;
-    achieved: string
-    subtopics?: SubtopicsProps[] | undefined;
+    readonly date: string;
+    readonly text: string;
+    readonly content?: string | object[]
+    mainArticleTest?: IDataForQuiz
+    readonly achieved: string
+    readonly subtopics?: SubtopicsProps[] | undefined;
 }
 
 export interface IHistoryListArray {
@@ -75,13 +83,22 @@ export interface ProfilePageProps extends IHistoryListArray {
 
 export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
     subArticleSuccessLevels: boolean[][];
+    readonly setSelectedSubArticle: (arg0: number) => void;
 }
 
-export interface IQuizBlockProps extends IHistoryListArray {
-    testType: 'article' | 'subArticle';
+export interface ISubtopicCardProps extends SubtopicsProps {
+    subArticleIndex: number;
+    done: boolean,
+}
+
+interface IDataForQuiz {
     readonly questions: string[];
     readonly options: string[][];
     readonly correctAnswers: string[];
+}
+
+export interface IQuizBlockProps extends IHistoryListArray, IDataForQuiz {
+    testType: 'article' | 'subArticle';
     readonly onAnswer: (results: { correct: number; incorrect: number }) => void;
     readonly handleNextLevel: () => void;
     readonly setAllAnswerIsCorrect: (arg0: boolean) => void
@@ -104,7 +121,7 @@ interface ColoredSvgIconProps extends SvgIconComponent {
 }
 
 
-export interface IAchievedItem extends IAchievedListItem{
+export interface IAchievedItem extends IAchievedListItem {
     active: boolean
     icon: ColoredSvgIconProps
 }

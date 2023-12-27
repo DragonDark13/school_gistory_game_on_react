@@ -89,7 +89,6 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     }
 
     const getCompletedSubtopics = (articleIndex: number) => {
-        const article = historyList[articleIndex];
         return subArticleSuccessLevels[articleIndex].filter(done => done).length;
     }
 

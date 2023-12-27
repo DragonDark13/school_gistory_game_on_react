@@ -174,69 +174,86 @@ function App() {
                         <Routes>
                             <Route path={"/"}
                                    element={
-                                       <MainPageContent handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
+                                       <React.Suspense fallback={<div>Loading...</div>}>
+                                           <MainPageContent handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
+                                       </React.Suspense>
                                    }
                             />
                             <Route path="/profile"
                                    element={
-                                       <ProfilePage
-                                           historyList={data.historyList}
-                                           achievementLevel={"test"}
-                                           achievements={achievements}
-                                           achievedList={data.achievedList}
-                                           avatar={avatarImg}
-                                           lessonsVisited={7}
-                                           username={currentUser ? currentUser.name : "Петро" +
-                                               " Сагайдачний"}/>}/>
+                                       <React.Suspense fallback={<div>Loading...</div>}>
+                                           <ProfilePage
+                                               historyList={data.historyList}
+                                               achievementLevel={"test"}
+                                               achievements={achievements}
+                                               achievedList={data.achievedList}
+                                               avatar={avatarImg}
+                                               lessonsVisited={7}
+                                               username={currentUser ? currentUser.name : "Петро" +
+                                                   " Сагайдачний"}/>
+                                       </React.Suspense>}
+                            />
 
                             <Route path="/article/:selectedArticle"
                                    element={
-                                       <Article
-                                           subArticleSuccessLevels={subArticleSuccessLevels}
-                                           setSelectedArticle={setSelectedArticle}
-                                           historyList={data.historyList}
-                                       />
+                                       <React.Suspense fallback={<div>Loading...</div>}>
+                                           <Article
+                                               setSelectedSubArticle={setSelectedSubArticle}
+                                               subArticleSuccessLevels={subArticleSuccessLevels}
+                                               setSelectedArticle={setSelectedArticle}
+                                               historyList={data.historyList}
+                                           />
+                                       </React.Suspense>
                                    }
                             />
 
                             <Route path={"/test/:selectedArticle"}
                                    element={
-                                       <QuizBlock
-                                           testType="article"
-                                           historyList={data.historyList}
-                                           handleNextLevel={handleNextLevel}
-                                           setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                           questions={data.questions} options={data.options}
-                                           correctAnswers={data.correctAnswers}
-                                           onAnswer={handleQuizComplete}
-                                       />
+                                       <React.Suspense fallback={<div>Loading...</div>}>
+                                           <QuizBlock
+                                               testType="article"
+                                               historyList={data.historyList}
+                                               handleNextLevel={handleNextLevel}
+                                               setAllAnswerIsCorrect={setAllAnswerIsCorrect}
+                                               questions={data.historyList[selectedArticle]?.mainArticleTest?.questions ? data.historyList[selectedArticle]?.mainArticleTest?.questions : data.questions}
+                                               options={data.historyList[selectedArticle]?.mainArticleTest?.options ? data.historyList[selectedArticle]?.mainArticleTest?.options : data.options}
+                                               correctAnswers={data.historyList[selectedArticle]?.mainArticleTest?.correctAnswers ? data.historyList[selectedArticle]?.mainArticleTest?.correctAnswers : data.correctAnswers}
+                                               onAnswer={handleQuizComplete}
+                                           />
+                                       </React.Suspense>
                                    }
                             />
 
                             <Route
                                 path="/test/:selectedArticle/:subtopicId"
                                 element={
-                                    <QuizBlock
-                                        testType="subArticle"
-                                        historyList={data.historyList}
-                                        handleNextLevel={handleNextLevel}
-                                        setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
-                                        questions={data.subArticleTest.questions}
-                                        options={data.subArticleTest.options}
-                                        correctAnswers={data.subArticleTest.correctAnswers}
-                                        onAnswer={handleQuizComplete}
-                                        setSelectedSubArticle={setSelectedSubArticle}
-                                    />}
+                                    <React.Suspense fallback={<div>Loading...</div>}>
+                                        <QuizBlock
+                                            testType="subArticle"
+                                            historyList={data.historyList}
+                                            handleNextLevel={handleNextLevel}
+                                            setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
+                                            questions={data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.questions ? data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.questions : data.subArticleTest.questions}
+                                            options={data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.options ? data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.options : data.subArticleTest.options}
+                                            correctAnswers={data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.correctAnswers ? data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.correctAnswers : data.subArticleTest.correctAnswers}
+                                            onAnswer={handleQuizComplete}
+                                            setSelectedSubArticle={setSelectedSubArticle}
+                                        />
+                                    </React.Suspense>}
                             />
 
                             <Route path="/timeline" element={
-                                <HistoryTimeline
-                                    setSelectedSubArticle={setSelectedSubArticle}
-                                    subArticleSuccessLevels={subArticleSuccessLevels}
-                                    setSelectedArticle={setSelectedArticle}
-                                    successLevels={successLevels}
-                                    buttonStates={buttonStates}
-                                    historyList={data.historyList}/>}/>
+                                <React.Suspense fallback={<div>Loading...</div>}>
+                                    <HistoryTimeline
+                                        setSelectedSubArticle={setSelectedSubArticle}
+                                        subArticleSuccessLevels={subArticleSuccessLevels}
+                                        setSelectedArticle={setSelectedArticle}
+                                        successLevels={successLevels}
+                                        buttonStates={buttonStates}
+                                        historyList={data.historyList}/>
+                                </React.Suspense>
+                            }
+                            />
                         </Routes>
                     </React.Suspense>
                 </main>

@@ -9,9 +9,10 @@ import SubtopicCard from "./components/SubtopicCard/SubtopicCard";
 import {IArticleProps} from "../../types/types";
 import {useTheme} from "@mui/system";
 import {useAuth} from "../AuthContext/AuthContext";
+import {contentRenderFunction} from "../../utils/utils";
 
 
-const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subArticleSuccessLevels}) => {
+const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subArticleSuccessLevels,setSelectedSubArticle}) => {
     const {selectedArticle} = useParams();
 
     const navigate = useNavigate();
@@ -45,6 +46,39 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
         }
     }, [isAuthenticated])
 
+     const handleGoToTestNow = (articleIndex: number) => {
+        navigate(`/test/${articleIndex}`);
+        setSelectedArticle(articleIndex)
+    }
+
+    const handleGoToSubTestNow = (articleIndex: number, subArticleIndex: number) => {
+        navigate(`/test/${articleIndex}/${subArticleIndex}`);
+        setSelectedArticle(articleIndex)
+        setSelectedSubArticle(subArticleIndex)
+    }
+
+
+    const handleGoToSubArticleTest = (articleIndex: number) => {
+        // Check if the article has subarticles
+        const subArticles = historyList[articleIndex]?.subtopics;
+        if (subArticles && subArticles.length > 0) {
+            // Find the index of the first uncompleted subarticle
+            const firstUncompletedIndex = subArticles.findIndex((subArticle, subIndex) => {
+                return !subArticleSuccessLevels[articleIndex]?.[subIndex];
+            });
+
+            // If there is an uncompleted subarticle, navigate to its test page
+            if (firstUncompletedIndex !== -1) {
+                handleGoToSubTestNow(articleIndex, firstUncompletedIndex);
+            } else {
+                handleGoToTestNow(articleIndex);
+            }
+        }
+    };
+
+
+
+
     return (
         <Container className={"article_page_container"}>
             <Helmet>
@@ -59,15 +93,19 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
                 </Grid>
             </Grid>
 
+            <Typography textAlign={"center"} variant={"h6"} className={"lesson"}>Lesson</Typography>
+            <Typography textAlign={"center"} className={"date"} variant={"h5"}>{article.date}</Typography>
 
-            <Typography className={"title"} variant={"h4"}>{article.text}</Typography>
+            <Typography textAlign={"center"} className={"title"} variant={"h4"}>{article.text}</Typography>
+
+            <Grid container justifyContent={"center"}>
+                <Grid item xs={"auto"} >
+                    <Button onClick={()=>handleGoToSubArticleTest(selectedArticleNumber)} variant={"contained"}>Start Tests</Button>
+                </Grid>
+            </Grid>
 
             <img src={myImage} alt=""/>
-            <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Typography>
+            <div className={"content_container"}>{article.content && contentRenderFunction(article.content)}</div>
 
 
             {/* Display subtopics as cards */}
@@ -79,7 +117,7 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
                     {/* Display the progress bar */}
                 </Grid>
 
-                <Grid container justifyContent={"center"}>
+                <Grid className={"additional_test_progress_container"} container justifyContent={"center"}>
                     <Grid item xs={12} sm={6} md={6} xl={4}>
                         <LinearProgress color={"primary"} variant="determinate" value={completionPercentage}/>
 
@@ -88,7 +126,8 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
                             Виконано: {completedSubtopics} із {totalSubtopics} ({completionPercentage.toFixed(2)}%)
                         </Typography>
 
-                    </Grid></Grid>
+                    </Grid>
+                </Grid>
 
                 <Grid item container xs={12} spacing={2}>{article.subtopics.map((subtopic, index) => (
                     <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
@@ -104,7 +143,6 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
             <Grid container justifyContent={"center"}>
                 <Grid item xs={12} sm={6} md={"auto"}>
                     <Button
-
                         disabled={finalTestIsNotOpen}
                         size={"large"}
                         fullWidth={!mdUp}
