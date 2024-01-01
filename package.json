@@ -30,6 +30,7 @@
   },
   "scripts": {
     "start": "vite --open",
+    "start--debug": "vite --open --debug",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "predeploy": "npm run build",

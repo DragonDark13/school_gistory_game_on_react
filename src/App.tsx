@@ -24,6 +24,7 @@ const Footer = React.lazy(() => import('./components/Footer/Footer'));
 function App() {
     const [selectedArticle, setSelectedArticle] = useState<number>(0)
     const [selectedSubArticle, setSelectedSubArticle] = useState<null | number>(null);
+    const [questionsArray,setQuestionsArray] = usse
 
     const [buttonStates, setButtonStates] = useState(
         data.historyList.map((_, index) => index === 0) // Початково активна лише перша кнопка
@@ -215,7 +216,7 @@ function App() {
                                                historyList={data.historyList}
                                                handleNextLevel={handleNextLevel}
                                                setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                               questions={data.historyList[selectedArticle]?.mainArticleTest?.questions ? data.historyList[selectedArticle]?.mainArticleTest?.questions : data.questions}
+                                               questions={data.historyList[selectedArticle]?.mainArticleTest ? data.historyList[selectedArticle]?.mainArticleTest?.questions : data.questions}
                                                options={data.historyList[selectedArticle]?.mainArticleTest?.options ? data.historyList[selectedArticle]?.mainArticleTest?.options : data.options}
                                                correctAnswers={data.historyList[selectedArticle]?.mainArticleTest?.correctAnswers ? data.historyList[selectedArticle]?.mainArticleTest?.correctAnswers : data.correctAnswers}
                                                onAnswer={handleQuizComplete}
