@@ -100,7 +100,7 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
 
             <Grid container justifyContent={"center"}>
                 <Grid item xs={"auto"} >
-                    <Button onClick={()=>handleGoToSubArticleTest(selectedArticleNumber)} variant={"contained"}>Start Tests</Button>
+                    <Button className={"start_button_top"} onClick={()=>handleGoToSubArticleTest(selectedArticleNumber)} variant={"contained"}>Start Tests</Button>
                 </Grid>
             </Grid>
 
