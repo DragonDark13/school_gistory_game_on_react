@@ -38,11 +38,15 @@ const UserProfileSettings: React.FC = () => {
     const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
     const [selectedCountry, setSelectedCountry] = useState({
-        "label": "Ukrainian",
-        "value": "UK"
+        label: "Ukrainian",
+        value: "UK"
     });
 
-    const selectCountryHandler = (value) => setSelectedCountry(value);
+    const selectCountryHandler = (value: { label: string; value: string } | null) => {
+        if (value) {
+            setSelectedCountry(value);
+        }
+    };
 
     // Have to register the languages you want to use
     countries.registerLocale(enLocale);
@@ -83,7 +87,7 @@ const UserProfileSettings: React.FC = () => {
                     id="combo-box-demo"
                     options={countryArr}
                     value={selectedCountry}
-                    onChange={(event: any, newValue: string | null) => {
+                    onChange={(event: any, newValue: { label: string; value: string } | null) => {
                         selectCountryHandler(newValue);
                     }}
                     renderInput={(params) => <TextField {...params} fullWidth label="Country:"/>}

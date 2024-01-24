@@ -1,4 +1,5 @@
 import {SvgIconComponent} from "@mui/icons-material";
+import exp from "constants";
 
 export interface ISignInForms {
     setShowSignInForm: (value: boolean) => void;
@@ -25,7 +26,7 @@ export interface SubtopicsProps {
     subArticleTest?: IDataForQuiz
 }
 
-interface IArticleContentArrayItem {
+export interface IArticleContentArrayItem {
     type?: string,
     text: string
 }
@@ -33,7 +34,7 @@ interface IArticleContentArrayItem {
 export interface HistoricalEvent {
     readonly date: string;
     readonly text: string;
-    readonly content?: string | object[]
+    readonly content?: string | IArticleContentArrayItem[]
     mainArticleTest?: IDataForQuiz
     readonly achieved: string
     readonly subtopics?: SubtopicsProps[] | undefined;

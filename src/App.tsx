@@ -24,7 +24,12 @@ const Footer = React.lazy(() => import('./components/Footer/Footer'));
 function App() {
     const [selectedArticle, setSelectedArticle] = useState<number>(0)
     const [selectedSubArticle, setSelectedSubArticle] = useState<null | number>(null);
-    const [questionsArray,setQuestionsArray] = usse
+    const [questionsArray, setQuestionsArray] = useState(data.questions)
+    const [quizOptionsArray, setQuizOptionsArray] = useState(data.options)
+    const [correctAnswers, setCorrectAnswers] = useState(data.correctAnswers)
+    const [questionsArraySubArticle, setQuestionsArraySubArticle] = useState(data.questions)
+    const [quizOptionsArraySubArticle, setQuizOptionsArraySubArticle] = useState(data.options)
+    const [correctAnswersSubArticle, setCorrectAnswersSubArticle] = useState(data.correctAnswers)
 
     const [buttonStates, setButtonStates] = useState(
         data.historyList.map((_, index) => index === 0) // Початково активна лише перша кнопка
@@ -92,6 +97,38 @@ function App() {
 
         effect();
     }, [allAnswerIsCorrect, selectedArticle, allAnswerIsCorrectFunc]);
+
+    useEffect(() => {
+        const selectedArticleTest = data.historyList[selectedArticle]?.mainArticleTest;
+
+        if (selectedArticleTest?.questions && selectedArticleTest?.options && selectedArticleTest?.correctAnswers) {
+            const {questions, options, correctAnswers} = selectedArticleTest;
+            setQuestionsArray(questions);
+            setQuizOptionsArray(options);
+            setCorrectAnswers(correctAnswers);
+        } else {
+            setQuestionsArray(data.questions);
+            setQuizOptionsArray(data.options);
+            setCorrectAnswers(data.correctAnswers);
+        }
+    }, [selectedArticle]);
+
+    useEffect(() => {
+        const selectedSubArticleTest = data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest;
+
+        if (selectedSubArticleTest?.questions && selectedSubArticleTest?.options && selectedSubArticleTest?.correctAnswers) {
+            const {questions, options, correctAnswers} = selectedSubArticleTest;
+            setQuestionsArraySubArticle(questions);
+            setQuizOptionsArraySubArticle(options);
+            setCorrectAnswersSubArticle(correctAnswers);
+        } else {
+            setQuestionsArraySubArticle(data.questions);
+            setQuizOptionsArraySubArticle(data.options);
+            setCorrectAnswersSubArticle(data.correctAnswers);
+        }
+
+
+    }, [selectedArticle, selectedSubArticle]);
 
 
     const handleSubArticleQuizComplete = useCallback(() => {
@@ -216,9 +253,9 @@ function App() {
                                                historyList={data.historyList}
                                                handleNextLevel={handleNextLevel}
                                                setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                               questions={data.historyList[selectedArticle]?.mainArticleTest ? data.historyList[selectedArticle]?.mainArticleTest?.questions : data.questions}
-                                               options={data.historyList[selectedArticle]?.mainArticleTest?.options ? data.historyList[selectedArticle]?.mainArticleTest?.options : data.options}
-                                               correctAnswers={data.historyList[selectedArticle]?.mainArticleTest?.correctAnswers ? data.historyList[selectedArticle]?.mainArticleTest?.correctAnswers : data.correctAnswers}
+                                               questions={questionsArray}
+                                               options={quizOptionsArray}
+                                               correctAnswers={correctAnswers}
                                                onAnswer={handleQuizComplete}
                                            />
                                        </React.Suspense>
@@ -234,9 +271,9 @@ function App() {
                                             historyList={data.historyList}
                                             handleNextLevel={handleNextLevel}
                                             setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
-                                            questions={data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.questions ? data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.questions : data.subArticleTest.questions}
-                                            options={data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.options ? data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.options : data.subArticleTest.options}
-                                            correctAnswers={data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.correctAnswers ? data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest?.correctAnswers : data.subArticleTest.correctAnswers}
+                                            questions={questionsArraySubArticle}
+                                            options={quizOptionsArraySubArticle}
+                                            correctAnswers={correctAnswersSubArticle}
                                             onAnswer={handleQuizComplete}
                                             setSelectedSubArticle={setSelectedSubArticle}
                                         />
