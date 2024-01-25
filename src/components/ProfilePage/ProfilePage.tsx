@@ -18,6 +18,10 @@ import AchievedItem from "./AchievedItem";
 import AnchorIcon from '@mui/icons-material/Anchor';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import RocketIcon from '@mui/icons-material/Rocket';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import StarIcon from '@mui/icons-material/Star';
+
+
 
 
 
@@ -76,8 +80,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
         AnchorIcon,
         CelebrationIcon,
         RocketIcon,
-        EmojiEvents,
-        EmojiEvents,
+        MilitaryTechIcon,
+        StarIcon,
         EmojiEvents,
         EmojiEvents,
         EmojiEvents,

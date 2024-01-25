@@ -111,7 +111,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
         const fetchData = async () => {
             try {
                 const response = await axios.get('https://zelse.asuscomm.com/SchoolHistoryGame/ep/main/');
-                setDataFromBack(response.data.results);
+                setDataFromBack(response.data);
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -139,7 +139,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                 {isLoading ? (
                         <div>Loading...</div>
                     ) :
-                  dataFromBack.length>0 &&  dataFromBack.map((event, index) => (
+                 (dataFromBack && dataFromBack.length>0) &&  dataFromBack.map((event, index) => (
                         <React.Fragment key={index + "TimelineCard"}>
                             <VerticalTimelineElement
                                 key={index + "history-timeline"}
