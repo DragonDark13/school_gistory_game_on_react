@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {
     Container,
     Toolbar,
@@ -24,6 +24,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import {ColorModeContext, LanguageContext} from "../MyProviders/MyProviders";
 import {IHandleClickOpenModalSignIn} from "../../types/types";
 import ProfilePopper from "./ProfilePopper";
+import DiamondIcon from '@mui/icons-material/Diamond';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -42,6 +44,14 @@ const useStyles = makeStyles()((theme) => ({
         "& .first": {
             color: theme.palette.primary.dark,
         }
+    },
+
+    diamondIconContainer: {
+        color: theme.palette.secondary.light,
+    },
+
+    heartIconContainer: {
+        color: theme.palette.primary.main,
     }
 
 
@@ -58,6 +68,8 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
     console.log(language);
     const themeDefault = useTheme();
     const smUp = useMediaQuery(themeDefault.breakpoints.up('sm'));
+    const [lifeCount, setLifeCount] = useState(5);
+    const [diamondsCount, setDiamondsCount] = useState(20);
 
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
@@ -95,6 +107,21 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
 
     const openProfileMenu = Boolean(anchorEl);
 
+    const achievementsIconContainer = <Grid alignItems={"center"} container item xs={"auto"}>
+        <Grid className={cx(classes.diamondIconContainer)} container alignItems={"center"} columnSpacing={1}>
+            <Grid item xs={"auto"}><DiamondIcon fontSize={"large"}/></Grid>
+            <Grid item xs={"auto"}><Typography variant={"h6"}>{diamondsCount}</Typography></Grid>
+        </Grid>
+    </Grid>
+
+    const lifeIconContainer = <Grid alignItems={"center"} container item xs={"auto"}>
+        <Grid className={cx(classes.heartIconContainer)} container alignItems={"center"}
+              columnSpacing={1}>
+            <Grid item xs={"auto"}><FavoriteIcon fontSize={"large"}/></Grid>
+            <Grid item xs={"auto"}><Typography variant={"h6"}>{lifeCount}</Typography></Grid>
+        </Grid>
+    </Grid>
+
 
     return (
         <React.Fragment>
@@ -104,7 +131,8 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
 
                         <Grid container justifyContent={"space-between"}>
                             <Grid item xs={"auto"}>
-                                <Link component={RouterLink} underline={"none"} to={!isAuthenticated ? "/" :"/timeline"}>
+                                <Link component={RouterLink} underline={"none"}
+                                      to={!isAuthenticated ? "/" : "/timeline"}>
                                     <Grid gap={2} container alignItems={"center"}>
                                         <Grid item>
                                             <LogoIcon className={cx(classes.headerLogoIcon, "logo_icon")}/></Grid>
@@ -117,51 +145,57 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
                                     </Grid>
                                 </Link>
                             </Grid>
-                            <Grid container item xs={"auto"} alignItems={"center"}>
-                                {!smUp &&
-                                <IconButton onClick={toggleColorModeFunc}>
-                                    {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}
-                                </IconButton>
-                                }
-                                {isAuthenticated ?
-                                    <React.Fragment>
-                                        <div
-                                            onMouseEnter={handlePopoverOpen}
-                                            onMouseLeave={handlePopoverClose}
-                                        >
-                                            <RouterLink to={"/profile"}>
-                                                <IconButton
-                                                    className={cx(classes.headerLogoIcon)} title={"Профіль"}>
-                                                    <AccountCircleIcon fontSize={smUp ? "large" : "medium"}/>
-                                                </IconButton>
+                            <Grid item xs={"auto"} md={3}>
+                                <Grid container alignItems={"center"} justifyContent={"space-between"}>
 
+                                    {smUp && achievementsIconContainer}
 
-                                            </RouterLink>
+                                    { smUp && lifeIconContainer}
 
-                                            {smUp &&
-                                            <ProfilePopper
-                                                toggleColorModeFunc={toggleColorModeFunc}
-                                                logoutOnClick={logoutOnClick}
-                                                anchorEl={anchorEl}
-                                                handlePopoverClose={handlePopoverClose}
-                                                openProfileMenu={openProfileMenu}/>
-                                            }
-
-                                        </div>
-                                        {!smUp &&
-                                        <IconButton onClick={logoutOnClick} className={cx(classes.headerLogoIcon)}
-                                                    title={"Вийти"}>
-                                            <LogoutIcon/>
-                                        </IconButton>}
-                                    </React.Fragment>
-                                    :
-                                    <IconButton onClick={handleClickOpenModalSignIn}
-                                                className={cx(classes.headerLogoIcon)}
-                                                title={"Увійти"}>
-                                        <LoginIcon/>
+                                    {!smUp &&
+                                    <IconButton onClick={toggleColorModeFunc}>
+                                        {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}
                                     </IconButton>
-                                }
-                            </Grid>
+                                    }
+                                    {isAuthenticated ?
+                                        <React.Fragment>
+                                            <Grid container item xs={"auto"}
+                                                  onMouseEnter={handlePopoverOpen}
+                                                  onMouseLeave={handlePopoverClose}
+                                            >
+                                                <RouterLink to={"/profile"}>
+                                                    <IconButton
+                                                        className={cx(classes.headerLogoIcon)} title={"Профіль"}>
+                                                        <AccountCircleIcon fontSize={smUp ? "large" : "medium"}/>
+                                                    </IconButton>
+
+
+                                                </RouterLink>
+
+                                                {smUp &&
+                                                <ProfilePopper
+                                                    toggleColorModeFunc={toggleColorModeFunc}
+                                                    logoutOnClick={logoutOnClick}
+                                                    anchorEl={anchorEl}
+                                                    handlePopoverClose={handlePopoverClose}
+                                                    openProfileMenu={openProfileMenu}/>
+                                                }
+
+                                            </Grid>
+                                            {!smUp &&
+                                            <IconButton onClick={logoutOnClick} className={cx(classes.headerLogoIcon)}
+                                                        title={"Вийти"}>
+                                                <LogoutIcon/>
+                                            </IconButton>}
+                                        </React.Fragment>
+                                        :
+                                        <IconButton onClick={handleClickOpenModalSignIn}
+                                                    className={cx(classes.headerLogoIcon)}
+                                                    title={"Увійти"}>
+                                            <LoginIcon/>
+                                        </IconButton>
+                                    }
+                                </Grid></Grid>
                         </Grid>
 
 
