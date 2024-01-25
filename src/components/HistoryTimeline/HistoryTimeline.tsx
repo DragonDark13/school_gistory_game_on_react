@@ -28,7 +28,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
     const theme = useTheme();
 
-    const [dataFromBack, setDataFromBack] = useState(null);
+    const [dataFromBack, setDataFromBack] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
 
@@ -120,7 +120,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
         };
 
 
-        if (!dataFromBack) {
+        if (dataFromBack.length===0) {
             fetchData();
         }
     }, []);
@@ -139,7 +139,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                 {isLoading ? (
                         <div>Loading...</div>
                     ) :
-                    dataFromBack.map((event, index) => (
+                  dataFromBack.length>0 &&  dataFromBack.map((event, index) => (
                         <React.Fragment key={index + "TimelineCard"}>
                             <VerticalTimelineElement
                                 key={index + "history-timeline"}

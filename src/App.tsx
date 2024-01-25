@@ -115,17 +115,20 @@ function App() {
     }, [selectedArticle]);
 
     useEffect(() => {
-        const selectedSubArticleTest = data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest;
+        if (selectedSubArticle !== null) {
+            const selectedSubArticleTest = data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest;
 
-        if (selectedSubArticleTest?.questions && selectedSubArticleTest?.options && selectedSubArticleTest?.correctAnswers) {
-            const {questions, options, correctAnswers} = selectedSubArticleTest;
-            setQuestionsArraySubArticle(questions);
-            setQuizOptionsArraySubArticle(options);
-            setCorrectAnswersSubArticle(correctAnswers);
-        } else {
-            setQuestionsArraySubArticle(data.questions);
-            setQuizOptionsArraySubArticle(data.options);
-            setCorrectAnswersSubArticle(data.correctAnswers);
+            if (selectedSubArticleTest?.questions && selectedSubArticleTest?.options && selectedSubArticleTest?.correctAnswers) {
+                const {questions, options, correctAnswers} = selectedSubArticleTest;
+                setQuestionsArraySubArticle(questions);
+                setQuizOptionsArraySubArticle(options);
+                setCorrectAnswersSubArticle(correctAnswers);
+            } else {
+                setQuestionsArraySubArticle(data.questions);
+                setQuizOptionsArraySubArticle(data.options);
+                setCorrectAnswersSubArticle(data.correctAnswers);
+            }
+
         }
 
 
@@ -189,8 +192,6 @@ function App() {
     };
 
     const {currentUser} = useContext(UserContext)
-
-
 
 
     return (
