@@ -31,6 +31,7 @@ function App() {
     const [quizOptionsArraySubArticle, setQuizOptionsArraySubArticle] = useState(data.options)
     const [correctAnswersSubArticle, setCorrectAnswersSubArticle] = useState(data.correctAnswers)
 
+
     const [buttonStates, setButtonStates] = useState(
         data.historyList.map((_, index) => index === 0) // Початково активна лише перша кнопка
     );
@@ -188,6 +189,9 @@ function App() {
     };
 
     const {currentUser} = useContext(UserContext)
+
+
+
 
     return (
         <Router>

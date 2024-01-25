@@ -4,7 +4,7 @@ import {
     Card, Container, Typography,
     useTheme
 } from '@mui/material';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {VerticalTimeline, VerticalTimelineElement} from 'react-vertical-timeline-component';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -13,6 +13,7 @@ import {useNavigate} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 import {IHistoryTimelineProps} from "../../types/types";
 import {useAuth} from "../AuthContext/AuthContext";
+import axios from "axios";
 
 
 const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
@@ -26,6 +27,10 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                                           }) => {
 
     const theme = useTheme();
+
+    const [dataFromBack, setDataFromBack] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
 
     const iconColorState = (active: boolean) => {
         if (active) return theme.palette.primary.contrastText
@@ -102,6 +107,26 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
         }
     }, [isAuthenticated])
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('https://zelse.asuscomm.com/SchoolHistoryGame/ep/main/');
+                setDataFromBack(response.data.results);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+
+        if (!dataFromBack) {
+            fetchData();
+        }
+    }, []);
+
+    console.log('dataFromBack---', dataFromBack);
+
 
     return (
         <Container className={"history_timeline_page"}>
@@ -111,41 +136,45 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
             <Typography className={"main_title"} textAlign={"center"} component={"h1"}
                         variant={"h3"}>Часопростір</Typography>
             <VerticalTimeline lineColor={theme.palette.primary.light}>
-                {historyList.map((event, index) => (
-                    <React.Fragment key={index + "TimelineCard"}>
-                        <VerticalTimelineElement
-                            key={index + "history-timeline"}
-                            // date={event.date}
-                            dateClassName={"hidden"}
-                            className={buttonStates[index] && !successLevels[index] ? "current_active_vertical_timeline_element" : ""}
+                {isLoading ? (
+                        <div>Loading...</div>
+                    ) :
+                    dataFromBack.map((event, index) => (
+                        <React.Fragment key={index + "TimelineCard"}>
+                            <VerticalTimelineElement
+                                key={index + "history-timeline"}
+                                // date={event.date}
+                                dateClassName={"hidden"}
+                                className={buttonStates[index] && !successLevels[index] ? "current_active_vertical_timeline_element" : ""}
 
-                            iconStyle={{
-                                background: theme.palette.primary.light,
-                                color: iconColorState(buttonStates[index]),
-                            }}
-                            contentStyle={{padding: 0, boxShadow: "none"}}
-                            icon={successLevels[index] ? <CheckCircleOutlineIcon/> : <RadioButtonUncheckedRoundedIcon/>}
+                                iconStyle={{
+                                    background: theme.palette.primary.light,
+                                    color: iconColorState(buttonStates[index]),
+                                }}
+                                contentStyle={{padding: 0, boxShadow: "none"}}
+                                icon={successLevels[index] ? <CheckCircleOutlineIcon/> :
+                                    <RadioButtonUncheckedRoundedIcon/>}
 
-                        >
-                            <Card elevation={buttonStates[index] ? 4 : 1}>
-                                <TimelineCard
-                                    completedSubtopics={getCompletedSubtopics(index)}
-                                    totalSubtopics={getTotalSubtopics(index)}
-                                    isAllSubtaskDone={isAllSubtaskDone(index)}
-                                    event={event}
-                                    index={index}
-                                    buttonState={buttonStates[index]}
-                                    handleExpandArticle={handleExpandArticle}
-                                    handleGoToSubArticleTest={handleGoToSubArticleTest}
-                                    handleGoToTestNow={handleGoToTestNow}
-                                    successLevel={successLevels[index]}
-                                />
-                            </Card>
-                        </VerticalTimelineElement>
-                    </React.Fragment>
+                            >
+                                <Card elevation={buttonStates[index] ? 4 : 1}>
+                                    <TimelineCard
+                                        completedSubtopics={getCompletedSubtopics(index)}
+                                        totalSubtopics={getTotalSubtopics(index)}
+                                        isAllSubtaskDone={isAllSubtaskDone(index)}
+                                        event={event}
+                                        index={index}
+                                        buttonState={buttonStates[index]}
+                                        handleExpandArticle={handleExpandArticle}
+                                        handleGoToSubArticleTest={handleGoToSubArticleTest}
+                                        handleGoToTestNow={handleGoToTestNow}
+                                        successLevel={successLevels[index]}
+                                    />
+                                </Card>
+                            </VerticalTimelineElement>
+                        </React.Fragment>
 
 
-                ))}
+                    ))}
             </VerticalTimeline>
 
 
