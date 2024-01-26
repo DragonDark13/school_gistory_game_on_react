@@ -30,7 +30,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
                                                    }) => {
     const theme = useTheme();
 
-    const textColor = buttonState ? theme.palette.text.secondary : theme.palette.text.disabled;
+    const textColor = buttonState ? theme.palette.text.primary : theme.palette.text.disabled;
     const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
 
 
