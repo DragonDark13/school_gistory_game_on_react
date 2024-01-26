@@ -18,20 +18,77 @@
   animation: animate 2s linear infinite
 }
 
-.finished_container{
-  .icon_container{
+.finished_container {
+  .icon_container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+}
+
+
+.go_to_next_level_container {
   margin-top: 2rem;
-  margin-bottom: 2rem;
 }
 
-}
-
-
-.go_to_next_level_container{
-  margin-top: 2rem;
-}
-
-.textMessage{
+.textMessage {
   margin-top: 1rem;
   margin-bottom: 2rem;
+}
+
+.question_container {
+  text-align: center;
+
+  .MuiFormControlLabel-root {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    margin-right: 0;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .MuiFormControlLabel-label {
+    font-size: 1.25rem;
+  }
+
+  .next_button {
+    @media (min-width: 992px) {
+      padding: 10px 20px;
+      font-size: 18px;
+    }
+  }
+
+  .status_icon_container .MuiSvgIcon-root {
+    font-size: 4rem;
+    display: block;
+  }
+
+  .timer_progress {
+    position: relative;
+    overflow: hidden;
+
+    .MuiCircularProgress-root {
+      display: block;
+    }
+
+    .MuiTypography-root {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+  }
+
+
 }

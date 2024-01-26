@@ -2,14 +2,14 @@ import React, {useContext, useEffect, useState} from "react";
 import {
     Button,
     Card, CardActions,
-    CardContent, CardHeader,
+    CardContent, CardHeader, CircularProgress,
     Container,
     FormControlLabel,
     Grid,
     LinearProgress,
     Radio,
     RadioGroup,
-    Typography,
+    Typography, useMediaQuery,
     useTheme
 } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -28,6 +28,49 @@ import {UserContext} from "../MyProviders/MyProviders";
 import QuizSuccessModal from "../../QuizSuccessModal/QuizSuccessModal";
 import {IQuizBlockProps} from "../../types/types";
 import {useAuth} from "../AuthContext/AuthContext";
+import {makeStyles} from "tss-react/mui";
+import CancelIcon from '@mui/icons-material/Cancel';
+
+
+const useStyles = makeStyles()((theme) => ({
+
+
+    sucessOptionSelected: {
+
+        '&.MuiFormControlLabel-root.Mui-disabled': {
+            borderColor: theme.palette.success.main,
+            color: theme.palette.success.main,
+
+            '& .MuiRadio-root.Mui-disabled': {
+                color: theme.palette.success.main,
+            },
+
+            '& .MuiFormControlLabel-label.Mui-disabled': {
+                color: theme.palette.success.main,
+            }
+        }
+
+
+    },
+
+    errorOptionSelected: {
+        '&.MuiFormControlLabel-root.Mui-disabled': {
+            borderColor: theme.palette.error.main,
+            color: theme.palette.error.main,
+
+            '& .MuiRadio-root.Mui-disabled': {
+                color: theme.palette.error.main,
+            },
+
+            '& .MuiFormControlLabel-label.Mui-disabled': {
+                color: theme.palette.error.main,
+            }
+        }
+
+    },
+
+
+}))
 
 
 const QuizBlock: React.FC<IQuizBlockProps> = ({
@@ -49,6 +92,9 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const [isNextButtonActive, setIsNextButtonActive] = useState(false);
     const {selectedArticle, subtopicId} = useParams();
     const [openModal, setOpenModal] = useState(false);
+    const [answerChosen, setAnswerChosen] = useState(false);
+    const [currentAnswerStatus, setCurrentAnswerStatus] = useState(false);
+    const [remainingTime, setRemainingTime] = useState(10);
 
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
@@ -59,9 +105,14 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const navigate = useNavigate();
     const {isAuthenticated} = useAuth();
 
+    const {cx, classes} = useStyles();
+    const themeDefault = useTheme();
+
+    const smUp = useMediaQuery(themeDefault.breakpoints.up('sm'));
+
 
     useEffect(() => {
-        if (setSelectedSubArticle && selectedSubArticleNumber !== undefined) {
+        if (setSelectedSubArticle) {
             setSelectedSubArticle(selectedSubArticleNumber);
         }
     }, [setSelectedSubArticle, selectedSubArticleNumber]);
@@ -107,19 +158,36 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     }, [results.correct, questions.length]);
 
     const handleAnswer = (answer: string) => {
+
+
+        setAnswerChosen(true);
         setSelectedAnswer(answer);
+
+        if (selectedAnswer === correctAnswers[currentQuestion]) {
+            setResults({...results, correct: results.correct + 1});
+            setCurrentAnswerStatus(true);
+
+        } else {
+            setResults({...results, incorrect: results.incorrect + 1});
+            setCurrentAnswerStatus(false);
+        }
+
         setIsNextButtonActive(true);
     };
 
-
+    const clearSettingsBeforeNewQuestion = () => {
+        setSelectedAnswer("")
+        setIsNextButtonActive(false);
+        setAnswerChosen(false)
+    }
     const handleRetakeQuiz = () => {
         setCurrentQuestion(0);
         setUserAnswers(Array(questions.length).fill(""));
         setResults({correct: 0, incorrect: 0});
         setIsQuizFinished(false);
-        setSelectedAnswer("")
-        setIsNextButtonActive(false);
+        clearSettingsBeforeNewQuestion()
     };
+
 
     const {currentUser} = useContext(UserContext);
 
@@ -129,16 +197,10 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
             return;
         }
 
-        if (selectedAnswer === correctAnswers[currentQuestion]) {
-            setResults({...results, correct: results.correct + 1});
-        } else {
-            setResults({...results, incorrect: results.incorrect + 1});
-        }
 
         if (currentQuestion < questions.length - 1) {
             setCurrentQuestion(currentQuestion + 1);
-            setSelectedAnswer(""); // Очистіть вибір для нового питання
-            setIsNextButtonActive(false); // Зробіть кнопку "Далі" неактивною
+            clearSettingsBeforeNewQuestion();
         } else {
             onAnswer(results);
             setIsQuizFinished(true);
@@ -165,6 +227,27 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         setOpenModal(false);
         navigate(`/article/${selectedArticleNumber}`);
     };
+
+
+    useEffect(() => {
+        // Timer effect
+        const timer = setInterval(() => {
+            setRemainingTime((prevTime) => {
+                if (prevTime === 0) {
+                    clearInterval(timer); // Clear the timer when it reaches 0
+                    return 0;
+                } else {
+                    return prevTime - 1; // Decrement the remaining time
+                }
+            });
+        }, 1000);
+
+        // Cleanup function
+        return () => clearInterval(timer);
+    }, []); // Runs once when the component mounts
+
+    // Calculate the progress for CircularProgress
+    const progress = 100 - (remainingTime / 40) * 100;
 
 
     return (
@@ -265,41 +348,83 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
                 </div>
             ) : (
-                <React.Fragment>
-
+                <div className={"question_container"}>
+                    <LinearProgress
+                        color={"secondary"}
+                        value={Math.round((100 / options.length) * results.correct)}
+                        variant={"determinate"}
+                    />
 
                     <h1>Тема: {currentArticleTitle && currentArticleTitle}</h1>
-                    <p>{questions[currentQuestion]}</p>
-                    <RadioGroup
+                    <Grid container columnSpacing={4} alignItems={"center"} justifyContent={"center"}>
+                        <Grid item md={6}>
+                            <Typography variant={smUp ? "h6" : 'body1'}>{questions[currentQuestion]}</Typography>
+                        </Grid>
+                        <Grid item md={6}>
+                            <RadioGroup
+                                name="radio-buttons-group"
+                            >
+                                {options[currentQuestion].map((option, index) => (
+                                    <FormControlLabel
 
-                        name="radio-buttons-group"
-                    >
-                        {options[currentQuestion].map((option, index) => (
-                            <FormControlLabel
-                                key={index + "button"}
-                                className={theme + " answer-quiz-button"}
-                                onKeyPress={handleAnswerKeyPress}
-                                onClick={() => handleAnswer(option)}
-                                control={<Radio checked={selectedAnswer === option}/>}
-                                label={option}
-                                value={option}
-                            />
-                        ))}
-                    </RadioGroup>
-
-                    <Grid container justifyContent="center" mt={2}>
-                        <Button
-                            endIcon={<ArrowForwardIosIcon/>}
-                            variant={"contained"}
-                            size={"large"}
-                            onClick={handleNextQuestion}
-                            disabled={!isNextButtonActive}
-                        >
-                            Продовжити
-                        </Button>
+                                        key={index + "button"}
+                                        className={cx(option === selectedAnswer ? (option === correctAnswers[currentQuestion] ? classes.sucessOptionSelected : classes.errorOptionSelected) : option === correctAnswers[currentQuestion] ? classes.sucessOptionSelected : '')}
+                                        onKeyPress={handleAnswerKeyPress}
+                                        onClick={() => {
+                                            if (!answerChosen) {
+                                                handleAnswer(option);
+                                            }
+                                        }}
+                                        control={<Radio checked={selectedAnswer === option}/>}
+                                        label={option}
+                                        value={option}
+                                        disabled={answerChosen} // Заборона вибору, якщо вже обрано
+                                        //
+                                    />
+                                ))}
+                            </RadioGroup>
+                        </Grid>
                     </Grid>
 
-                </React.Fragment>
+
+                    <Grid container justifyContent={smUp ? 'space-between' : "center"} mt={2} alignItems={"center"}>
+                        {smUp &&
+                        <Grid className={"status_icon_container"} item xs={12} md={"auto"}>
+                            {answerChosen ? (currentAnswerStatus ?
+                                <CheckCircleIcon fontSize={"large"} color={"success"}/> :
+                                <CancelIcon fontSize={"large"} color={"error"}/>)
+
+                                :
+                                <div className={"timer_progress"}>
+                                    {/* Your other JSX components */}
+                                    <CircularProgress
+                                        variant="determinate"
+                                        value={(remainingTime / 40) * 100} // Calculate the progress value
+                                        color="secondary" // Change the color of the progress indicator
+                                        thickness={5} // Adjust the thickness of the progress indicator
+                                        size={60} // Set the size of the progress indicator
+                                    />
+                                    <Typography color={"secondary"} variant={"h6"}>{remainingTime}</Typography>
+                                </div>
+
+                            }
+                        </Grid>
+                        }
+                        <Grid item xs={12} md={"auto"}>
+                            <Button
+                                className={'next_button'}
+                                endIcon={<ArrowForwardIosIcon/>}
+                                variant={"contained"}
+                                size={"large"}
+                                onClick={handleNextQuestion}
+                                disabled={!isNextButtonActive}
+                            >
+                                Продовжити
+                            </Button>
+                        </Grid>
+                    </Grid>
+
+                </div>
             )}
 
             <QuizSuccessModal openModal={openModal} handleClose={handleClose}/>
