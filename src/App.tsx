@@ -37,16 +37,7 @@ function App() {
     );
 
 
-    const [subArticleSuccessLevels, setSubArticleSuccessLevels] = useState(() => {
-        const initialSuccessLevels = data.historyList.map((article) => {
-            if (article?.subtopics !== undefined && article?.subtopics?.length > 0) {
-                return article.subtopics.map(() => false);
-            }
-            return [];
-        });
-
-        return initialSuccessLevels;
-    });
+    const [subArticleSuccessLevels, setSubArticleSuccessLevels] = useState([]);
 
 
     const [successLevels, setSuccessLevels] = useState(data.historyList.map((_, index) => index === -1))
@@ -290,6 +281,7 @@ function App() {
                                     <HistoryTimeline
                                         setSelectedSubArticle={setSelectedSubArticle}
                                         subArticleSuccessLevels={subArticleSuccessLevels}
+                                        selectedArticle={selectedArticle}
                                         setSelectedArticle={setSelectedArticle}
                                         successLevels={successLevels}
                                         buttonStates={buttonStates}

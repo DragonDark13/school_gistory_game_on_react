@@ -22,6 +22,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                                               buttonStates,
                                                               successLevels,
                                                               setSelectedArticle,
+                                                              selectedArticle,
                                                               subArticleSuccessLevels,
                                                               setSelectedSubArticle
                                                           }) => {
@@ -30,6 +31,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
     const [dataFromBack, setDataFromBack] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [subTopicsArray, setSubTopicsArray] = useState([]);
 
 
     const iconColorState = (active: boolean) => {
@@ -56,31 +58,52 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
         setSelectedSubArticle(subArticleIndex)
     }
 
+    const fetchDataSubTopicsArray = async (articleIndex: number) => {
+        setIsLoading(true);
+        try {
+            const response =
+                await axios.get(`https://zelse.asuscomm.com/SchoolHistoryGame/ep/subtopics/${articleIndex}/ `);
+            setSubTopicsArray(response.data);
+
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            setIsLoading(false);
+
+        }
+    };
+
 
     const handleGoToSubArticleTest = (articleIndex: number) => {
         // Check if the article has subarticles
-        const subArticles = historyList[articleIndex]?.subtopics;
-        if (subArticles && subArticles.length > 0) {
+        setSelectedArticle(articleIndex)
+
+
+        fetchDataSubTopicsArray(articleIndex);
+
+    };
+
+    useEffect(() => {
+        if (subTopicsArray && subTopicsArray.length > 0) {
             // Find the index of the first uncompleted subarticle
-            const firstUncompletedIndex = subArticles.findIndex((subArticle, subIndex) => {
-                return !subArticleSuccessLevels[articleIndex]?.[subIndex];
+            const firstUncompletedIndex = subTopicsArray.findIndex((subArticle, subIndex) => {
+                return !subArticleSuccessLevels[selectedArticle]?.[subIndex];
             });
 
             // If there is an uncompleted subarticle, navigate to its test page
             if (firstUncompletedIndex !== -1) {
-                handleGoToSubTestNow(articleIndex, firstUncompletedIndex);
+                handleGoToSubTestNow(selectedArticle, firstUncompletedIndex);
             } else {
-                handleGoToTestNow(articleIndex);
+                handleGoToTestNow(selectedArticle);
             }
         }
-    };
+    }, [subTopicsArray, subArticleSuccessLevels, selectedArticle, handleGoToSubTestNow, handleGoToTestNow]);
 
     const isAllSubtaskDone = (articleIndex: number) => {
-        if (historyList[articleIndex].subtopics !== undefined) {
-            const subArticles = historyList[articleIndex]?.subtopics;
-            return !subArticles ||
-                (subArticles.length > 0 &&
-                    subArticles.every(
+        if (subTopicsArray.length > 0) {
+            return !subTopicsArray ||
+                (subTopicsArray.length > 0 &&
+                    subTopicsArray.every(
                         (_, subIndex) => subArticleSuccessLevels[articleIndex]?.[subIndex]
                     ));
 
@@ -89,12 +112,17 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     };
 
     const getTotalSubtopics = (articleIndex: number) => {
-        const article = historyList[articleIndex];
-        return article.subtopics ? article.subtopics.length : 0;
+
+        return setSubTopicsArray ? setSubTopicsArray.length : 0;
     }
 
     const getCompletedSubtopics = (articleIndex: number) => {
-        return subArticleSuccessLevels[articleIndex].filter(done => done).length;
+
+        if (subArticleSuccessLevels.length>0) {
+                    return subArticleSuccessLevels[articleIndex].filter(done => done).length;
+        } else {
+            return 0;
+        }
     }
 
     const {isAuthenticated} = useAuth();
@@ -120,7 +148,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
         };
 
 
-        if (dataFromBack.length===0) {
+        if (dataFromBack.length === 0) {
             fetchData();
         }
     }, []);
@@ -139,7 +167,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                 {isLoading ? (
                         <div>Loading...</div>
                     ) :
-                 (dataFromBack && dataFromBack.length>0) &&  dataFromBack.map((event, index) => (
+                    (dataFromBack && dataFromBack.length > 0) && dataFromBack.map((event, index) => (
                         <React.Fragment key={index + "TimelineCard"}>
                             <VerticalTimelineElement
                                 key={index + "history-timeline"}

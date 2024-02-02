@@ -56,7 +56,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
                         disabled={!buttonState}
                         className="learn-more-button" onClick={(e) => {
                     e.stopPropagation();
-                    handleExpandArticle(index);
+                    handleExpandArticle(index+1);
                 }}>
                     Дізнатися більше
                 </Button>
@@ -86,7 +86,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
                             <Button size={"large"} variant={"contained"} fullWidth disabled={!buttonState}
                                     className={"goToTest"} onClick={(e) => {
                                 e.stopPropagation();
-                                handleGoToSubArticleTest(index);
+                                handleGoToSubArticleTest(index+1);
                             }}
                             >
                                 Пройти завдання

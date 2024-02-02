@@ -48,6 +48,7 @@ export interface IHistoryTimelineProps extends IHistoryListArray, ISetSelectedAr
     buttonStates: Array<boolean>;
     successLevels: Array<boolean>;
     subArticleSuccessLevels: boolean[][]
+    selectedArticle:number
     readonly setSelectedSubArticle: (arg0: number) => void;
 }
 

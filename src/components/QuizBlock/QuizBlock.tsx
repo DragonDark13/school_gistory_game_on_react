@@ -94,7 +94,8 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const [openModal, setOpenModal] = useState(false);
     const [answerChosen, setAnswerChosen] = useState(false);
     const [currentAnswerStatus, setCurrentAnswerStatus] = useState(false);
-    const [remainingTime, setRemainingTime] = useState(10);
+    const maxTimeStatic = 10;
+    const [remainingTime, setRemainingTime] = useState(maxTimeStatic);
 
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
@@ -399,7 +400,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                     {/* Your other JSX components */}
                                     <CircularProgress
                                         variant="determinate"
-                                        value={(remainingTime / 40) * 100} // Calculate the progress value
+                                        value={(remainingTime / maxTimeStatic) * 100} // Calculate the progress value
                                         color="secondary" // Change the color of the progress indicator
                                         thickness={5} // Adjust the thickness of the progress indicator
                                         size={60} // Set the size of the progress indicator

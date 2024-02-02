@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Container, Grid, LinearProgress, Typography, useMediaQuery} from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import "./article.scss"
@@ -6,19 +6,34 @@ import myImage from "../../static/image/city.jpg";
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 import SubtopicCard from "./components/SubtopicCard/SubtopicCard";
-import {IArticleProps} from "../../types/types";
+import {IArticleContentArrayItem, IArticleProps} from "../../types/types";
 import {useTheme} from "@mui/system";
 import {useAuth} from "../AuthContext/AuthContext";
 import {contentRenderFunction} from "../../utils/utils";
+import axios from "axios";
 
 
-const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subArticleSuccessLevels,setSelectedSubArticle}) => {
+const Article: React.FC<IArticleProps> = ({
+                                              historyList,
+                                              setSelectedArticle,
+                                              subArticleSuccessLevels,
+                                              setSelectedSubArticle
+                                          }) => {
     const {selectedArticle} = useParams();
+    const [currentArticleContent, setCurrentArticleContent] = useState<null | IArticleContentArrayItem[]>(null);
+    const [subTopicsArray, setSubTopicsArray] = useState([]);
 
     const navigate = useNavigate();
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
-    setSelectedArticle(selectedArticleNumber);
+
+    useEffect(() => {
+
+        if (selectedArticleNumber) {
+            setSelectedArticle(selectedArticleNumber);
+        }
+
+    }, [selectedArticleNumber])
 
     const handleShowQuiz = () => {
         navigate(`/test/${selectedArticleNumber}`);
@@ -28,7 +43,7 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
 
 
     const totalSubtopics = article.subtopics ? article.subtopics.length : 0;
-    const completedSubtopics = subArticleSuccessLevels[selectedArticleNumber].filter(done => done).length;
+    const completedSubtopics = subArticleSuccessLevels.length > 0 ? subArticleSuccessLevels[selectedArticleNumber].filter(done => done).length : 0;
     const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
     const finalTestIsNotOpen = article.subtopics !== undefined && !subArticleSuccessLevels[selectedArticleNumber].every(done => done);
 
@@ -46,7 +61,7 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
         }
     }, [isAuthenticated])
 
-     const handleGoToTestNow = (articleIndex: number) => {
+    const handleGoToTestNow = (articleIndex: number) => {
         navigate(`/test/${articleIndex}`);
         setSelectedArticle(articleIndex)
     }
@@ -77,7 +92,39 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
     };
 
 
+    useEffect(() => {
+        const fetchDataArticleContent = async () => {
+            try {
+                const response = await
+                    axios.get(`https://zelse.asuscomm.com/SchoolHistoryGame/ep/maincontent/${selectedArticleNumber}/`);
+                setCurrentArticleContent(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
 
+        const fetchDataSubTopicsArray = async () => {
+            try {
+                const response =
+                    await axios.get(`https://zelse.asuscomm.com/SchoolHistoryGame/ep/subtwithcontent/${selectedArticleNumber}`);
+                setSubTopicsArray(response.data.subtopics);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        if (selectedArticleNumber && currentArticleContent === null) {
+            fetchDataArticleContent();
+        }
+
+        if (selectedArticleNumber && subTopicsArray.length === 0) {
+            fetchDataSubTopicsArray();
+        }
+
+    }, [selectedArticleNumber]);
+
+
+    console.log("subTopicsArray:::", subTopicsArray);
 
     return (
         <Container className={"article_page_container"}>
@@ -99,17 +146,20 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
             <Typography textAlign={"center"} className={"title"} variant={"h4"}>{article.text}</Typography>
 
             <Grid container justifyContent={"center"}>
-                <Grid item xs={"auto"} >
-                    <Button className={"start_button_top"} onClick={()=>handleGoToSubArticleTest(selectedArticleNumber)} variant={"contained"}>Start Tests</Button>
+                <Grid item xs={"auto"}>
+                    <Button className={"start_button_top"}
+                            onClick={() => handleGoToSubArticleTest(selectedArticleNumber)} variant={"contained"}>Start
+                        Tests</Button>
                 </Grid>
             </Grid>
 
             <img src={myImage} alt=""/>
-            <div className={"content_container"}>{article.content && contentRenderFunction(article.content)}</div>
+            <div
+                className={"content_container"}>{currentArticleContent && contentRenderFunction(currentArticleContent)}</div>
 
 
             {/* Display subtopics as cards */}
-            {(article.subtopics && article.subtopics.length === subArticleSuccessLevels[selectedArticleNumber].length) &&
+            {(subTopicsArray.length > 0) &&
             <Grid className={"subtopic_card_list"} container justifyContent={"center"}>
 
                 <Grid item xs={12} sm={6} md={6} xl={6}>
@@ -129,9 +179,10 @@ const Article: React.FC<IArticleProps> = ({historyList, setSelectedArticle, subA
                     </Grid>
                 </Grid>
 
-                <Grid item container xs={12} spacing={2}>{article.subtopics.map((subtopic, index) => (
+                <Grid item container xs={12} spacing={2}>
+                    {subTopicsArray.map((subtopic, index) => (
                     <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
-                        <SubtopicCard done={subArticleSuccessLevels[selectedArticleNumber][index]}
+                        <SubtopicCard done={subArticleSuccessLevels.length>0 ? subArticleSuccessLevels[selectedArticleNumber][index] : 0}
                                       subArticleIndex={index}
                                       title={subtopic.title} content={subtopic.content}/>
                     </Grid>
