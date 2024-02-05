@@ -126,32 +126,40 @@ function App() {
     }, [selectedArticle, selectedSubArticle]);
 
 
-    const handleSubArticleQuizComplete = useCallback(() => {
-
-        if (selectedSubArticle !== null) {
-
-            setSubArticleSuccessLevels((prevStates) => {
-                const updatedStates = [...prevStates];
-                updatedStates[selectedArticle][selectedSubArticle] = true;
-                return updatedStates;
-            });
-        }
-
-    }, [selectedSubArticle, setSubArticleSuccessLevels]);
-
+    // const handleSubArticleQuizComplete = useCallback(() => {
+    //
+    //     if (selectedSubArticle !== null) {
+    //
+    //         setSubArticleSuccessLevels(prevSuccessLevels => {
+    //             const newSuccessLevels = [...prevSuccessLevels];
+    //
+    //             // Перевіряємо, чи є створений підмасив для даної статті
+    //             if (!newSuccessLevels[selectedArticle]) {
+    //                 newSuccessLevels[selectedArticle] = [];
+    //             }
+    //
+    //             // Оновлюємо значення успішності підмасиву
+    //             newSuccessLevels[selectedArticle][subArticleIndex] = value;
+    //
+    //             return newSuccessLevels;
+    //         });
+    //     }
+    //
+    // }, [selectedArticle, selectedSubArticle, setSubArticleSuccessLevels]);
+    //
 
     useEffect(() => {
         const effect = () => {
             if (selectedSubArticle !== null && subArticleAllAnswerIsCorrect) {
                 console.log('Sub article')
-                handleSubArticleQuizComplete();
+                // handleSubArticleQuizComplete();
                 setSubArticleAllAnswerIsCorrect(false);
                 // for new level reload answer
             }
         };
 
         effect();
-    }, [subArticleAllAnswerIsCorrect, selectedSubArticle, handleSubArticleQuizComplete, selectedArticle]);
+    }, [subArticleAllAnswerIsCorrect, selectedSubArticle, selectedArticle]);
 
     console.log("subArticleSuccessLevels:::", subArticleSuccessLevels);
 

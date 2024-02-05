@@ -30,6 +30,9 @@ import {IQuizBlockProps} from "../../types/types";
 import {useAuth} from "../AuthContext/AuthContext";
 import {makeStyles} from "tss-react/mui";
 import CancelIcon from '@mui/icons-material/Cancel';
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -158,16 +161,14 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         }
     }, [results.correct, questions.length]);
 
-    const handleAnswer = (answer: string) => {
-
-
+    const handleAnswer = (answerIndex) => {
         setAnswerChosen(true);
-        setSelectedAnswer(answer);
+        setSelectedAnswer(answerIndex);
 
-        if (selectedAnswer === correctAnswers[currentQuestion]) {
+        // Перевірка, чи обрана відповідь вірна
+        if (correctAnswers[currentQuestion].includes(answerIndex)) {
             setResults({...results, correct: results.correct + 1});
             setCurrentAnswerStatus(true);
-
         } else {
             setResults({...results, incorrect: results.incorrect + 1});
             setCurrentAnswerStatus(false);
@@ -175,6 +176,16 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
         setIsNextButtonActive(true);
     };
+
+    useEffect(() => {
+
+        if (remainingTime === 0 && !answerChosen) {
+            setResults({...results, incorrect: results.incorrect + 1});
+            setCurrentAnswerStatus(false);
+            setIsNextButtonActive(true);
+        }
+
+    }, [answerChosen, remainingTime])
 
     const clearSettingsBeforeNewQuestion = () => {
         setSelectedAnswer("")
@@ -231,32 +242,132 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
 
     useEffect(() => {
+        let timer;
+
         // Timer effect
-        const timer = setInterval(() => {
-            setRemainingTime((prevTime) => {
-                if (prevTime === 0) {
-                    clearInterval(timer); // Clear the timer when it reaches 0
-                    return 0;
-                } else {
-                    return prevTime - 1; // Decrement the remaining time
-                }
-            });
-        }, 1000);
+        const startTimer = () => {
+            timer = setInterval(() => {
+                setRemainingTime((prevTime) => {
+                    if (prevTime === 0) {
+                        clearInterval(timer); // Clear the timer when it reaches 0
+                        return 0;
+                    } else {
+                        return prevTime - 1; // Decrement the remaining time
+                    }
+                });
+            }, 1000);
+        };
+
+        if (!answerChosen) {
+            // Run the timer only if answerChosen is false
+            startTimer();
+        } else {
+            clearInterval(timer)
+        }
 
         // Cleanup function
         return () => clearInterval(timer);
-    }, []); // Runs once when the component mounts
+
+    }, [answerChosen]); // Runs whenever answerChosen changes; // Runs whenever answerChosen changes; // Runs once when the component mounts
 
     // Calculate the progress for CircularProgress
-    const progress = 100 - (remainingTime / 40) * 100;
 
+    const optionHighlight = (option) => {
+
+        if (option === selectedAnswer) {
+
+            if (option === correctAnswers[currentQuestion]) {
+                return classes.sucessOptionSelected;
+            } else return classes.errorOptionSelected;
+
+        } else if (option === correctAnswers[currentQuestion]) {
+            return classes.sucessOptionSelected;
+        } else return "";
+
+    }
+
+    const optionsHighlightWhenTimerIsFinished = (option) => {
+        if (option === correctAnswers[currentQuestion]) {
+            return classes.sucessOptionSelected;
+        } else return "";
+    }
+
+    const phrasesSucess = [
+        "Well done!",
+        "Excellent job!",
+        "Congratulations!",
+        "Bravo!",
+        "Fantastic!"
+    ];
+
+    const phrasesError = [
+        "Incorrect.",
+        "Wrong answer.",
+        "Try again.",
+        "Not quite.",
+        "That's incorrect."
+    ]
+
+// Генеруємо випадковий індекс для вибору фрази зі списку
+
+    const answerReactionBlock = () => {
+        // Вибираємо випадкову фразу для успішної відповіді
+        const successPhrase = phrasesSucess[Math.floor(Math.random() * phrasesSucess.length)];
+
+        // Вибираємо випадкову фразу для невдачної відповіді
+        const errorPhrase = phrasesError[Math.floor(Math.random() * phrasesError.length)];
+
+        return (
+            <Grid container alignItems={"center"} columnSpacing={1}>
+                <Grid item xs={"auto"}>
+                    {currentAnswerStatus ? ( // Перевіряємо, чи відповідь правильна
+                        <CheckCircleIcon fontSize={"large"} color={"success"}/>
+                    ) : (
+                        <CancelIcon fontSize={"large"} color={"error"}/>
+                    )}
+                </Grid>
+                <Grid item xs={"auto"}>
+                    <Typography className={"random_phrase"} variant={"h5"}>
+                        {currentAnswerStatus ? successPhrase : errorPhrase}
+                    </Typography>
+                </Grid>
+            </Grid>
+        );
+    }
+
+    const phrasesTimeUp = [
+        "Time's up.",
+        "Out of time.",
+        "Your time has expired.",
+        "Time expired.",
+        "Time is over."
+    ];
+
+
+    const timeUpMessageBlock = () => {
+        // Вибираємо випадкову фразу для повідомлення про завершення часу
+        const timeUpPhrase = phrasesTimeUp[Math.floor(Math.random() * phrasesTimeUp.length)];
+
+        return (
+            <Grid container alignItems={"center"} columnSpacing={1}>
+                <Grid item xs={"auto"}>
+                    <AccessTimeIcon fontSize={"large"} color={"error"}/>
+                </Grid>
+                <Grid item xs={"auto"}>
+                    <Typography className={"random_phrase"} variant={"h5"}>
+                        {timeUpPhrase}
+                    </Typography>
+                </Grid>
+            </Grid>
+        );
+    }
 
     return (
         <Container>
             <Helmet>
                 <title> {`Тестування ${selectedArticleNumber}`}</title>
             </Helmet>
-            <Grid className={"back_button_container"} container justifyContent={"space-between"}>
+            <Grid sx={{display: "none"}} className={"back_button_container"} container justifyContent={"space-between"}>
                 <Grid item>
                     <Button component={RouterLink} to={`/article/${selectedArticleNumber}`}
                             startIcon={<ArrowBackIosIcon/>}>
@@ -357,11 +468,13 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                     />
 
                     <h1>Тема: {currentArticleTitle && currentArticleTitle}</h1>
-                    <Grid container columnSpacing={4} alignItems={"center"} justifyContent={"center"}>
-                        <Grid item md={6}>
+                    <Grid container rowSpacing={{xs: 2, sm: 0}} columnSpacing={{xs: 1, sm: 2, md: 3}}
+                          alignItems={"center"}
+                          justifyContent={"center"}>
+                        <Grid item xs={12} md={6}>
                             <Typography variant={smUp ? "h6" : 'body1'}>{questions[currentQuestion]}</Typography>
                         </Grid>
-                        <Grid item md={6}>
+                        <Grid item xs={12} md={6}>
                             <RadioGroup
                                 name="radio-buttons-group"
                             >
@@ -369,17 +482,18 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                     <FormControlLabel
 
                                         key={index + "button"}
-                                        className={cx(option === selectedAnswer ? (option === correctAnswers[currentQuestion] ? classes.sucessOptionSelected : classes.errorOptionSelected) : option === correctAnswers[currentQuestion] ? classes.sucessOptionSelected : '')}
+                                        className={cx(remainingTime == 0 ? optionsHighlightWhenTimerIsFinished(option) : optionHighlight(option))}
                                         onKeyPress={handleAnswerKeyPress}
                                         onClick={() => {
-                                            if (!answerChosen) {
+                                            if (!answerChosen && remainingTime > 0) {
                                                 handleAnswer(option);
                                             }
                                         }}
                                         control={<Radio checked={selectedAnswer === option}/>}
                                         label={option}
                                         value={option}
-                                        disabled={answerChosen} // Заборона вибору, якщо вже обрано
+                                        disabled={answerChosen || remainingTime == 0} // Заборона вибору, якщо вже
+                                        // обрано
                                         //
                                     />
                                 ))}
@@ -388,31 +502,34 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                     </Grid>
 
 
-                    <Grid container justifyContent={smUp ? 'space-between' : "center"} mt={2} alignItems={"center"}>
-                        {smUp &&
-                        <Grid className={"status_icon_container"} item xs={12} md={"auto"}>
-                            {answerChosen ? (currentAnswerStatus ?
-                                <CheckCircleIcon fontSize={"large"} color={"success"}/> :
-                                <CancelIcon fontSize={"large"} color={"error"}/>)
+                    <Grid container justifyContent={smUp ? 'space-between' : "start"} mt={2} alignItems={"center"}>
 
+                        <Grid className={"status_icon_container"} item xs={"auto"} md={"auto"}>
+                            {answerChosen ? answerReactionBlock()
                                 :
-                                <div className={"timer_progress"}>
-                                    {/* Your other JSX components */}
-                                    <CircularProgress
-                                        variant="determinate"
-                                        value={(remainingTime / maxTimeStatic) * 100} // Calculate the progress value
-                                        color="secondary" // Change the color of the progress indicator
-                                        thickness={5} // Adjust the thickness of the progress indicator
-                                        size={60} // Set the size of the progress indicator
-                                    />
-                                    <Typography color={"secondary"} variant={"h6"}>{remainingTime}</Typography>
-                                </div>
+                                (remainingTime > 0 ?
+                                        <div className={"timer_progress"}>
+                                            {/* Your other JSX components */}
+                                            <CircularProgress
+                                                variant="determinate"
+                                                value={(remainingTime / maxTimeStatic) * 100} // Calculate the progress value
+                                                color="secondary" // Change the color of the progress indicator
+                                                thickness={5} // Adjust the thickness of the progress indicator
+                                                size={60} // Set the size of the progress indicator
+                                            />
+                                            <Typography color={"secondary"} variant={"h6"}>{remainingTime}</Typography>
+                                        </div>
+                                        :
+                                        timeUpMessageBlock()
+                                )
 
                             }
                         </Grid>
-                        }
+
                         <Grid item xs={12} md={"auto"}>
                             <Button
+                                color={answerChosen ? (currentAnswerStatus ? "success" : "error") : remainingTime == 0 ? "error" : "primary"}
+                                fullWidth={!smUp}
                                 className={'next_button'}
                                 endIcon={<ArrowForwardIosIcon/>}
                                 variant={"contained"}

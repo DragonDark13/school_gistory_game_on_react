@@ -29,28 +29,34 @@
         ],
         "options": [
           [
-            "a) Constructed permanent structures",
-            "b) Sought refuge in caves and rock overhangs",
-            "c) Built climate-controlled shelters",
-            "d) Lived in nomadic tree-dwelling communities"
+            "Constructed permanent structures",
+            "Sought refuge in caves and rock overhangs",
+            "Built climate-controlled shelters",
+            "Lived in nomadic tree-dwelling communities"
           ],
           [
-            "a) Exclusive reliance on a single environment",
-            "b) Limited adaptation strategies",
-            "c) Varied adaptations to different surroundings",
-            "d) Migration to other continents for survival"
+            "Exclusive reliance on a single environment",
+            "Limited adaptation strategies",
+            "Varied adaptations to different surroundings",
+            "Migration to other continents for survival"
           ],
           [
-            "a) Solely for artistic expression",
-            "b) Primarily for social communication",
-            "c) Mainly for hunting and gathering activities",
-            "d) Exclusively for construction purposes"
+            "Solely for artistic expression",
+            "Primarily for social communication",
+            "Mainly for hunting and gathering activities",
+            "Exclusively for construction purposes"
           ]
         ],
         "correctAnswers": [
-          "b) Sought refuge in caves and rock overhangs",
-          "c) Varied adaptations to different surroundings",
-          "c) Mainly for hunting and gathering activities"
+          [
+            1
+          ],
+          [
+            3
+          ],
+          [
+            3
+          ]
         ]
       },
       "achieved": "Опис досягнення",

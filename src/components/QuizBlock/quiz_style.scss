@@ -37,7 +37,11 @@
 }
 
 .question_container {
-  text-align: center;
+  text-align: left;
+
+  @media (min-width: 992px) {
+    text-align: center;
+  }
 
   .MuiFormControlLabel-root {
     padding: 0.5rem;
@@ -45,6 +49,7 @@
     border: 1px solid transparent;
     border-radius: 4px;
     margin-right: 0;
+    margin-left: 0;
 
     &:last-child {
       margin-bottom: 0;
@@ -52,7 +57,9 @@
   }
 
   .MuiFormControlLabel-label {
-    font-size: 1.25rem;
+    @media (min-width: 992px) {
+      font-size: 1.25rem;
+    }
   }
 
   .next_button {
@@ -88,6 +95,10 @@
       font-weight: 600;
     }
 
+  }
+
+  .random_phrase{
+    font-weight: bold;
   }
 
 

@@ -75,10 +75,10 @@ const Article: React.FC<IArticleProps> = ({
 
     const handleGoToSubArticleTest = (articleIndex: number) => {
         // Check if the article has subarticles
-        const subArticles = historyList[articleIndex]?.subtopics;
-        if (subArticles && subArticles.length > 0) {
+        debugger
+        if (subTopicsArray && subTopicsArray.length > 0) {
             // Find the index of the first uncompleted subarticle
-            const firstUncompletedIndex = subArticles.findIndex((subArticle, subIndex) => {
+            const firstUncompletedIndex = subTopicsArray.findIndex((subArticle, subIndex) => {
                 return !subArticleSuccessLevels[articleIndex]?.[subIndex];
             });
 
@@ -88,6 +88,8 @@ const Article: React.FC<IArticleProps> = ({
             } else {
                 handleGoToTestNow(articleIndex);
             }
+        } else {
+            handleGoToTestNow(articleIndex);
         }
     };
 
@@ -181,12 +183,13 @@ const Article: React.FC<IArticleProps> = ({
 
                 <Grid item container xs={12} spacing={2}>
                     {subTopicsArray.map((subtopic, index) => (
-                    <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
-                        <SubtopicCard done={subArticleSuccessLevels.length>0 ? subArticleSuccessLevels[selectedArticleNumber][index] : 0}
-                                      subArticleIndex={index}
-                                      title={subtopic.title} content={subtopic.content}/>
-                    </Grid>
-                ))}</Grid>
+                        <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
+                            <SubtopicCard
+                                done={subArticleSuccessLevels.length > 0 ? subArticleSuccessLevels[selectedArticleNumber][index] : 0}
+                                subArticleIndex={index}
+                                title={subtopic.title} content={subtopic.content}/>
+                        </Grid>
+                    ))}</Grid>
             </Grid>
             }
 
