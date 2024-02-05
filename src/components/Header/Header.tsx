@@ -129,7 +129,7 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
                 <Container>
                     <Toolbar disableGutters sx={{"justifyContent": "space-between"}}>
 
-                        <Grid container justifyContent={"space-between"}>
+                        <Grid container justifyContent={"space-between"}  alignItems={"center"}>
                             <Grid item xs={"auto"}>
                                 <Link component={RouterLink} underline={"none"}
                                       to={!isAuthenticated ? "/" : "/timeline"}>
