@@ -24,13 +24,13 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                                               setSelectedArticle,
                                                               selectedArticle,
                                                               subArticleSuccessLevels,
-                                                              setSelectedSubArticle
+                                                              setSelectedSubArticle,
+                                                              isLoading
                                                           }) => {
 
     const theme = useTheme();
 
     const [dataFromBack, setDataFromBack] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [subTopicsArray, setSubTopicsArray] = useState([]);
 
 
@@ -59,7 +59,6 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     }
 
     const fetchDataSubTopicsArray = async (articleIndex: number) => {
-        setIsLoading(true);
         try {
             const response =
                 await axios.get(`https://zelse.asuscomm.com/SchoolHistoryGame/ep/subtopics/${articleIndex}/ `);
@@ -68,7 +67,6 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            setIsLoading(false);
 
         }
     };
@@ -118,8 +116,8 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
     const getCompletedSubtopics = (articleIndex: number) => {
 
-        if (subArticleSuccessLevels.length>0) {
-                    return subArticleSuccessLevels[articleIndex].filter(done => done).length;
+        if (subArticleSuccessLevels.length > 0) {
+            return subArticleSuccessLevels[articleIndex].filter(done => done).length;
         } else {
             return 0;
         }
@@ -135,25 +133,25 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
         }
     }, [isAuthenticated])
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('https://zelse.asuscomm.com/SchoolHistoryGame/ep/main/');
-                setDataFromBack(response.data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-
-        if (dataFromBack.length === 0) {
-            fetchData();
-        }
-    }, []);
-
-    console.log('dataFromBack---', dataFromBack);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await axios.get('https://zelse.asuscomm.com/SchoolHistoryGame/ep/main/');
+    //             setDataFromBack(response.data);
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error);
+    //         } finally {
+    //             // setIsLoading(false);
+    //         }
+    //     };
+    //
+    //
+    //     if (dataFromBack.length === 0) {
+    //         fetchData();
+    //     }
+    // }, []);
+    //
+    // console.log("dataFromBack", dataFromBack);
 
 
     return (
@@ -167,7 +165,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                 {isLoading ? (
                         <div>Loading...</div>
                     ) :
-                    (dataFromBack && dataFromBack.length > 0) && dataFromBack.map((event, index) => (
+                    (historyList && historyList.length > 0) && dataFromBack.map((event, index) => (
                         <React.Fragment key={index + "TimelineCard"}>
                             <VerticalTimelineElement
                                 key={index + "history-timeline"}

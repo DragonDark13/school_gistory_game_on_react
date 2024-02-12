@@ -14,10 +14,11 @@ import axios from "axios";
 
 
 const Article: React.FC<IArticleProps> = ({
-                                              historyList,
                                               setSelectedArticle,
                                               subArticleSuccessLevels,
-                                              setSelectedSubArticle
+                                              setSelectedSubArticle,
+                                              historyList,
+                                              isLoading
                                           }) => {
     const {selectedArticle} = useParams();
     const [currentArticleContent, setCurrentArticleContent] = useState<null | IArticleContentArrayItem[]>(null);

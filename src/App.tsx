@@ -11,6 +11,9 @@ import avatarImg from "./static/image/city.jpg"
 import {Helmet} from "react-helmet-async";
 import {UserContext} from './components/MyProviders/MyProviders';
 import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp";
+import axios from "axios";
+import {useQuery} from "react-query";
+
 
 const HistoryTimeline = React.lazy(() => import('./components/HistoryTimeline/HistoryTimeline'));
 const QuizBlock = React.lazy(() => import('./components/QuizBlock/QuizBlock'));
@@ -21,6 +24,11 @@ const MainPageContent = React.lazy(() => import('./components/MainPageContent/Ma
 const Footer = React.lazy(() => import('./components/Footer/Footer'));
 
 
+const fetchData = async () => {
+    const response = await axios.get('https://zelse.asuscomm.com/SchoolHistoryGame/ep/main/');
+    return response.data;
+};
+
 function App() {
     const [selectedArticle, setSelectedArticle] = useState<number>(0)
     const [selectedSubArticle, setSelectedSubArticle] = useState<null | number>(null);
@@ -30,7 +38,19 @@ function App() {
     const [questionsArraySubArticle, setQuestionsArraySubArticle] = useState(data.questions)
     const [quizOptionsArraySubArticle, setQuizOptionsArraySubArticle] = useState(data.options)
     const [correctAnswersSubArticle, setCorrectAnswersSubArticle] = useState(data.correctAnswers)
+    const [historyListFromData, setHistoryListFromData] = useState([]);
 
+
+    const {isLoading, isError, dataFromQuery} = useQuery('data', fetchData);
+
+    useEffect(() => {
+        debugger
+        if (dataFromQuery) {
+            setHistoryListFromData(data);
+        }
+    }, [dataFromQuery]);
+
+    console.log("historyListFromData",historyListFromData);
 
     const [buttonStates, setButtonStates] = useState(
         data.historyList.map((_, index) => index === 0) // Початково активна лише перша кнопка
@@ -90,20 +110,20 @@ function App() {
         effect();
     }, [allAnswerIsCorrect, selectedArticle, allAnswerIsCorrectFunc]);
 
-    useEffect(() => {
-        const selectedArticleTest = data.historyList[selectedArticle]?.mainArticleTest;
-
-        if (selectedArticleTest?.questions && selectedArticleTest?.options && selectedArticleTest?.correctAnswers) {
-            const {questions, options, correctAnswers} = selectedArticleTest;
-            setQuestionsArray(questions);
-            setQuizOptionsArray(options);
-            setCorrectAnswers(correctAnswers);
-        } else {
-            setQuestionsArray(data.questions);
-            setQuizOptionsArray(data.options);
-            setCorrectAnswers(data.correctAnswers);
-        }
-    }, [selectedArticle]);
+    // useEffect(() => {
+    //     const selectedArticleTest = data.historyList[selectedArticle]?.mainArticleTest;
+    //
+    //     if (selectedArticleTest?.questions && selectedArticleTest?.options && selectedArticleTest?.correctAnswers) {
+    //         const {questions, options, correctAnswers} = selectedArticleTest;
+    //         setQuestionsArray(questions);
+    //         setQuizOptionsArray(options);
+    //         setCorrectAnswers(correctAnswers);
+    //     } else {
+    //         setQuestionsArray(data.questions);
+    //         setQuizOptionsArray(data.options);
+    //         setCorrectAnswers(data.correctAnswers);
+    //     }
+    // }, [selectedArticle]);
 
     useEffect(() => {
         if (selectedSubArticle !== null) {
@@ -193,6 +213,8 @@ function App() {
     const {currentUser} = useContext(UserContext)
 
 
+
+
     return (
         <Router>
             <div className="App">
@@ -225,7 +247,6 @@ function App() {
                                    element={
                                        <React.Suspense fallback={<div>Loading...</div>}>
                                            <ProfilePage
-                                               historyList={data.historyList}
                                                achievementLevel={"test"}
                                                achievements={achievements}
                                                achievedList={data.achievedList}
@@ -240,10 +261,11 @@ function App() {
                                    element={
                                        <React.Suspense fallback={<div>Loading...</div>}>
                                            <Article
+                                               historyList={historyListFromData}
+                                               isLoading={isLoading}
                                                setSelectedSubArticle={setSelectedSubArticle}
                                                subArticleSuccessLevels={subArticleSuccessLevels}
                                                setSelectedArticle={setSelectedArticle}
-                                               historyList={data.historyList}
                                            />
                                        </React.Suspense>
                                    }
@@ -254,7 +276,7 @@ function App() {
                                        <React.Suspense fallback={<div>Loading...</div>}>
                                            <QuizBlock
                                                testType="article"
-                                               historyList={data.historyList}
+                                               historyList={historyListFromData}
                                                handleNextLevel={handleNextLevel}
                                                setAllAnswerIsCorrect={setAllAnswerIsCorrect}
                                                questions={questionsArray}
@@ -287,13 +309,14 @@ function App() {
                             <Route path="/timeline" element={
                                 <React.Suspense fallback={<div>Loading...</div>}>
                                     <HistoryTimeline
+                                        isLoading={isLoading}
                                         setSelectedSubArticle={setSelectedSubArticle}
                                         subArticleSuccessLevels={subArticleSuccessLevels}
                                         selectedArticle={selectedArticle}
                                         setSelectedArticle={setSelectedArticle}
                                         successLevels={successLevels}
                                         buttonStates={buttonStates}
-                                        historyList={data.historyList}/>
+                                        historyList={historyListFromData}/>
                                 </React.Suspense>
                             }
                             />

@@ -50,6 +50,7 @@ export interface IHistoryTimelineProps extends IHistoryListArray, ISetSelectedAr
     subArticleSuccessLevels: boolean[][]
     selectedArticle:number
     readonly setSelectedSubArticle: (arg0: number) => void;
+    isLoading:boolean
 }
 
 export interface ITimelineCardProps {
@@ -74,7 +75,7 @@ interface IAchievedListItem {
     description: string
 }
 
-export interface ProfilePageProps extends IHistoryListArray {
+export interface ProfilePageProps {
     username: string;
     avatar: string;
     lessonsVisited: number;
@@ -86,6 +87,7 @@ export interface ProfilePageProps extends IHistoryListArray {
 export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
     subArticleSuccessLevels: boolean[][];
     readonly setSelectedSubArticle: (arg0: number) => void;
+    isLoading:boolean;
 }
 
 export interface ISubtopicCardProps extends SubtopicsProps {

@@ -20,9 +20,8 @@ import CelebrationIcon from '@mui/icons-material/Celebration';
 import RocketIcon from '@mui/icons-material/Rocket';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import StarIcon from '@mui/icons-material/Star';
-
-
-
+import axios from "axios";
+import {VerticalTimeline} from "react-vertical-timeline-component";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -42,9 +41,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                                      lessonsVisited,
                                                      achievementLevel,
                                                      achievements,
-                                                     historyList,
                                                      achievedList
                                                  }) => {
+
+    const [dataFromBack, setDataFromBack] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
 
     const {isAuthenticated} = useAuth();
 
@@ -70,7 +72,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     };
 
 
-    const progress = Math.round(historyList.length / 100 * lessonsVisited);
+    const progress = Math.round(dataFromBack.length / 100 * lessonsVisited);
     const progressAnswer = 30;
 
     const {cx, classes} = useStyles();
@@ -90,8 +92,25 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     const achievementActiveCount = 3;
 
     const theme = useTheme();
-    const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+    const mdUp = useMediaQuery(theme.breakpoints.up('md'))
 
+        useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('https://zelse.asuscomm.com/SchoolHistoryGame/ep/main/');
+                setDataFromBack(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+
+        if (dataFromBack.length === 0) {
+            fetchData();
+        }
+    }, []);
 
 
 
@@ -100,6 +119,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             <Helmet>
                 <title>Профіль</title>
             </Helmet>
+
+             {isLoading ? (
+                        <div>Loading...</div>
+                    ) :
             <Grid spacing={mdUp ? 2 : 0} container direction={mdUp ? "row-reverse" : "row"}>
                 <Grid item xs={12} lg={9}>
                     <Paper className={"profile_block"} elevation={3}>
@@ -215,7 +238,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
                 </Grid>
 
-            </Grid>
+            </Grid>}
 
 
             {/* Modal for Settings */}
