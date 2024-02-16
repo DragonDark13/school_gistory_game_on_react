@@ -29,6 +29,8 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                                           }) => {
 
     const theme = useTheme();
+        console.log("isLoading>>>>>>",  isLoading ? "isLoading true" : "isLoading false");
+
 
     const [dataFromBack, setDataFromBack] = useState([]);
     const [subTopicsArray, setSubTopicsArray] = useState([]);
@@ -165,7 +167,9 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                 {isLoading ? (
                         <div>Loading...</div>
                     ) :
-                    (historyList && historyList.length > 0) && dataFromBack.map((event, index) => (
+                    (historyList && historyList.length > 0)
+                    ?
+                    historyList.map((event, index) => (
                         <React.Fragment key={index + "TimelineCard"}>
                             <VerticalTimelineElement
                                 key={index + "history-timeline"}
@@ -200,7 +204,10 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                         </React.Fragment>
 
 
-                    ))}
+                    )):
+                         <div>data not found...</div>
+
+                }
             </VerticalTimeline>
 
 

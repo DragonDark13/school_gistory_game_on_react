@@ -13,6 +13,8 @@ import {UserContext} from './components/MyProviders/MyProviders';
 import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp";
 import axios from "axios";
 import {useQuery} from "react-query";
+import {useRequestProcessor} from "./requestProcessor";
+import axiosClient from "./axios";
 
 
 const HistoryTimeline = React.lazy(() => import('./components/HistoryTimeline/HistoryTimeline'));
@@ -38,19 +40,20 @@ function App() {
     const [questionsArraySubArticle, setQuestionsArraySubArticle] = useState(data.questions)
     const [quizOptionsArraySubArticle, setQuizOptionsArraySubArticle] = useState(data.options)
     const [correctAnswersSubArticle, setCorrectAnswersSubArticle] = useState(data.correctAnswers)
-    const [historyListFromData, setHistoryListFromData] = useState([]);
+    const [fetchIsLoading, setFetchIsLoading] = useState(true)
 
 
-    const {isLoading, isError, dataFromQuery} = useQuery('data', fetchData);
+    // const {isLoading, isError, dataFromQuery} = useQuery('data', fetchData);
 
-    useEffect(() => {
-        debugger
-        if (dataFromQuery) {
-            setHistoryListFromData(data);
-        }
-    }, [dataFromQuery]);
+    // console.log("dataFromQuery", dataFromQuery);
+    // useEffect(() => {
+    //     debugger
+    //     if (dataFromQuery) {
+    //         setHistoryListFromData(dataFromQuery);
+    //     }
+    // }, [dataFromQuery]);
 
-    console.log("historyListFromData",historyListFromData);
+    // console.log("historyListFromData", historyListFromData);
 
     const [buttonStates, setButtonStates] = useState(
         data.historyList.map((_, index) => index === 0) // Початково активна лише перша кнопка
@@ -212,9 +215,36 @@ function App() {
 
     const {currentUser} = useContext(UserContext)
 
+    const {query} = useRequestProcessor();
+
+    const {data: historyDataList, isLoading, isError} = query(
+        'users',
+        () => axiosClient.get('/main/').then((res) => res.data),
+        {enabled: true}
+    );
+
+    console.log(isLoading ? "isLoading true" : "isLoading false");
+    const [historyListFromData, setHistoryListFromData] = useState<any[]>([]); // Adjust the type as per your data structure
+    // console.log("dataFromQuery", dataFromQuery);
 
 
 
+    useEffect(() => {
+        debugger
+        if (historyDataList) {
+            setHistoryListFromData(historyDataList as any[]); // Casting historyDataList as an array
+        }
+    }, [historyDataList]);
+
+
+    console.log("historyListFromData:::", historyListFromData);
+
+    console.log("isLoading>>>", isLoading ? "isLoading true" : "isLoading false");
+
+    // if (isLoading) return <p>Loading...</p>;
+    // if (isError) return <p>Error :(</p>;
+
+    console.log("historyDataList:::::", historyDataList);
     return (
         <Router>
             <div className="App">
@@ -294,7 +324,7 @@ function App() {
                                     <React.Suspense fallback={<div>Loading...</div>}>
                                         <QuizBlock
                                             testType="subArticle"
-                                            historyList={data.historyList}
+                                            historyList={historyListFromData}
                                             handleNextLevel={handleNextLevel}
                                             setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
                                             questions={questionsArraySubArticle}
