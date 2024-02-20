@@ -6,7 +6,7 @@ import myImage from "../../static/image/city.jpg";
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 import SubtopicCard from "./components/SubtopicCard/SubtopicCard";
-import {IArticleContentArrayItem, IArticleProps} from "../../types/types";
+import {IArticleContentArrayItem, IArticleProps, ISubtopicsTextContent} from "../../types/types";
 import {useTheme} from "@mui/system";
 import {useAuth} from "../AuthContext/AuthContext";
 import {contentRenderFunction} from "../../utils/utils";
@@ -22,7 +22,7 @@ const Article: React.FC<IArticleProps> = ({
                                           }) => {
     const {selectedArticle} = useParams();
     const [currentArticleContent, setCurrentArticleContent] = useState<null | IArticleContentArrayItem[]>(null);
-    const [subTopicsArray, setSubTopicsArray] = useState([]);
+    const [subTopicsArray, setSubTopicsArray] = useState<ISubtopicsTextContent[] | []>([]);
 
     const navigate = useNavigate();
 
@@ -186,7 +186,7 @@ const Article: React.FC<IArticleProps> = ({
                     {subTopicsArray.map((subtopic, index) => (
                         <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
                             <SubtopicCard
-                                done={subArticleSuccessLevels.length > 0 ? subArticleSuccessLevels[selectedArticleNumber][index] : 0}
+                                done={subArticleSuccessLevels.length > 0 ? subArticleSuccessLevels[selectedArticleNumber][index] : false}
                                 subArticleIndex={index}
                                 title={subtopic.title} content={subtopic.content}/>
                         </Grid>

@@ -19,8 +19,12 @@ export interface IHandleClickOpenModalSignIn {
     handleClickOpenModalSignIn: () => void;
 }
 
+export interface ISubtopicsTextContent {
+    title: string,
+    content: string | IArticleContentArrayItem[]
+}
 
-export interface SubtopicsProps {
+export interface SubtopicsProps extends ISubtopicsTextContent{
     title: string,
     content: string | IArticleContentArrayItem[]
     subArticleTest?: IDataForQuiz
@@ -48,9 +52,9 @@ export interface IHistoryTimelineProps extends IHistoryListArray, ISetSelectedAr
     buttonStates: Array<boolean>;
     successLevels: Array<boolean>;
     subArticleSuccessLevels: boolean[][]
-    selectedArticle:number
+    selectedArticle: number
     readonly setSelectedSubArticle: (arg0: number) => void;
-    isLoading:boolean
+    isLoading: boolean
 }
 
 export interface ITimelineCardProps {
@@ -75,7 +79,7 @@ interface IAchievedListItem {
     description: string
 }
 
-export interface ProfilePageProps {
+export interface ProfilePageProps extends IHistoryListArray {
     username: string;
     avatar: string;
     lessonsVisited: number;
@@ -87,7 +91,7 @@ export interface ProfilePageProps {
 export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
     subArticleSuccessLevels: boolean[][];
     readonly setSelectedSubArticle: (arg0: number) => void;
-    isLoading:boolean;
+    isLoading: boolean;
 }
 
 export interface ISubtopicCardProps extends SubtopicsProps {
@@ -98,7 +102,7 @@ export interface ISubtopicCardProps extends SubtopicsProps {
 interface IDataForQuiz {
     readonly questions: string[];
     readonly options: string[][];
-    readonly correctAnswers: string[];
+    readonly correctAnswers: number[] | number[][];
 }
 
 export interface IQuizBlockProps extends IHistoryListArray, IDataForQuiz {

@@ -230,7 +230,7 @@ function App() {
 
 
     useEffect(() => {
-        debugger
+
         if (historyDataList) {
             setHistoryListFromData(historyDataList as any[]); // Casting historyDataList as an array
         }
@@ -277,6 +277,7 @@ function App() {
                                    element={
                                        <React.Suspense fallback={<div>Loading...</div>}>
                                            <ProfilePage
+                                               historyList={historyListFromData}
                                                achievementLevel={"test"}
                                                achievements={achievements}
                                                achievedList={data.achievedList}

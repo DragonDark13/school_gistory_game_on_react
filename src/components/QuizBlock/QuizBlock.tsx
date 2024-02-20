@@ -32,7 +32,9 @@ import {makeStyles} from "tss-react/mui";
 import CancelIcon from '@mui/icons-material/Cancel';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-
+import AnswerReactionBlock from "../AnswerReactionBlock/АnswerReactionBlock";
+import TimeUpMessageBlock from "../TimeUpMessageBlock/TimeUpMessageBlock";
+import TimerProgress from "../TimerProgress/TimerProgress";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -91,7 +93,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const [results, setResults] = useState({correct: 0, incorrect: 0});
     const [isQuizFinished, setIsQuizFinished] = useState(false);
     const [nextLevelAvailable, setNextLevelAvailable] = useState(false);
-    const [selectedAnswer, setSelectedAnswer] = useState<string>("");
+    const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
     const [isNextButtonActive, setIsNextButtonActive] = useState(false);
     const {selectedArticle, subtopicId} = useParams();
     const [openModal, setOpenModal] = useState(false);
@@ -161,12 +163,12 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         }
     }, [results.correct, questions.length]);
 
-    const handleAnswer = (answerIndex) => {
+    const handleAnswer = (answerIndex: number) => {
         setAnswerChosen(true);
         setSelectedAnswer(answerIndex);
 
         // Перевірка, чи обрана відповідь вірна
-        if (correctAnswers[currentQuestion].includes(answerIndex)) {
+        if (correctAnswers[currentQuestion] === answerIndex) {
             setResults({...results, correct: results.correct + 1});
             setCurrentAnswerStatus(true);
         } else {
@@ -180,6 +182,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     useEffect(() => {
 
         if (remainingTime === 0 && !answerChosen) {
+            debugger
             setResults({...results, incorrect: results.incorrect + 1});
             setCurrentAnswerStatus(false);
             setIsNextButtonActive(true);
@@ -188,9 +191,10 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     }, [answerChosen, remainingTime])
 
     const clearSettingsBeforeNewQuestion = () => {
-        setSelectedAnswer("")
+        setSelectedAnswer(null);
         setIsNextButtonActive(false);
         setAnswerChosen(false)
+        setRemainingTime(maxTimeStatic);
     }
     const handleRetakeQuiz = () => {
         setCurrentQuestion(0);
@@ -204,7 +208,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const {currentUser} = useContext(UserContext);
 
     const handleNextQuestion = () => {
-        if (!selectedAnswer) {
+        if (!selectedAnswer && remainingTime > 0) {
             // Якщо не обрано відповідь, не переходьте до наступного питання
             return;
         }
@@ -292,75 +296,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         } else return "";
     }
 
-    const phrasesSucess = [
-        "Well done!",
-        "Excellent job!",
-        "Congratulations!",
-        "Bravo!",
-        "Fantastic!"
-    ];
-
-    const phrasesError = [
-        "Incorrect.",
-        "Wrong answer.",
-        "Try again.",
-        "Not quite.",
-        "That's incorrect."
-    ]
-
-// Генеруємо випадковий індекс для вибору фрази зі списку
-
-    const answerReactionBlock = () => {
-        // Вибираємо випадкову фразу для успішної відповіді
-        const successPhrase = phrasesSucess[Math.floor(Math.random() * phrasesSucess.length)];
-
-        // Вибираємо випадкову фразу для невдачної відповіді
-        const errorPhrase = phrasesError[Math.floor(Math.random() * phrasesError.length)];
-
-        return (
-            <Grid container alignItems={"center"} columnSpacing={1}>
-                <Grid item xs={"auto"}>
-                    {currentAnswerStatus ? ( // Перевіряємо, чи відповідь правильна
-                        <CheckCircleIcon fontSize={"large"} color={"success"}/>
-                    ) : (
-                        <CancelIcon fontSize={"large"} color={"error"}/>
-                    )}
-                </Grid>
-                <Grid item xs={"auto"}>
-                    <Typography className={"random_phrase"} variant={"h5"}>
-                        {currentAnswerStatus ? successPhrase : errorPhrase}
-                    </Typography>
-                </Grid>
-            </Grid>
-        );
-    }
-
-    const phrasesTimeUp = [
-        "Time's up.",
-        "Out of time.",
-        "Your time has expired.",
-        "Time expired.",
-        "Time is over."
-    ];
-
-
-    const timeUpMessageBlock = () => {
-        // Вибираємо випадкову фразу для повідомлення про завершення часу
-        const timeUpPhrase = phrasesTimeUp[Math.floor(Math.random() * phrasesTimeUp.length)];
-
-        return (
-            <Grid container alignItems={"center"} columnSpacing={1}>
-                <Grid item xs={"auto"}>
-                    <AccessTimeIcon fontSize={"large"} color={"error"}/>
-                </Grid>
-                <Grid item xs={"auto"}>
-                    <Typography className={"random_phrase"} variant={"h5"}>
-                        {timeUpPhrase}
-                    </Typography>
-                </Grid>
-            </Grid>
-        );
-    }
 
     return (
         <Container>
@@ -486,7 +421,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                         onKeyPress={handleAnswerKeyPress}
                                         onClick={() => {
                                             if (!answerChosen && remainingTime > 0) {
-                                                handleAnswer(option);
+                                                handleAnswer(index + 1);
                                             }
                                         }}
                                         control={<Radio checked={selectedAnswer === option}/>}
@@ -505,23 +440,14 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                     <Grid container justifyContent={smUp ? 'space-between' : "start"} mt={2} alignItems={"center"}>
 
                         <Grid className={"status_icon_container"} item xs={"auto"} md={"auto"}>
-                            {answerChosen ? answerReactionBlock()
-                                :
-                                (remainingTime > 0 ?
-                                        <div className={"timer_progress"}>
-                                            {/* Your other JSX components */}
-                                            <CircularProgress
-                                                variant="determinate"
-                                                value={(remainingTime / maxTimeStatic) * 100} // Calculate the progress value
-                                                color="secondary" // Change the color of the progress indicator
-                                                thickness={5} // Adjust the thickness of the progress indicator
-                                                size={60} // Set the size of the progress indicator
-                                            />
-                                            <Typography color={"secondary"} variant={"h6"}>{remainingTime}</Typography>
-                                        </div>
-                                        :
-                                        timeUpMessageBlock()
-                                )
+                            {answerChosen && <AnswerReactionBlock currentAnswerStatus={currentAnswerStatus}/>}
+
+                            {!answerChosen &&
+                            (remainingTime > 0 ?
+                                    <TimerProgress maxTimeStatic={maxTimeStatic} remainingTime={remainingTime}/> :
+
+                                    <TimeUpMessageBlock/>
+                            )
 
                             }
                         </Grid>

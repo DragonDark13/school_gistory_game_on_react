@@ -119,9 +119,7 @@
               ]
             ],
             "correctAnswers": [
-              "a) Increased brain size",
-              "c) Adaptation to both walking on land and tool use",
-              "d) Varied body size for diverse ecological niches"
+             1,3,4
             ]
           }
         },
@@ -194,9 +192,7 @@
               ]
             ],
             "correctAnswers": [
-              "a) Altered social structure",
-              "b) Nomadic lifestyle and resource tracking",
-              "c) Enhanced cooperation within social groups"
+              1,2,3
             ]
           }
         },
@@ -276,9 +272,7 @@
               ]
             ],
             "correctAnswers": [
-              "d) Hunting and gathering",
-              "c) Complexity with multiple functions",
-              "d) Showcase of a variety of stone tools, indicating high inventiveness"
+             4,3,4
             ]
           }
         }
@@ -466,9 +460,7 @@
     ]
   ],
   "correctAnswers": [
-    "Париж",
-    "29",
-    "8"
+    1,2,2
   ],
   "initialTasks": [
     {
@@ -536,9 +528,7 @@
       ]
     ],
     "correctAnswers": [
-      "c) Плейстоцен",
-      "c) Африка",
-      "b) Використання інструментів"
+      3,3,2
     ]
   },
   "achievedList": [
