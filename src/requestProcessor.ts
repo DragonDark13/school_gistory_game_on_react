@@ -3,16 +3,16 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 export function useRequestProcessor() {
   const queryClient = useQueryClient();
 
-  function query(key, queryFunction, options = {}) {
-    return useQuery({
+  function query<TData, TError>(key: string, queryFunction: () => Promise<TData>, options = {}) {
+    return useQuery<TData, TError>({
       queryKey: key,
       queryFn: queryFunction,
       ...options,
     });
   }
 
-  function mutate(key, mutationFunction, options = {}) {
-    return useMutation({
+  function mutate<TData, TError>(key: string, mutationFunction: () => Promise<TData>, options = {}) {
+    return useMutation<TData, TError>({
       mutationKey: key,
       mutationFn: mutationFunction,
       onSettled: () => queryClient.invalidateQueries(key),

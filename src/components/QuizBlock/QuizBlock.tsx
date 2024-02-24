@@ -246,7 +246,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
 
     useEffect(() => {
-        let timer;
+        let timer: NodeJS.Timeout | undefined;
 
         // Timer effect
         const startTimer = () => {
@@ -266,18 +266,21 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
             // Run the timer only if answerChosen is false
             startTimer();
         } else {
-            clearInterval(timer)
+            clearInterval(timer);
         }
 
         // Cleanup function
-        return () => clearInterval(timer);
+        return () => {
+            if (timer) clearInterval(timer);
+        };
 
     }, [answerChosen]); // Runs whenever answerChosen changes; // Runs whenever answerChosen changes; // Runs once when the component mounts
 
     // Calculate the progress for CircularProgress
 
-    const optionHighlight = (option) => {
+    const optionHighlight = (option:number) => {
 
+        console.log("option::",option);
         if (option === selectedAnswer) {
 
             if (option === correctAnswers[currentQuestion]) {
@@ -290,7 +293,8 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     }
 
-    const optionsHighlightWhenTimerIsFinished = (option) => {
+    const optionsHighlightWhenTimerIsFinished = (option:number) => {
+        console.log("option::",option);
         if (option === correctAnswers[currentQuestion]) {
             return classes.sucessOptionSelected;
         } else return "";
@@ -417,14 +421,14 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                     <FormControlLabel
 
                                         key={index + "button"}
-                                        className={cx(remainingTime == 0 ? optionsHighlightWhenTimerIsFinished(option) : optionHighlight(option))}
+                                        className={cx(remainingTime == 0 ? optionsHighlightWhenTimerIsFinished(index+1) : optionHighlight(index+1))}
                                         onKeyPress={handleAnswerKeyPress}
                                         onClick={() => {
                                             if (!answerChosen && remainingTime > 0) {
                                                 handleAnswer(index + 1);
                                             }
                                         }}
-                                        control={<Radio checked={selectedAnswer === option}/>}
+                                        control={<Radio checked={selectedAnswer === index+1}/>}
                                         label={option}
                                         value={option}
                                         disabled={answerChosen || remainingTime == 0} // Заборона вибору, якщо вже
