@@ -126,9 +126,6 @@ const Article: React.FC<IArticleProps> = ({
 
     }, [selectedArticleNumber]);
 
-
-    console.log("subTopicsArray:::", subTopicsArray);
-
     return (
         <Container className={"article_page_container"}>
             <Helmet>

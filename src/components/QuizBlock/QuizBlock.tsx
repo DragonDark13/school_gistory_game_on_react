@@ -29,12 +29,9 @@ import QuizSuccessModal from "../../QuizSuccessModal/QuizSuccessModal";
 import {IQuizBlockProps} from "../../types/types";
 import {useAuth} from "../AuthContext/AuthContext";
 import {makeStyles} from "tss-react/mui";
-import CancelIcon from '@mui/icons-material/Cancel';
-import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import AnswerReactionBlock from "../AnswerReactionBlock/АnswerReactionBlock";
-import TimeUpMessageBlock from "../TimeUpMessageBlock/TimeUpMessageBlock";
-import TimerProgress from "../TimerProgress/TimerProgress";
+import AnswerReactionBlock from "./components/AnswerReactionBlock/АnswerReactionBlock";
+import TimeUpMessageBlock from "./components/TimeUpMessageBlock/TimeUpMessageBlock";
+import TimerProgress from "./components/TimerProgress/TimerProgress";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -126,8 +123,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     if (testType === "subArticle") {
         selectedSubArticleNumber = parseInt(subtopicId || '0', 10);
-        console.log("selectedSubArticleNumber", selectedSubArticleNumber);
-        console.log("selectedSubArticle", historyList[selectedArticleNumber]?.subtopics?.[selectedSubArticleNumber]);
         currentArticle = historyList[selectedArticleNumber]?.subtopics?.[selectedSubArticleNumber]
         currentArticleTitle = currentArticle?.title;
 
@@ -280,7 +275,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     const optionHighlight = (option:number) => {
 
-        console.log("option::",option);
         if (option === selectedAnswer) {
 
             if (option === correctAnswers[currentQuestion]) {
@@ -294,7 +288,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     }
 
     const optionsHighlightWhenTimerIsFinished = (option:number) => {
-        console.log("option::",option);
         if (option === correctAnswers[currentQuestion]) {
             return classes.sucessOptionSelected;
         } else return "";

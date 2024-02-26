@@ -29,8 +29,6 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                                           }) => {
 
     const theme = useTheme();
-        console.log("isLoading>>>>>>",  isLoading ? "isLoading true" : "isLoading false");
-
 
     const [dataFromBack, setDataFromBack] = useState([]);
     const [subTopicsArray, setSubTopicsArray] = useState([]);

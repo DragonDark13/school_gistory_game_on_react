@@ -26,7 +26,6 @@ interface IAnswerReactionBlock {
 
 
 const AnswerReactionBlock =({currentAnswerStatus}:IAnswerReactionBlock) => {
-    console.log("currentAnswerStatus",currentAnswerStatus);
     const successPhrase = phrasesSucess[Math.floor(Math.random() * phrasesSucess.length)];
 
     // Вибираємо випадкову фразу для невдачної відповіді

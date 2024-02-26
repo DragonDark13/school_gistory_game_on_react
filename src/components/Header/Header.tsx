@@ -65,7 +65,6 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
 
     // const {theme, setTheme} = useContext(ThemeContext)
     const {language} = useContext(LanguageContext)
-    console.log(language);
     const themeDefault = useTheme();
     const smUp = useMediaQuery(themeDefault.breakpoints.up('sm'));
     const [lifeCount, setLifeCount] = useState(5);
