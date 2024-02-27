@@ -1,15 +1,10 @@
 import React, {useState} from 'react';
 import {
-    Paper,
-    Typography,
     Grid,
     Button,
     TextField,
     useMediaQuery,
-    Select,
-    MenuItem,
-    InputLabel,
-    FormControl, Autocomplete
+  Autocomplete
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -76,10 +71,6 @@ const UserProfileSettings: React.FC = () => {
                 <TextField label={"Password:"} disabled={!isEditing} fullWidth type="password" value={password}
                            onChange={(e) => setPassword(e.target.value)}/>
 
-
-                {/*<TextField label={"Country:"} disabled={!isEditing} fullWidth value={country}*/}
-                {/*           onChange={(e) => setCountry(e.target.value)}/>*/}
-
                 <Autocomplete
                     disabled={!isEditing}
                     fullWidth
@@ -92,24 +83,6 @@ const UserProfileSettings: React.FC = () => {
                     }}
                     renderInput={(params) => <TextField {...params} fullWidth label="Country:"/>}
                 />
-
-                {/*<FormControl focused fullWidth>*/}
-                {/*    <InputLabel id="demo-simple-select-helper-label">Country:</InputLabel>*/}
-                {/*    <Select*/}
-                {/*        label="Country"*/}
-                {/*        labelId="demo-simple-select-helper-label"*/}
-                {/*        fullWidth*/}
-                {/*        value={selectedCountry}*/}
-                {/*        onChange={(e) => selectCountryHandler(e.target.value)}*/}
-                {/*    >*/}
-                {/*        {!!countryArr?.length &&*/}
-                {/*        countryArr.map(({label, value}) => (*/}
-                {/*            <MenuItem key={value} value={value}>*/}
-                {/*                {label}*/}
-                {/*            </MenuItem>*/}
-                {/*        ))}*/}
-                {/*    </Select>*/}
-                {/*</FormControl>*/}
 
             </div>
 

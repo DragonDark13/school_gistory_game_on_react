@@ -6,7 +6,6 @@ import {
     CardHeader,
     CardMedia,
     Collapse,
-    Typography
 } from '@mui/material';
 import myImage from "../../../../static/image/city.jpg";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';

@@ -12,7 +12,6 @@ import {Helmet} from "react-helmet-async";
 import {UserContext} from './components/MyProviders/MyProviders';
 import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp";
 import axios from "axios";
-import {useQuery} from "react-query";
 import {useRequestProcessor} from "./requestProcessor";
 import axiosClient from "./axios";
 
@@ -26,10 +25,6 @@ const MainPageContent = React.lazy(() => import('./components/MainPageContent/Ma
 const Footer = React.lazy(() => import('./components/Footer/Footer'));
 
 
-const fetchData = async () => {
-    const response = await axios.get('https://zelse.asuscomm.com/SchoolHistoryGame/ep/main/');
-    return response.data;
-};
 
 function App() {
     const [selectedArticle, setSelectedArticle] = useState<number>(0)
@@ -40,20 +35,7 @@ function App() {
     const [questionsArraySubArticle, setQuestionsArraySubArticle] = useState(data.questions)
     const [quizOptionsArraySubArticle, setQuizOptionsArraySubArticle] = useState(data.options)
     const [correctAnswersSubArticle, setCorrectAnswersSubArticle] = useState(data.correctAnswers)
-    const [fetchIsLoading, setFetchIsLoading] = useState(true)
 
-
-    // const {isLoading, isError, dataFromQuery} = useQuery('data', fetchData);
-
-    // console.log("dataFromQuery", dataFromQuery);
-    // useEffect(() => {
-    //     debugger
-    //     if (dataFromQuery) {
-    //         setHistoryListFromData(dataFromQuery);
-    //     }
-    // }, [dataFromQuery]);
-
-    // console.log("historyListFromData", historyListFromData);
 
     const [buttonStates, setButtonStates] = useState(
         data.historyList.map((_, index) => index === 0) // Початково активна лише перша кнопка
@@ -89,9 +71,6 @@ function App() {
             return updatedStates;
         });
 
-        console.log("selectedArticle", selectedArticle);
-
-        console.log("successLevels", successLevels);
 
         setAchievements((prevAchievements) => {
             const newAchievements = [...prevAchievements];
@@ -113,20 +92,7 @@ function App() {
         effect();
     }, [allAnswerIsCorrect, selectedArticle, allAnswerIsCorrectFunc]);
 
-    // useEffect(() => {
-    //     const selectedArticleTest = data.historyList[selectedArticle]?.mainArticleTest;
-    //
-    //     if (selectedArticleTest?.questions && selectedArticleTest?.options && selectedArticleTest?.correctAnswers) {
-    //         const {questions, options, correctAnswers} = selectedArticleTest;
-    //         setQuestionsArray(questions);
-    //         setQuizOptionsArray(options);
-    //         setCorrectAnswers(correctAnswers);
-    //     } else {
-    //         setQuestionsArray(data.questions);
-    //         setQuizOptionsArray(data.options);
-    //         setCorrectAnswers(data.correctAnswers);
-    //     }
-    // }, [selectedArticle]);
+
 
     useEffect(() => {
         if (selectedSubArticle !== null) {
@@ -147,29 +113,6 @@ function App() {
 
 
     }, [selectedArticle, selectedSubArticle]);
-
-
-    // const handleSubArticleQuizComplete = useCallback(() => {
-    //
-    //     if (selectedSubArticle !== null) {
-    //
-    //         setSubArticleSuccessLevels(prevSuccessLevels => {
-    //             const newSuccessLevels = [...prevSuccessLevels];
-    //
-    //             // Перевіряємо, чи є створений підмасив для даної статті
-    //             if (!newSuccessLevels[selectedArticle]) {
-    //                 newSuccessLevels[selectedArticle] = [];
-    //             }
-    //
-    //             // Оновлюємо значення успішності підмасиву
-    //             newSuccessLevels[selectedArticle][subArticleIndex] = value;
-    //
-    //             return newSuccessLevels;
-    //         });
-    //     }
-    //
-    // }, [selectedArticle, selectedSubArticle, setSubArticleSuccessLevels]);
-    //
 
     useEffect(() => {
         const effect = () => {
@@ -243,8 +186,6 @@ function App() {
 
     console.log("isLoading>>>", isLoading ? "isLoading true" : "isLoading false");
 
-    // if (isLoading) return <p>Loading...</p>;
-    // if (isError) return <p>Error :(</p>;
 
     console.log("historyDataList:::::", historyDataList);
 

@@ -40,16 +40,11 @@ const AchievedItem = ({description, active, name, icon}: IAchievedItem) => {
                 <div className={"achievement_icon_container"}>
                     <Icon fontSize={"large"} color={active ? "primary" : "disabled"} />
                 </div>
-
-                {/*</ListItemIcon>*/}
                 <Typography className={"name"} variant={"body2"}>
                     {name}
                 </Typography>
                 <Typography
                     variant={"subtitle2"}> {!active ? "Incomplete" : "Complete"}</Typography>
-
-                {/*<ListItemText secondary={historyList[index].achieved}*/}
-                {/*              title={historyList[index].achieved}/>*/}
             </Paper>
         </Grid>
 

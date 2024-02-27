@@ -20,8 +20,6 @@ import CelebrationIcon from '@mui/icons-material/Celebration';
 import RocketIcon from '@mui/icons-material/Rocket';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import StarIcon from '@mui/icons-material/Star';
-import axios from "axios";
-import {VerticalTimeline} from "react-vertical-timeline-component";
 
 
 const useStyles = makeStyles()((theme) => ({

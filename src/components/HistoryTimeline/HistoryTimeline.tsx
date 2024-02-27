@@ -30,7 +30,6 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
     const theme = useTheme();
 
-    const [dataFromBack, setDataFromBack] = useState([]);
     const [subTopicsArray, setSubTopicsArray] = useState([]);
 
 
@@ -75,10 +74,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     const handleGoToSubArticleTest = (articleIndex: number) => {
         // Check if the article has subarticles
         setSelectedArticle(articleIndex)
-
-
         fetchDataSubTopicsArray(articleIndex);
-
     };
 
     useEffect(() => {
@@ -133,27 +129,6 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
         }
     }, [isAuthenticated])
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await axios.get('https://zelse.asuscomm.com/SchoolHistoryGame/ep/main/');
-    //             setDataFromBack(response.data);
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error);
-    //         } finally {
-    //             // setIsLoading(false);
-    //         }
-    //     };
-    //
-    //
-    //     if (dataFromBack.length === 0) {
-    //         fetchData();
-    //     }
-    // }, []);
-    //
-    // console.log("dataFromBack", dataFromBack);
-
-
     return (
         <Container className={"history_timeline_page"}>
             <Helmet>
@@ -166,44 +141,44 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                         <div>Loading...</div>
                     ) :
                     (historyList && historyList.length > 0)
-                    ?
-                    historyList.map((event, index) => (
-                        <React.Fragment key={index + "TimelineCard"}>
-                            <VerticalTimelineElement
-                                key={index + "history-timeline"}
-                                // date={event.date}
-                                dateClassName={"hidden"}
-                                className={buttonStates[index] && !successLevels[index] ? "current_active_vertical_timeline_element" : ""}
+                        ?
+                        historyList.map((event, index) => (
+                            <React.Fragment key={index + "TimelineCard"}>
+                                <VerticalTimelineElement
+                                    key={index + "history-timeline"}
+                                    // date={event.date}
+                                    dateClassName={"hidden"}
+                                    className={buttonStates[index] && !successLevels[index] ? "current_active_vertical_timeline_element" : ""}
 
-                                iconStyle={{
-                                    background: theme.palette.primary.light,
-                                    color: iconColorState(buttonStates[index]),
-                                }}
-                                contentStyle={{padding: 0, boxShadow: "none"}}
-                                icon={successLevels[index] ? <CheckCircleOutlineIcon/> :
-                                    <RadioButtonUncheckedRoundedIcon/>}
+                                    iconStyle={{
+                                        background: theme.palette.primary.light,
+                                        color: iconColorState(buttonStates[index]),
+                                    }}
+                                    contentStyle={{padding: 0, boxShadow: "none"}}
+                                    icon={successLevels[index] ? <CheckCircleOutlineIcon/> :
+                                        <RadioButtonUncheckedRoundedIcon/>}
 
-                            >
-                                <Card elevation={buttonStates[index] ? 4 : 1}>
-                                    <TimelineCard
-                                        completedSubtopics={getCompletedSubtopics(index)}
-                                        totalSubtopics={getTotalSubtopics(index)}
-                                        isAllSubtaskDone={isAllSubtaskDone(index)}
-                                        event={event}
-                                        index={index}
-                                        buttonState={buttonStates[index]}
-                                        handleExpandArticle={handleExpandArticle}
-                                        handleGoToSubArticleTest={handleGoToSubArticleTest}
-                                        handleGoToTestNow={handleGoToTestNow}
-                                        successLevel={successLevels[index]}
-                                    />
-                                </Card>
-                            </VerticalTimelineElement>
-                        </React.Fragment>
+                                >
+                                    <Card elevation={buttonStates[index] ? 4 : 1}>
+                                        <TimelineCard
+                                            completedSubtopics={getCompletedSubtopics(index)}
+                                            totalSubtopics={getTotalSubtopics(index)}
+                                            isAllSubtaskDone={isAllSubtaskDone(index)}
+                                            event={event}
+                                            index={index}
+                                            buttonState={buttonStates[index]}
+                                            handleExpandArticle={handleExpandArticle}
+                                            handleGoToSubArticleTest={handleGoToSubArticleTest}
+                                            handleGoToTestNow={handleGoToTestNow}
+                                            successLevel={successLevels[index]}
+                                        />
+                                    </Card>
+                                </VerticalTimelineElement>
+                            </React.Fragment>
 
 
-                    )):
-                         <div>data not found...</div>
+                        )) :
+                        <div>data not found...</div>
 
                 }
             </VerticalTimeline>

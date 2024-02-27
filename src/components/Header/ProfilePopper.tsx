@@ -6,8 +6,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import LogoutIcon from "@mui/icons-material/Logout";
 import {IProfilePopper} from "../../types/types";
-import {useAuth} from "../AuthContext/AuthContext";
-import {Link as RouterLink, useNavigate} from "react-router-dom";
+import {Link as RouterLink} from "react-router-dom";
 
 
 const ProfilePopper = ({
