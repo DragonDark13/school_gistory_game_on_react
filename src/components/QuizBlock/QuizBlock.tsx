@@ -177,7 +177,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     useEffect(() => {
 
         if (remainingTime === 0 && !answerChosen) {
-            debugger
             setResults({...results, incorrect: results.incorrect + 1});
             setCurrentAnswerStatus(false);
             setIsNextButtonActive(true);

@@ -217,6 +217,7 @@ function App() {
 
     const {query} = useRequestProcessor();
 
+
     const {data: historyDataList, isLoading, isError} = query(
         'users',
         () => axiosClient.get('/main/').then((res) => res.data),
@@ -228,11 +229,12 @@ function App() {
     // console.log("dataFromQuery", dataFromQuery);
 
 
-
     useEffect(() => {
 
-        if (historyDataList) {
+        if (historyDataList !== undefined) {
             setHistoryListFromData(historyDataList as any[]); // Casting historyDataList as an array
+        } else {
+            setHistoryListFromData([]);
         }
     }, [historyDataList]);
 
@@ -245,6 +247,8 @@ function App() {
     // if (isError) return <p>Error :(</p>;
 
     console.log("historyDataList:::::", historyDataList);
+
+
     return (
         <Router>
             <div className="App">
@@ -276,28 +280,33 @@ function App() {
                             <Route path="/profile"
                                    element={
                                        <React.Suspense fallback={<div>Loading...</div>}>
-                                           <ProfilePage
-                                               historyList={historyListFromData}
-                                               achievementLevel={"test"}
-                                               achievements={achievements}
-                                               achievedList={data.achievedList}
-                                               avatar={avatarImg}
-                                               lessonsVisited={7}
-                                               username={currentUser ? currentUser.name : "Петро" +
-                                                   " Сагайдачний"}/>
+                                           {(historyListFromData.length > 0) ?
+                                               <ProfilePage
+                                                   historyList={historyListFromData}
+                                                   achievementLevel={"test"}
+                                                   achievements={achievements}
+                                                   achievedList={data.achievedList}
+                                                   avatar={avatarImg}
+                                                   lessonsVisited={7}
+                                                   username={currentUser ? currentUser.name : "Петро" +
+                                                       " Сагайдачний"}/>:<div>Loading...</div>
+                                           }
                                        </React.Suspense>}
                             />
 
                             <Route path="/article/:selectedArticle"
                                    element={
                                        <React.Suspense fallback={<div>Loading...</div>}>
-                                           <Article
-                                               historyList={historyListFromData}
-                                               isLoading={isLoading}
-                                               setSelectedSubArticle={setSelectedSubArticle}
-                                               subArticleSuccessLevels={subArticleSuccessLevels}
-                                               setSelectedArticle={setSelectedArticle}
-                                           />
+                                           {(historyListFromData.length > 0) ?
+                                               <Article
+                                                   historyList={historyListFromData}
+                                                   isLoading={isLoading}
+                                                   setSelectedSubArticle={setSelectedSubArticle}
+                                                   subArticleSuccessLevels={subArticleSuccessLevels}
+                                                   setSelectedArticle={setSelectedArticle}
+                                               /> :
+                                               <div>Loading...</div>
+                                           }
                                        </React.Suspense>
                                    }
                             />
@@ -339,15 +348,17 @@ function App() {
 
                             <Route path="/timeline" element={
                                 <React.Suspense fallback={<div>Loading...</div>}>
-                                    <HistoryTimeline
-                                        isLoading={isLoading}
-                                        setSelectedSubArticle={setSelectedSubArticle}
-                                        subArticleSuccessLevels={subArticleSuccessLevels}
-                                        selectedArticle={selectedArticle}
-                                        setSelectedArticle={setSelectedArticle}
-                                        successLevels={successLevels}
-                                        buttonStates={buttonStates}
-                                        historyList={historyListFromData}/>
+                                    {(historyListFromData.length > 0) ? <HistoryTimeline
+                                            isLoading={isLoading}
+                                            setSelectedSubArticle={setSelectedSubArticle}
+                                            subArticleSuccessLevels={subArticleSuccessLevels}
+                                            selectedArticle={selectedArticle}
+                                            setSelectedArticle={setSelectedArticle}
+                                            successLevels={successLevels}
+                                            buttonStates={buttonStates}
+                                            historyList={historyListFromData}/> :
+                                        <div>Loading...</div>
+                                    }
                                 </React.Suspense>
                             }
                             />

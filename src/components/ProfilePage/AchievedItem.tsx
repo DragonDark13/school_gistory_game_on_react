@@ -25,7 +25,7 @@ const AchievedItem = ({description, active, name, icon}: IAchievedItem) => {
 
     const Icon = icon;
     return (
-        <Grid item xs={6} sm={4} xl={3}>
+        <Grid item xs={6} sm={4} md={3} xl={3}>
             <Paper variant={"outlined"}>
                 {/*<ListItemIcon>*/}
 

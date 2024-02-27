@@ -125,7 +125,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                     <div>Loading...</div>
                 ) :
                 <Grid spacing={mdUp ? 2 : 0} container direction={mdUp ? "row-reverse" : "row"}>
-                    <Grid item xs={12} lg={9}>
+                    <Grid item xs={12} md={9} lg={9}>
                         <Paper className={"profile_block"} elevation={3}>
                             <Avatar className={"profile_block_avatar"} alt={username} src={avatar}
                                     sx={{width: 100, height: 100, margin: 'auto'}}/>
@@ -164,7 +164,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
                             <Grid className={"profile_progress_panel_container"} container alignItems={"center"}
                                   justifyContent={"center"} spacing={mdUp ? 2 : 0}>
-                                <Grid item xs={12} lg={6} className={"profile_progress_item"}>
+                                <Grid item xs={12} md={6} className={"profile_progress_item"}>
                                     <Typography variant={"h5"}>Прогресс на поточному рівні</Typography>
                                     <Typography variant={"h6"}
                                                 color="text.secondary">{progressAnswer + "%"}</Typography>
@@ -176,7 +176,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} lg={6} className={"profile_progress_item"}>
+                                <Grid item xs={12} md={6} className={"profile_progress_item"}>
                                     <Typography variant={"h5"}>Загальний прогресс</Typography>
                                     <Typography variant={"h6"} color="text.secondary">{progress + "%"}</Typography>
 
@@ -207,7 +207,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                         </Paper>
                     </Grid>
 
-                    <Grid item xs={12} lg={3}>
+                    <Grid item xs={12} md={3} lg={3}>
                         {(!mdUp && !openSettings) && <Button
                             className={"settings_button"}
                             fullWidth
