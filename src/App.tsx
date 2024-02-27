@@ -282,6 +282,7 @@ function App() {
                                        <React.Suspense fallback={<div>Loading...</div>}>
                                            {(historyListFromData.length > 0) ?
                                                <ProfilePage
+                                                   isLoading={isLoading}
                                                    historyList={historyListFromData}
                                                    achievementLevel={"test"}
                                                    achievements={achievements}

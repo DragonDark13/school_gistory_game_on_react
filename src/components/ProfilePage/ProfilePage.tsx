@@ -42,12 +42,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                                      achievementLevel,
                                                      achievements,
                                                      historyList,
-                                                     achievedList
-
+                                                     achievedList,
+isLoading
                                                  }) => {
 
-    const [dataFromBack, setDataFromBack] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
 
 
     const {isAuthenticated} = useAuth();
@@ -74,7 +72,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     };
 
 
-    const progress = Math.round(dataFromBack.length / 100 * lessonsVisited);
+    const progress = Math.round(historyList.length / 100 * lessonsVisited);
     const progressAnswer = 30;
 
     const {cx, classes} = useStyles();
@@ -95,24 +93,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
     const theme = useTheme();
     const mdUp = useMediaQuery(theme.breakpoints.up('md'))
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('https://zelse.asuscomm.com/SchoolHistoryGame/ep/main/');
-                setDataFromBack(response.data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-
-        if (dataFromBack.length === 0) {
-            fetchData();
-        }
-    }, []);
 
 
     return (

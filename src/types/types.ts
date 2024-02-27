@@ -86,6 +86,8 @@ export interface ProfilePageProps extends IHistoryListArray {
     achievementLevel: string;
     achievements: string[];
     readonly achievedList: IAchievedListItem[];
+        isLoading: boolean;
+
 }
 
 export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
