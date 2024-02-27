@@ -14,23 +14,23 @@ import axios from "axios";
 import {useQuery} from "react-query";
 
 
-const fetchDataArticleContent = async (selectedArticleNumber) => {
+const fetchDataArticleContent = async (selectedArticleNumber:number) => {
     const response = await axios.get(`https://zelse.asuscomm.com/SchoolHistoryGame/ep/maincontent/${selectedArticleNumber}/`);
     return response.data;
 };
 
-const fetchDataSubTopicsArray = async (selectedArticleNumber) => {
+const fetchDataSubTopicsArray = async (selectedArticleNumber:number) => {
     const response = await axios.get(`https://zelse.asuscomm.com/SchoolHistoryGame/ep/subtwithcontent/${selectedArticleNumber}`);
     return response.data.subtopics;
 };
 
-const useArticleContent = (selectedArticleNumber) => {
+const useArticleContent = (selectedArticleNumber:number) => {
     return useQuery(['articleContent', selectedArticleNumber], () => fetchDataArticleContent(selectedArticleNumber), {
         enabled: !!selectedArticleNumber,
     });
 };
 
-const useSubTopicsArray = (selectedArticleNumber) => {
+const useSubTopicsArray = (selectedArticleNumber:number) => {
     return useQuery(['subTopicsArray', selectedArticleNumber], () => fetchDataSubTopicsArray(selectedArticleNumber), {
         enabled: !!selectedArticleNumber,
     });
