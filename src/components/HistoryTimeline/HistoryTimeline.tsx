@@ -14,6 +14,7 @@ import {Helmet} from "react-helmet-async";
 import {IHistoryTimelineProps} from "../../types/types";
 import {useAuth} from "../AuthContext/AuthContext";
 import axios from "axios";
+import axiosClient from "../../axios";
 
 
 const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
@@ -60,7 +61,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     const fetchDataSubTopicsArray = async (articleIndex: number) => {
         try {
             const response =
-                await axios.get(`https://zelse.asuscomm.com/SchoolHistoryGame/ep/subtopics/${articleIndex}/ `);
+                await axiosClient.get(`/ep/subtopics/${articleIndex}/ `);
             setSubTopicsArray(response.data);
 
 

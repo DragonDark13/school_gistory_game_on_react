@@ -12,15 +12,16 @@ import {useAuth} from "../AuthContext/AuthContext";
 import {contentRenderFunction} from "../../utils/utils";
 import axios from "axios";
 import {useQuery} from "react-query";
+import axiosClient from "../../axios";
 
 
 const fetchDataArticleContent = async (selectedArticleNumber:number) => {
-    const response = await axios.get(`https://zelse.asuscomm.com/SchoolHistoryGame/ep/maincontent/${selectedArticleNumber}/`);
+    const response = await axiosClient.get(`/ep/maincontent/${selectedArticleNumber}/`);
     return response.data;
 };
 
 const fetchDataSubTopicsArray = async (selectedArticleNumber:number) => {
-    const response = await axios.get(`https://zelse.asuscomm.com/SchoolHistoryGame/ep/subtwithcontent/${selectedArticleNumber}`);
+    const response = await axiosClient.get(`/ep/subtwithcontent/${selectedArticleNumber}`);
     return response.data.subtopics;
 };
 

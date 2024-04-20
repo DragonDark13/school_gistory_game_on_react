@@ -163,7 +163,7 @@ function App() {
 
     const {data: historyDataList, isLoading, isError} = query(
         'users',
-        () => axiosClient.get('/main/').then((res) => res.data),
+        () => axiosClient.get('/ep/main/').then((res) => res.data),
         {enabled: true}
     );
 
