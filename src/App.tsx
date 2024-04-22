@@ -26,7 +26,6 @@ const MainPageContent = React.lazy(() => import('./components/MainPageContent/Ma
 const Footer = React.lazy(() => import('./components/Footer/Footer'));
 
 
-
 function App() {
     const [selectedArticle, setSelectedArticle] = useState<number>(0)
     const [selectedSubArticle, setSelectedSubArticle] = useState<null | number>(null);
@@ -92,7 +91,6 @@ function App() {
 
         effect();
     }, [allAnswerIsCorrect, selectedArticle, allAnswerIsCorrectFunc]);
-
 
 
     useEffect(() => {
@@ -233,7 +231,7 @@ function App() {
                                                    lessonsVisited={7}
                                                    username={currentUser ? currentUser.name : "Петро" +
                                                        " Сагайдачний"}/>
-                                                       :<Preloader/>
+                                               : <Preloader/>
                                            }
                                        </React.Suspense>}
                             />

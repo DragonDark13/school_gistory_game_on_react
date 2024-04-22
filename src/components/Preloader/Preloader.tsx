@@ -1,9 +1,10 @@
 import React from 'react';
+import "./preloader.scss"
 
 const Preloader = () => {
     return (
-        <div style={{position: "fixed",}} className="preloader_bg">
-            <div>Loading...</div>
+        <div  className="preloader_bg">
+            <div className="loader"></div>
         </div>
     );
 };
