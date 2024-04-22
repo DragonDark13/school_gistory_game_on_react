@@ -252,7 +252,7 @@ function App() {
                                        </React.Suspense>
                                    }
                             />
-
+|
                             <Route path={"/test/:selectedArticle"}
                                    element={
                                        <React.Suspense fallback={<Preloader/>}>
