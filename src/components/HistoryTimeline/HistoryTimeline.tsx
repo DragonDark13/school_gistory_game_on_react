@@ -15,6 +15,7 @@ import {IHistoryTimelineProps} from "../../types/types";
 import {useAuth} from "../AuthContext/AuthContext";
 import axios from "axios";
 import axiosClient from "../../axios";
+import Preloader from "../Preloader/Preloader";
 
 
 const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
@@ -30,6 +31,8 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                                           }) => {
 
     const theme = useTheme();
+
+    console.log("isLoading----",isLoading);
 
     const [subTopicsArray, setSubTopicsArray] = useState([]);
 
@@ -139,7 +142,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                         variant={"h3"}>Часопростір</Typography>
             <VerticalTimeline lineColor={theme.palette.primary.light}>
                 {isLoading ? (
-                        <div>Loading...</div>
+                        (<Preloader/>)
                     ) :
                     (historyList && historyList.length > 0)
                         ?

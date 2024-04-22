@@ -20,9 +20,17 @@ main > .MuiContainer-root {
   padding-bottom: $padding;
 }
 
-main  .MuiLinearProgress-root {
+main .MuiLinearProgress-root {
   height: 16px;
   border-radius: 4px;
 }
 
-
+.preloader_bg {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000ba;
+  z-index: 2;
+}

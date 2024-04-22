@@ -71,7 +71,7 @@ const useStyles = makeStyles()((theme) => ({
     itemColor3: {
 
         "& .icon_container": {
-            background: alpha(amber[100], 0.3),
+            background: alpha(amber[700], 0.3),
             color: alpha(amber[700], 0.5),
         }
 
@@ -79,7 +79,7 @@ const useStyles = makeStyles()((theme) => ({
     itemColor4: {
 
         "& .icon_container": {
-            background: alpha(deepOrange[100], 0.3),
+            background: alpha(deepOrange[700], 0.3),
             color: alpha(deepOrange[700], 0.5),
         }
 
@@ -87,7 +87,7 @@ const useStyles = makeStyles()((theme) => ({
     itemColor5: {
 
         "& .icon_container": {
-            background: alpha(lightBlue[100], 0.3),
+            background: alpha(lightBlue[700], 0.3),
             color: alpha(lightBlue[700], 0.5),
         }
 
@@ -96,7 +96,7 @@ const useStyles = makeStyles()((theme) => ({
 
         "& .icon_container":
             {
-                background: alpha(blueGrey[100], 0.3),
+                background: alpha(blueGrey[500], 0.3),
                 color: alpha(blueGrey[700], 0.5),
             }
 
@@ -133,13 +133,13 @@ const FeaturedListItemContent = ({name, title, description}: IFeaturedListItemCo
     };
 
     return (
-        <Paper elevation={0} variant={"outlined"}>
+        <Paper className={"about_feature_item_container"} elevation={0} variant={"outlined"}>
             <Grid alignItems={"center"} columnSpacing={1} container>
                 <Grid item xs={"auto"} sm={"auto"}>
-                    <Paper elevation={0}  className={"icon_container"}
+                    <Paper elevation={0}   className={"icon_container"}
                            >
                         {getIcon(name)}</Paper></Grid>
-                <Grid item xs={"auto"} sm={10} md={8}>
+                <Grid item xs={"auto"} sm={9} md={8}>
                     <Typography variant={"subtitle1"}>{title}</Typography>
                     {/*<Hidden smDown><Typography>{description}</Typography></Hidden>*/}
                 </Grid>
@@ -178,7 +178,7 @@ const AboutFeatureList = () => {
     return (
         <div className={cx(classes.aboutFeatureListContainer, "about_feature_list_container")}>
             <Container>
-                <Hidden mdUp>
+                <Hidden smUp>
                     <List disablePadding className={"about_feature_list"}>
                         {featureList.map((feature, index) => (
                             <ListItem className={cx(getItemColorClass(feature.name))} disableGutters disablePadding
@@ -189,7 +189,7 @@ const AboutFeatureList = () => {
                         ))}
                     </List>
                 </Hidden>
-                <Hidden mdDown>
+                <Hidden smDown>
                     <Grid container rowSpacing={4} columnSpacing={{xs: 1, sm: 2, md: 3}}>
                         {featureList.map((feature, index) => (
                             <Grid item sm={6} xl={4} className={cx(getItemColorClass(feature.name))}

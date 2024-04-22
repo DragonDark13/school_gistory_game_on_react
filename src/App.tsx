@@ -14,6 +14,7 @@ import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp"
 import axios from "axios";
 import {useRequestProcessor} from "./requestProcessor";
 import axiosClient from "./axios";
+import Preloader from "./components/Preloader/Preloader";
 
 
 const HistoryTimeline = React.lazy(() => import('./components/HistoryTimeline/HistoryTimeline'));
@@ -209,18 +210,18 @@ function App() {
 
 
                 <main>
-                    <React.Suspense fallback={<div>Loading...</div>}>
+                    <React.Suspense fallback={<Preloader/>}>
                         <Routes>
                             <Route path={"/"}
                                    element={
-                                       <React.Suspense fallback={<div>Loading...</div>}>
+                                       <React.Suspense fallback={<Preloader/>}>
                                            <MainPageContent handleClickOpenModalSignIn={handleClickOpenModalSignIn}/>
                                        </React.Suspense>
                                    }
                             />
                             <Route path="/profile"
                                    element={
-                                       <React.Suspense fallback={<div>Loading...</div>}>
+                                       <React.Suspense fallback={<Preloader/>}>
                                            {(historyListFromData.length > 0) ?
                                                <ProfilePage
                                                    isLoading={isLoading}
@@ -231,14 +232,15 @@ function App() {
                                                    avatar={avatarImg}
                                                    lessonsVisited={7}
                                                    username={currentUser ? currentUser.name : "Петро" +
-                                                       " Сагайдачний"}/>:<div>Loading...</div>
+                                                       " Сагайдачний"}/>
+                                                       :<Preloader/>
                                            }
                                        </React.Suspense>}
                             />
 
                             <Route path="/article/:selectedArticle"
                                    element={
-                                       <React.Suspense fallback={<div>Loading...</div>}>
+                                       <React.Suspense fallback={<Preloader/>}>
                                            {(historyListFromData.length > 0) ?
                                                <Article
                                                    historyList={historyListFromData}
@@ -247,7 +249,7 @@ function App() {
                                                    subArticleSuccessLevels={subArticleSuccessLevels}
                                                    setSelectedArticle={setSelectedArticle}
                                                /> :
-                                               <div>Loading...</div>
+                                               <Preloader/>
                                            }
                                        </React.Suspense>
                                    }
@@ -255,7 +257,7 @@ function App() {
 
                             <Route path={"/test/:selectedArticle"}
                                    element={
-                                       <React.Suspense fallback={<div>Loading...</div>}>
+                                       <React.Suspense fallback={<Preloader/>}>
                                            <QuizBlock
                                                testType="article"
                                                historyList={historyListFromData}
@@ -273,7 +275,7 @@ function App() {
                             <Route
                                 path="/test/:selectedArticle/:subtopicId"
                                 element={
-                                    <React.Suspense fallback={<div>Loading...</div>}>
+                                    <React.Suspense fallback={<Preloader/>}>
                                         <QuizBlock
                                             testType="subArticle"
                                             historyList={historyListFromData}
@@ -289,8 +291,9 @@ function App() {
                             />
 
                             <Route path="/timeline" element={
-                                <React.Suspense fallback={<div>Loading...</div>}>
-                                    {(historyListFromData.length > 0) ? <HistoryTimeline
+                                <React.Suspense fallback={<Preloader/>}>
+                                    {(historyListFromData.length > 0) ?
+                                        <HistoryTimeline
                                             isLoading={isLoading}
                                             setSelectedSubArticle={setSelectedSubArticle}
                                             subArticleSuccessLevels={subArticleSuccessLevels}
@@ -299,7 +302,7 @@ function App() {
                                             successLevels={successLevels}
                                             buttonStates={buttonStates}
                                             historyList={historyListFromData}/> :
-                                        <div>Loading...</div>
+                                        <Preloader/>
                                     }
                                 </React.Suspense>
                             }

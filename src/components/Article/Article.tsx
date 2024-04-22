@@ -13,6 +13,7 @@ import {contentRenderFunction} from "../../utils/utils";
 import axios from "axios";
 import {useQuery} from "react-query";
 import axiosClient from "../../axios";
+import Preloader from "../Preloader/Preloader";
 
 
 const fetchDataArticleContent = async (selectedArticleNumber:number) => {
@@ -155,8 +156,9 @@ const Article: React.FC<IArticleProps> = ({
                 <title> {isLoading ? `Loading` : `Тема ${article.text}`}</title>
             </Helmet>
 
+
             {
-                isLoading ? (<div>Loading...</div>) :
+                isLoading ? (<Preloader/>) :
 
                     <React.Fragment>
                         <Grid className={"back_button_container"} container>
@@ -168,6 +170,8 @@ const Article: React.FC<IArticleProps> = ({
                                 </Button>
                             </Grid>
                         </Grid>
+
+
 
                         <Typography textAlign={"center"} variant={"h6"} className={"lesson"}>Lesson</Typography>
                         <Typography textAlign={"center"} className={"date"} variant={"h5"}>{article.date}</Typography>
@@ -183,9 +187,13 @@ const Article: React.FC<IArticleProps> = ({
                             </Grid>
                         </Grid>
 
-                        <img src={myImage} alt=""/>
-                        <div
-                            className={"content_container"}>{currentArticleContent && contentRenderFunction(currentArticleContent)}</div>
+                             <Grid container>
+                                 <Grid item xs={12} md={8}> <img src={myImage} alt=""/></Grid>
+                                 <Grid item xs={12} md={4}>                        <div
+                            className={"content_container"}>{currentArticleContent && contentRenderFunction(currentArticleContent)}</div></Grid>
+                             </Grid>
+
+
 
 
                         {/* Display subtopics as cards */}

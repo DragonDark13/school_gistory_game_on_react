@@ -84,10 +84,7 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
     const navigate = useNavigate();
 
 
-    const logoutOnClick = () => {
-        logout()
-        navigate("/");
-    }
+
 
     const toggleColorModeFunc = () => {
         colorMode.toggleColorMode();
@@ -121,6 +118,11 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
         </Grid>
     </Grid>
 
+       const logoutOnClick = () => {
+        logout()
+        navigate("/");
+        handlePopoverClose()
+    }
 
     return (
         <React.Fragment>
