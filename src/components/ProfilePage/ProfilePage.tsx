@@ -94,7 +94,7 @@ isLoading
 
 
     return (
-        <Container className={"profile_container"}>
+        <Container  className={"profile_container"}>
             <Helmet>
                 <title>Профіль</title>
             </Helmet>

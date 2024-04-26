@@ -272,7 +272,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     // Calculate the progress for CircularProgress
 
-    const optionHighlight = (option:number) => {
+    const optionHighlight = (option: number) => {
 
         if (option === selectedAnswer) {
 
@@ -286,11 +286,26 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     }
 
-    const optionsHighlightWhenTimerIsFinished = (option:number) => {
+    const optionsHighlightWhenTimerIsFinished = (option: number) => {
         if (option === correctAnswers[currentQuestion]) {
             return classes.sucessOptionSelected;
         } else return "";
     }
+
+    useEffect(() => {
+
+        const handleKeyPress = (event) => {
+            if (event.key === 'Enter') {
+                handleNextQuestion();
+            }
+        };
+
+        document.addEventListener('keypress', handleKeyPress);
+
+        return () => {
+            document.removeEventListener('keypress', handleKeyPress);
+        };
+    }, [handleNextQuestion]);
 
 
     return (
@@ -316,22 +331,24 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
             {isQuizFinished ? (
                 <div className={"finished_container"}>
 
-
                     <Typography className={"title"} variant={"h4"}>Ваші Результати:</Typography>
 
-                    <Card className={"result_test_card"}>
-                        <CardHeader title={` ${options.length}/${results.correct}`}
-                                    subheader={resultIcon(nextLevelAvailable)}
-                        />
-                        <CardContent>
-                            <LinearProgress
-                                color={"success"}
-                                value={Math.round((100 / options.length) * results.correct)}
-                                variant={"determinate"}
+                    <Grid container justifyContent={"center"}>
+                        <Grid item xs={12} sm={8} md={5}><Card className={"result_test_card"}>
+                            <CardHeader title={` ${options.length}/${results.correct}`}
+                                        subheader={resultIcon(nextLevelAvailable)}
                             />
-                        </CardContent>
+                            <CardContent>
+                                <LinearProgress
+                                    color={"success"}
+                                    value={Math.round((100 / options.length) * results.correct)}
+                                    variant={"determinate"}
+                                />
+                            </CardContent>
 
-                    </Card>
+                        </Card>
+                        </Grid>
+                    </Grid>
 
 
                     {/*<p>Правильних відповідей: {results.correct}</p>*/}
@@ -358,7 +375,8 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                             рівня. Тепер
                                             ви можити відправитися у наступний
                                             пункт нашої
-                                            подорожі у часі.</Typography>
+                                            подорожі у часі.
+                                        </Typography>
 
                                     </CardContent>
                                     <CardActions>
@@ -378,13 +396,30 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                         ) :
 
                         <React.Fragment>
+
                             <Typography className={"textMessage"}>
                                 Не сумуйте. Підготуйтесь та спробуйте знову
                             </Typography>
 
-                            <Button fullWidth endIcon={<ReplayIcon/>}
-                                    variant={"contained"}
-                                    onClick={handleRetakeQuiz}>Пройти ще раз</Button></React.Fragment>
+                            <Grid flexDirection={ smUp ? "row-reverse" : "row"} spacing={2} container justifyContent={"space-between"}>
+                                <Grid item xs={12} sm={"auto"}>
+                                    <Button size={"large"} fullWidth endIcon={<ReplayIcon/>}
+                                            variant={"contained"}
+                                            onClick={handleRetakeQuiz}>Пройти ще раз</Button>
+                                </Grid>
+                                <Grid item xs={12} sm={"auto"}>
+                                    <Button variant={"outlined"} color={"secondary"} size={"large"} fullWidth
+                                            component={RouterLink}
+                                            to={`/article/${selectedArticleNumber}`}
+                                            startIcon={<ArrowBackIosIcon/>}>
+                                        До бібліотеки
+                                    </Button>
+                                </Grid>
+
+                            </Grid>
+
+
+                        </React.Fragment>
 
                     }
 
@@ -402,25 +437,26 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                     <Grid container rowSpacing={{xs: 2, sm: 0}} columnSpacing={{xs: 1, sm: 2, md: 3}}
                           alignItems={"center"}
                           justifyContent={"center"}>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} sm={6}>
                             <Typography variant={smUp ? "h6" : 'body1'}>{questions[currentQuestion]}</Typography>
                         </Grid>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} sm={6}>
                             <RadioGroup
                                 name="radio-buttons-group"
+                                onKeyPress={handleAnswerKeyPress}
                             >
                                 {options[currentQuestion].map((option, index) => (
                                     <FormControlLabel
 
                                         key={index + "button"}
-                                        className={cx(remainingTime == 0 ? optionsHighlightWhenTimerIsFinished(index+1) : optionHighlight(index+1))}
+                                        className={cx(remainingTime == 0 ? optionsHighlightWhenTimerIsFinished(index + 1) : optionHighlight(index + 1))}
                                         onKeyPress={handleAnswerKeyPress}
                                         onClick={() => {
                                             if (!answerChosen && remainingTime > 0) {
                                                 handleAnswer(index + 1);
                                             }
                                         }}
-                                        control={<Radio checked={selectedAnswer === index+1}/>}
+                                        control={<Radio checked={selectedAnswer === index + 1}/>}
                                         label={option}
                                         value={option}
                                         disabled={answerChosen || remainingTime == 0} // Заборона вибору, якщо вже
@@ -448,9 +484,11 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                             }
                         </Grid>
 
-                        <Grid item xs={12} md={"auto"}>
+                        <Grid item xs={12} sm={"auto"}>
                             <Button
+
                                 color={answerChosen ? (currentAnswerStatus ? "success" : "error") : remainingTime == 0 ? "error" : "primary"}
+                                onKeyDown={handleNextQuestion}
                                 fullWidth={!smUp}
                                 className={'next_button'}
                                 endIcon={<ArrowForwardIosIcon/>}

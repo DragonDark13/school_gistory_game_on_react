@@ -187,32 +187,30 @@ const Article: React.FC<IArticleProps> = ({
                             </Grid>
                         </Grid>
 
-                             <Grid container>
-                                 <Grid item xs={12} md={8}> <img src={myImage} alt=""/></Grid>
-                                 <Grid item xs={12} md={4}>                        <div
+                             <Grid container spacing={2}>
+                                 <Grid item xs={12} md={5}> <img src={myImage} alt=""/></Grid>
+                                 <Grid item xs={12} md={7}>                        <div
                             className={"content_container"}>{currentArticleContent && contentRenderFunction(currentArticleContent)}</div></Grid>
                              </Grid>
-
-
 
 
                         {/* Display subtopics as cards */}
                         {(subTopicsArray.length > 0) &&
                         <Grid className={"subtopic_card_list"} container justifyContent={"center"}>
 
-                            <Grid item xs={12} sm={6} md={6} xl={6}>
+                            <Grid item xs={12} sm={12} md={6} xl={6}>
                                 <Typography variant={"h6"}>Пройдіть додаткові завдання перед головним
                                     тестом</Typography>
                                 {/* Display the progress bar */}
                             </Grid>
 
                             <Grid className={"additional_test_progress_container"} container justifyContent={"center"}>
-                                <Grid item xs={12} sm={6} md={6} xl={4}>
+                                <Grid item xs={12} sm={8} md={6} xl={4}>
                                     <LinearProgress color={"primary"} variant="determinate"
                                                     value={completionPercentage}/>
 
                                     {/* Display the progress percentage */}
-                                    <Typography variant="body2" gutterBottom>
+                                    <Typography className={"linear_progress_title"} variant="body2" gutterBottom>
                                         Виконано: {completedSubtopics} із {totalSubtopics} ({completionPercentage.toFixed(2)}%)
                                     </Typography>
 
@@ -227,7 +225,8 @@ const Article: React.FC<IArticleProps> = ({
                                             subArticleIndex={index}
                                             title={subtopic.title} content={subtopic.content}/>
                                     </Grid>
-                                ))}</Grid>
+                                ))}
+                            </Grid>
                         </Grid>
                         }
 
@@ -242,7 +241,9 @@ const Article: React.FC<IArticleProps> = ({
                                     className="quiz-button"
                                     onClick={handleShowQuiz}>
                                     Завершити рівень
-                                </Button></Grid></Grid>
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </React.Fragment>
             }
 

@@ -1,11 +1,20 @@
 .subtopics_card {
+  position: relative;
 
   .MuiCardActions-root {
     flex-wrap: wrap;
   }
 
+  .MuiTypography-h5 .MuiCardHeader-title {
+    line-height: 1;
+  }
+
   img {
     margin-bottom: 0;
+  }
+
+  .MuiCardHeader-content .MuiTypography-root {
+    line-height: 1;
   }
 
   .MuiCardContent-root .MuiTypography-body1.text {
@@ -15,4 +24,49 @@
       margin-bottom: 0;
     }
   }
+
+  .hover_container {
+
+    @media (min-width: 600px) {
+      //display: flex;
+      //align-content: center;
+      //position: absolute;
+      //left: 0;
+      //right: 0;
+      //top: 0;
+      //bottom: 0;
+      //margin: auto;
+      //flex-wrap: wrap;
+
+
+      .MuiCardActions-root {
+        width: 100%;
+      }
+    }
+
+  }
+
+
+}
+
+.modal_with_sub_article_info {
+
+
+  .MuiDialogContent-root {
+
+    .MuiTypography-h5 .MuiCardHeader-title {
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+
+    .MuiTypography-body1.text {
+      margin-bottom: 1rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
 }

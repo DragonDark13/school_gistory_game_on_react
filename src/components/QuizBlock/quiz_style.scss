@@ -19,6 +19,7 @@
 }
 
 .finished_container {
+  text-align: center;
   .icon_container {
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -63,6 +64,12 @@
   }
 
   .next_button {
+    margin-top: 1rem;
+
+    @media (min-width: 600px) {
+            margin-top: 0;
+    }
+
     @media (min-width: 992px) {
       padding: 10px 20px;
       font-size: 18px;

@@ -134,7 +134,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     }, [isAuthenticated])
 
     return (
-        <Container className={"history_timeline_page"}>
+        <Container  className={"history_timeline_page"}>
             <Helmet>
                 <title>Часопростір</title>
             </Helmet>
