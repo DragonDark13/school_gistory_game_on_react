@@ -20,6 +20,7 @@ import CelebrationIcon from '@mui/icons-material/Celebration';
 import RocketIcon from '@mui/icons-material/Rocket';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import StarIcon from '@mui/icons-material/Star';
+import Preloader from "../Preloader/Preloader";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -91,6 +92,7 @@ isLoading
 
     const theme = useTheme();
     const mdUp = useMediaQuery(theme.breakpoints.up('md'))
+    const smUp = useMediaQuery(theme.breakpoints.up('sm'))
 
 
     return (
@@ -100,7 +102,7 @@ isLoading
             </Helmet>
 
             {isLoading ? (
-                    <div>Loading...</div>
+                    <Preloader/>
                 ) :
                 <Grid spacing={mdUp ? 2 : 0} container direction={mdUp ? "row-reverse" : "row"}>
                     <Grid item xs={12} md={9} lg={9}>
@@ -126,13 +128,13 @@ isLoading
                             <Grid container alignItems={"center"} justifyContent={"center"}>
                                 <Paper className={"time_location_container"}>
                                     <Grid item container xs={"auto"} alignItems={"center"}>
-                                        <Grid item xs={12} lg={"auto"}>
+                                        <Grid item xs={"auto"} lg={"auto"}>
                                             <Typography className={"time_label"}>Локація у часі:</Typography>
                                         </Grid>
-                                        <Grid item xs={12} lg={"auto"}>
+                                        <Grid item xs={"auto"} lg={"auto"}>
                                             <Typography className={"time"} variant={"h6"} color="text.secondary"
                                                         sx={{marginTop: '5px'}}>
-                                                {historyList[lessonsVisited].date}
+                                                {lessonsVisited}
                                             </Typography>
                                         </Grid>
                                     </Grid>
@@ -143,8 +145,8 @@ isLoading
                             <Grid className={"profile_progress_panel_container"} container alignItems={"center"}
                                   justifyContent={"center"} spacing={mdUp ? 2 : 0}>
                                 <Grid item xs={12} md={6} className={"profile_progress_item"}>
-                                    <Typography variant={"h5"}>Прогресс на поточному рівні</Typography>
-                                    <Typography variant={"h6"}
+                                    <Typography variant={mdUp ? "h6" : "subtitle1"}>Прогресс на поточному рівні</Typography>
+                                    <Typography variant={mdUp ? "h6" : "p"}
                                                 color="text.secondary">{progressAnswer + "%"}</Typography>
 
                                     <LinearProgress
@@ -155,8 +157,8 @@ isLoading
                                 </Grid>
 
                                 <Grid item xs={12} md={6} className={"profile_progress_item"}>
-                                    <Typography variant={"h5"}>Загальний прогресс</Typography>
-                                    <Typography variant={"h6"} color="text.secondary">{progress + "%"}</Typography>
+                                    <Typography variant={mdUp ? "h6" : "subtitle1"}>Загальний прогресс</Typography>
+                                    <Typography variant={ mdUp ? "h6" : "p"} color="text.secondary">{progress + "%"}</Typography>
 
                                     <LinearProgress
                                         color={"primary"}

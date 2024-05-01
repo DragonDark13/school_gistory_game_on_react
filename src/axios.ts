@@ -13,7 +13,7 @@ const isLocalhost = () => {
 // Змінна для зберігання baseURL
 let baseURL = 'https://zelse.asuscomm.com/SchoolHistoryGame';
 
-let remoteServer = true;
+let remoteServer = false;
 
 // Якщо поточний сайт localhost, змінюємо baseURL
 if (isLocalhost() && !remoteServer) {
