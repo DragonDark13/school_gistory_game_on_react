@@ -146,7 +146,7 @@ isLoading
                                   justifyContent={"center"} spacing={mdUp ? 2 : 0}>
                                 <Grid item xs={12} md={6} className={"profile_progress_item"}>
                                     <Typography variant={mdUp ? "h6" : "subtitle1"}>Прогресс на поточному рівні</Typography>
-                                    <Typography variant={mdUp ? "h6" : "p"}
+                                    <Typography variant={mdUp ? "h6" : "body1"}
                                                 color="text.secondary">{progressAnswer + "%"}</Typography>
 
                                     <LinearProgress
@@ -158,7 +158,7 @@ isLoading
 
                                 <Grid item xs={12} md={6} className={"profile_progress_item"}>
                                     <Typography variant={mdUp ? "h6" : "subtitle1"}>Загальний прогресс</Typography>
-                                    <Typography variant={ mdUp ? "h6" : "p"} color="text.secondary">{progress + "%"}</Typography>
+                                    <Typography variant={ mdUp ? "h6" : "body1"} color="text.secondary">{progress + "%"}</Typography>
 
                                     <LinearProgress
                                         color={"primary"}

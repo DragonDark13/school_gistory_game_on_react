@@ -11,7 +11,6 @@ import avatarImg from "./static/image/city.jpg"
 import {Helmet} from "react-helmet-async";
 import {UserContext} from './components/MyProviders/MyProviders';
 import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp";
-import axios from "axios";
 import {useRequestProcessor} from "./requestProcessor";
 import axiosClient from "./axios";
 import Preloader from "./components/Preloader/Preloader";

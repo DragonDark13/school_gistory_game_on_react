@@ -100,7 +100,7 @@ const SubtopicCard = ({content, title, subArticleIndex, done}: ISubtopicCardProp
 
                 {expanded && <CardActions disableSpacing>
 
-                    <Button onClick={setOpenModalAdditional(true)}
+                    <Button onClick={()=>setOpenModalAdditional(true)}
                             endIcon={<ExpandLessIcon/>}
                             color={"secondary"}
                             aria-expanded={expanded} size={"small"} fullWidth variant={"contained"}

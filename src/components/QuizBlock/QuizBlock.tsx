@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {EventHandler, useContext, useEffect, useState} from "react";
 import {
     Button,
     Card, CardActions,
@@ -294,7 +294,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     useEffect(() => {
 
-        const handleKeyPress = (event) => {
+        const handleKeyPress = (event:KeyboardEvent) => {
             if (event.key === 'Enter') {
                 handleNextQuestion();
             }

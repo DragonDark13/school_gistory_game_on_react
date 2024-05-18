@@ -32,6 +32,7 @@
   },
   "scripts": {
     "start": "vite --open",
+    "start--strict": "tsc --noEmit && vite --open",
     "start--debug": "vite --open --debug",
     "build": "tsc && vite build",
     "serve": "vite preview",
