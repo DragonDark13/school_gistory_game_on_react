@@ -10,33 +10,33 @@ import {IArticleContentArrayItem, IArticleProps, ISubtopicsTextContent} from "..
 import {useTheme} from "@mui/system";
 import {useAuth} from "../AuthContext/AuthContext";
 import {contentRenderFunction} from "../../utils/utils";
-import axios from "axios";
-import {useQuery} from "react-query";
-import axiosClient from "../../axios";
+// import axios from "axios";
+// import {useQuery} from "react-query";
+// import axiosClient from "../../axios";
 import Preloader from "../Preloader/Preloader";
 
 
-const fetchDataArticleContent = async (selectedArticleNumber:number) => {
-    const response = await axiosClient.get(`/ep/maincontent/${selectedArticleNumber}/`);
-    return response.data;
-};
+// const fetchDataArticleContent = async (selectedArticleNumber: number) => {
+//     const response = await axiosClient.get(`/ep/maincontent/${selectedArticleNumber}/`);
+//     return response.data;
+// };
 
-const fetchDataSubTopicsArray = async (selectedArticleNumber:number) => {
-    const response = await axiosClient.get(`/ep/subtwithcontent/${selectedArticleNumber}`);
-    return response.data.subtopics;
-};
+// const fetchDataSubTopicsArray = async (selectedArticleNumber: number) => {
+//     const response = await axiosClient.get(`/ep/subtwithcontent/${selectedArticleNumber}`);
+//     return response.data.subtopics;
+// };
 
-const useArticleContent = (selectedArticleNumber:number) => {
-    return useQuery(['articleContent', selectedArticleNumber], () => fetchDataArticleContent(selectedArticleNumber), {
-        enabled: !!selectedArticleNumber,
-    });
-};
-
-const useSubTopicsArray = (selectedArticleNumber:number) => {
-    return useQuery(['subTopicsArray', selectedArticleNumber], () => fetchDataSubTopicsArray(selectedArticleNumber), {
-        enabled: !!selectedArticleNumber,
-    });
-};
+// const useArticleContent = (selectedArticleNumber: number) => {
+//     return useQuery(['articleContent', selectedArticleNumber], () => fetchDataArticleContent(selectedArticleNumber), {
+//         enabled: !!selectedArticleNumber,
+//     });
+// };
+//
+// const useSubTopicsArray = (selectedArticleNumber: number) => {
+//     return useQuery(['subTopicsArray', selectedArticleNumber], () => fetchDataSubTopicsArray(selectedArticleNumber), {
+//         enabled: !!selectedArticleNumber,
+//     });
+// };
 
 
 const Article: React.FC<IArticleProps> = ({
@@ -44,7 +44,8 @@ const Article: React.FC<IArticleProps> = ({
                                               subArticleSuccessLevels,
                                               setSelectedSubArticle,
                                               historyList,
-                                              isLoading
+                                              isLoading,
+                                              articleContentFromApp
                                           }) => {
 
     console.log("historyList", historyList);
@@ -56,6 +57,8 @@ const Article: React.FC<IArticleProps> = ({
     const navigate = useNavigate();
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
+
+    console.log("selectedArticleNumber", selectedArticleNumber);
 
     useEffect(() => {
 
@@ -100,9 +103,9 @@ const Article: React.FC<IArticleProps> = ({
     const handleGoToSubArticleTest = (articleIndex: number) => {
         // Check if the article has subarticles
         debugger
-        if (subTopicsArray && subTopicsArray.length > 0) {
+        if (historyList[selectedArticleNumber].subtopics && historyList[selectedArticleNumber].subtopics.length > 0) {
             // Find the index of the first uncompleted subarticle
-            const firstUncompletedIndex = subTopicsArray.findIndex((subArticle, subIndex) => {
+            const firstUncompletedIndex = historyList[selectedArticleNumber].subtopics.findIndex((subArticle, subIndex) => {
                 return !subArticleSuccessLevels[articleIndex]?.[subIndex];
             });
 
@@ -118,37 +121,37 @@ const Article: React.FC<IArticleProps> = ({
     };
 
 
-    const {
-        data: currentArticleContentFromFetch,
-        isLoading: isArticleContentLoading
-    } = useArticleContent(selectedArticleNumber);
-    const {
-        data: subTopicsArrayFromFetch,
-        isLoading: isSubTopicsArrayLoading
-    } = useSubTopicsArray(selectedArticleNumber);
+    // const {
+    //     data: currentArticleContentFromFetch,
+    //     isLoading: isArticleContentLoading
+    // } = useArticleContent(selectedArticleNumber);
+    // const {
+    //     data: subTopicsArrayFromFetch,
+    //     isLoading: isSubTopicsArrayLoading
+    // } = useSubTopicsArray(selectedArticleNumber);
+    //
 
+    // useEffect(() => {
+    //     // You can perform additional actions if needed
+    //
+    //     if (currentArticleContentFromFetch) {
+    //         setCurrentArticleContent(currentArticleContentFromFetch);
+    //     } else {
+    //         setCurrentArticleContent(null);
+    //     }
+    //
+    //     if (subTopicsArrayFromFetch) {
+    //         setSubTopicsArray(subTopicsArrayFromFetch);
+    //     } else {
+    //         setSubTopicsArray([]);
+    //     }
+    //
+    // }, [currentArticleContentFromFetch, subTopicsArrayFromFetch]);
 
-    useEffect(() => {
-        // You can perform additional actions if needed
-
-        if (currentArticleContentFromFetch) {
-            setCurrentArticleContent(currentArticleContentFromFetch);
-        } else {
-            setCurrentArticleContent(null);
-        }
-
-        if (subTopicsArrayFromFetch) {
-            setSubTopicsArray(subTopicsArrayFromFetch);
-        } else {
-            setSubTopicsArray([]);
-        }
-
-    }, [currentArticleContentFromFetch, subTopicsArrayFromFetch]);
-
-    const totalSubtopics = subTopicsArray ? subTopicsArray.length : 0;
+    const totalSubtopics = historyList[selectedArticleNumber].subtopics ? historyList[selectedArticleNumber].subtopics.length : 0;
     const completedSubtopics = subArticleSuccessLevels.length > 0 ? subArticleSuccessLevels[selectedArticleNumber].filter(done => done).length : 0;
     const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
-    const finalTestIsNotOpen = subTopicsArray.length > 0 && subArticleSuccessLevels.length > 0 ? !subArticleSuccessLevels[selectedArticleNumber].every(done => done) : false;
+    const finalTestIsNotOpen = (historyList[selectedArticleNumber].subtopics.length > 0 && subArticleSuccessLevels.length > 0) ? (subArticleSuccessLevels.length > 0 && !subArticleSuccessLevels[selectedArticleNumber].every(done => done)) : true;
 
     return (
         <Container className={"article_page_container"}>
@@ -172,7 +175,6 @@ const Article: React.FC<IArticleProps> = ({
                         </Grid>
 
 
-
                         <Typography textAlign={"center"} variant={"h6"} className={"lesson"}>Lesson</Typography>
                         <Typography textAlign={"center"} className={"date"} variant={"h5"}>{article.date}</Typography>
 
@@ -187,15 +189,17 @@ const Article: React.FC<IArticleProps> = ({
                             </Grid>
                         </Grid>
 
-                             <Grid container spacing={2}>
-                                 <Grid item xs={12} md={5}> <img src={myImage} alt=""/></Grid>
-                                 <Grid item xs={12} md={7}>                        <div
-                            className={"content_container"}>{currentArticleContent && contentRenderFunction(currentArticleContent)}</div></Grid>
-                             </Grid>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={5}> <img src={myImage} alt=""/></Grid>
+                            <Grid item xs={12} md={7}>
+                                <div
+                                    className={"content_container"}>{historyList[selectedArticleNumber].content && contentRenderFunction(historyList[selectedArticleNumber].content)}</div>
+                            </Grid>
+                        </Grid>
 
 
                         {/* Display subtopics as cards */}
-                        {(subTopicsArray.length > 0) &&
+                        {(historyList[selectedArticleNumber].subtopics.length > 0) &&
                         <Grid className={"subtopic_card_list"} container justifyContent={"center"}>
 
                             <Grid item xs={12} sm={12} md={6} xl={6}>
@@ -218,7 +222,7 @@ const Article: React.FC<IArticleProps> = ({
                             </Grid>
 
                             <Grid item container xs={12} spacing={2}>
-                                {subTopicsArray.map((subtopic, index) => (
+                                {historyList[selectedArticleNumber].subtopics.map((subtopic, index) => (
                                     <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
                                         <SubtopicCard
                                             done={subArticleSuccessLevels.length > 0 ? subArticleSuccessLevels[selectedArticleNumber][index] : false}

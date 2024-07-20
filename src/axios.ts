@@ -13,11 +13,11 @@ const isLocalhost = () => {
 // Змінна для зберігання baseURL
 let baseURL = 'https://zelse.asuscomm.com/SchoolHistoryGame';
 
-let remoteServer = true;
+let remoteServer = false;
 
 // Якщо поточний сайт localhost, змінюємо baseURL
 if (isLocalhost() && !remoteServer) {
-  baseURL = 'http://127.0.0.1:8000/SchoolHistoryGame';
+  baseURL = 'http://127.0.0.1:5000/';
 }
 
 const axiosClient = axios.create({

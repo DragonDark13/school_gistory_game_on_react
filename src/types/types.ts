@@ -24,7 +24,7 @@ export interface ISubtopicsTextContent {
     content: string | IArticleContentArrayItem[]
 }
 
-export interface SubtopicsProps extends ISubtopicsTextContent{
+export interface SubtopicsProps extends ISubtopicsTextContent {
     title: string,
     content: string | IArticleContentArrayItem[]
     subArticleTest?: IDataForQuiz
@@ -86,7 +86,7 @@ export interface ProfilePageProps extends IHistoryListArray {
     achievementLevel: string;
     achievements: string[];
     readonly achievedList: IAchievedListItem[];
-        isLoading: boolean;
+    isLoading: boolean;
 
 }
 
@@ -94,6 +94,7 @@ export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
     subArticleSuccessLevels: boolean[][];
     readonly setSelectedSubArticle: (arg0: number) => void;
     isLoading: boolean;
+    articleContentFromApp: IArticleContentArrayItem[];
 }
 
 export interface ISubtopicCardProps extends SubtopicsProps {

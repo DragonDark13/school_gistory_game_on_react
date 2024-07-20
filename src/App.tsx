@@ -161,7 +161,7 @@ function App() {
 
     const {data: historyDataList, isLoading, isError} = query(
         'users',
-        () => axiosClient.get('/ep/main/').then((res) => res.data),
+        () => axiosClient.get('/get-events ').then((res) => res.data),
         {enabled: true}
     );
 
@@ -240,6 +240,7 @@ function App() {
                                        <React.Suspense fallback={<Preloader/>}>
                                            {(historyListFromData.length > 0) ?
                                                <Article
+                                                   articleContentFromApp={historyListFromData[selectedArticle].content}
                                                    historyList={historyListFromData}
                                                    isLoading={isLoading}
                                                    setSelectedSubArticle={setSelectedSubArticle}
