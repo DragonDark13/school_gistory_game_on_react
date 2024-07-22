@@ -92,14 +92,15 @@ export default function SignIn({setShowSignInForm, setShowSignUpForm, goToHistor
 
     };
 
-    const onLogInButtonClick = () => {
+    const onLogInButtonClick =  async (e: React.FormEvent) =>{
+        e.preventDefault();
         setEmailErrorState(false);
         setPasswordErrorState(false);
 
         if (!validateEmail()) return;
         if (!validatePassword()) return;
 
-        login(email, password);
+        await login(email, password);
     };
 
     useEffect(() => {
