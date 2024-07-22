@@ -14,6 +14,7 @@ import ModalSignInSignUp from "./components/ModalSignInSignUp/ModalSignInSignUp"
 import {useRequestProcessor} from "./requestProcessor";
 import axiosClient from "./axios";
 import Preloader from "./components/Preloader/Preloader";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
 
 const HistoryTimeline = React.lazy(() => import('./components/HistoryTimeline/HistoryTimeline'));
@@ -93,6 +94,7 @@ function App() {
 
 
     useEffect(() => {
+
         if (selectedSubArticle !== null) {
             const selectedSubArticleTest = data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest;
 
@@ -107,6 +109,21 @@ function App() {
                 setCorrectAnswersSubArticle(data.correctAnswers);
             }
 
+        } else {
+
+            const selectedArticleTestData = data.historyList[selectedArticle]?.mainArticleTest;
+
+            if (selectedArticleTestData?.questions && selectedArticleTestData?.options && selectedArticleTestData?.correctAnswers) {
+
+                const {questions, options, correctAnswers} = selectedArticleTestData;
+                setQuestionsArray(questions);
+                setQuizOptionsArray(options);
+                setCorrectAnswers(correctAnswers);
+            } else {
+                setQuestionsArray(data.questions);
+                setQuizOptionsArray(data.options);
+                setCorrectAnswers(data.correctAnswers);
+            }
         }
 
 
@@ -115,7 +132,6 @@ function App() {
     useEffect(() => {
         const effect = () => {
             if (selectedSubArticle !== null && subArticleAllAnswerIsCorrect) {
-                console.log('Sub article')
                 // handleSubArticleQuizComplete();
                 setSubArticleAllAnswerIsCorrect(false);
                 // for new level reload answer
@@ -216,94 +232,123 @@ function App() {
                                        </React.Suspense>
                                    }
                             />
-                            <Route path="/profile"
-                                   element={
-                                       <React.Suspense fallback={<Preloader/>}>
-                                           {(historyListFromData.length > 0) ?
-                                               <ProfilePage
-                                                   isLoading={isLoading}
-                                                   historyList={historyListFromData}
-                                                   achievementLevel={"test"}
-                                                   achievements={achievements}
-                                                   achievedList={data.achievedList}
-                                                   avatar={avatarImg}
-                                                   lessonsVisited={7}
-                                                   username={currentUser ? currentUser.name : "Петро" +
-                                                       " Сагайдачний"}/>
-                                               : <Preloader/>
-                                           }
-                                       </React.Suspense>}
+                            <Route
+                                path="/profile"
+                                element={
+                                    <PrivateRoute
+                                        element={
+                                            <React.Suspense fallback={<Preloader/>}>
+                                                {historyListFromData.length > 0 ? (
+                                                    <ProfilePage
+                                                        isLoading={isLoading}
+                                                        historyList={historyListFromData}
+                                                        achievementLevel={"test"}
+                                                        achievements={achievements}
+                                                        achievedList={data.achievedList}
+                                                        avatar={avatarImg}
+                                                        lessonsVisited={7}
+                                                        username={currentUser ? currentUser.name : "Петро Сагайдачний"}
+                                                    />
+                                                ) : (
+                                                    <Preloader/>
+                                                )}
+                                            </React.Suspense>
+                                        }
+                                    />
+                                }
                             />
-
-                            <Route path="/article/:selectedArticle"
-                                   element={
-                                       <React.Suspense fallback={<Preloader/>}>
-                                           {(historyListFromData.length > 0) ?
-                                               <Article
-                                                   articleContentFromApp={historyListFromData[selectedArticle].content}
-                                                   historyList={historyListFromData}
-                                                   isLoading={isLoading}
-                                                   setSelectedSubArticle={setSelectedSubArticle}
-                                                   subArticleSuccessLevels={subArticleSuccessLevels}
-                                                   setSelectedArticle={setSelectedArticle}
-                                               /> :
-                                               <Preloader/>
-                                           }
-                                       </React.Suspense>
-                                   }
+                            <Route
+                                path="/article/:selectedArticle"
+                                element={
+                                    <PrivateRoute
+                                        element={
+                                            <React.Suspense fallback={<Preloader/>}>
+                                                {(historyListFromData.length > 0) ? (
+                                                    <Article
+                                                        articleContentFromApp={historyListFromData[selectedArticle].content}
+                                                        historyList={historyListFromData}
+                                                        isLoading={isLoading}
+                                                        setSelectedSubArticle={setSelectedSubArticle}
+                                                        subArticleSuccessLevels={subArticleSuccessLevels}
+                                                        setSelectedArticle={setSelectedArticle}
+                                                    />
+                                                ) : (
+                                                    <Preloader/>
+                                                )}
+                                            </React.Suspense>
+                                        }
+                                    />
+                                }
                             />
-|
-                            <Route path={"/test/:selectedArticle"}
-                                   element={
-                                       <React.Suspense fallback={<Preloader/>}>
-                                           <QuizBlock
-                                               testType="article"
-                                               historyList={historyListFromData}
-                                               handleNextLevel={handleNextLevel}
-                                               setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                               questions={questionsArray}
-                                               options={quizOptionsArray}
-                                               correctAnswers={correctAnswers}
-                                               onAnswer={handleQuizComplete}
-                                           />
-                                       </React.Suspense>
-                                   }
+                            <Route
+                                path="/test/:selectedArticle"
+                                element={
+                                    <PrivateRoute
+                                        element={
+                                            <React.Suspense fallback={<Preloader/>}>
+                                                <QuizBlock
+                                                    testType="article"
+                                                    historyList={historyListFromData}
+                                                    handleNextLevel={handleNextLevel}
+                                                    setAllAnswerIsCorrect={setAllAnswerIsCorrect}
+                                                    questions={questionsArray}
+                                                    options={quizOptionsArray}
+                                                    correctAnswers={correctAnswers}
+                                                    onAnswer={handleQuizComplete}
+                                                />
+                                            </React.Suspense>
+                                        }
+                                    />
+                                }
                             />
 
                             <Route
                                 path="/test/:selectedArticle/:subtopicId"
                                 element={
-                                    <React.Suspense fallback={<Preloader/>}>
-                                        <QuizBlock
-                                            testType="subArticle"
-                                            historyList={historyListFromData}
-                                            handleNextLevel={handleNextLevel}
-                                            setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
-                                            questions={questionsArraySubArticle}
-                                            options={quizOptionsArraySubArticle}
-                                            correctAnswers={correctAnswersSubArticle}
-                                            onAnswer={handleQuizComplete}
-                                            setSelectedSubArticle={setSelectedSubArticle}
-                                        />
-                                    </React.Suspense>}
+                                    <PrivateRoute
+                                        element={
+                                            <React.Suspense fallback={<Preloader/>}>
+                                                <QuizBlock
+                                                    testType="subArticle"
+                                                    historyList={historyListFromData}
+                                                    handleNextLevel={handleNextLevel}
+                                                    setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
+                                                    questions={questionsArraySubArticle}
+                                                    options={quizOptionsArraySubArticle}
+                                                    correctAnswers={correctAnswersSubArticle}
+                                                    onAnswer={handleQuizComplete}
+                                                    setSelectedSubArticle={setSelectedSubArticle}
+                                                />
+                                            </React.Suspense>
+                                        }
+                                    />
+                                }
                             />
 
-                            <Route path="/timeline" element={
-                                <React.Suspense fallback={<Preloader/>}>
-                                    {(historyListFromData.length > 0) ?
-                                        <HistoryTimeline
-                                            isLoading={isLoading}
-                                            setSelectedSubArticle={setSelectedSubArticle}
-                                            subArticleSuccessLevels={subArticleSuccessLevels}
-                                            selectedArticle={selectedArticle}
-                                            setSelectedArticle={setSelectedArticle}
-                                            successLevels={successLevels}
-                                            buttonStates={buttonStates}
-                                            historyList={historyListFromData}/> :
-                                        <Preloader/>
-                                    }
-                                </React.Suspense>
-                            }
+                            <Route
+                                path="/timeline"
+                                element={
+                                    <PrivateRoute
+                                        element={
+                                            <React.Suspense fallback={<Preloader/>}>
+                                                {historyListFromData.length > 0 ? (
+                                                    <HistoryTimeline
+                                                        isLoading={isLoading}
+                                                        setSelectedSubArticle={setSelectedSubArticle}
+                                                        subArticleSuccessLevels={subArticleSuccessLevels}
+                                                        selectedArticle={selectedArticle}
+                                                        setSelectedArticle={setSelectedArticle}
+                                                        successLevels={successLevels}
+                                                        buttonStates={buttonStates}
+                                                        historyList={historyListFromData}
+                                                    />
+                                                ) : (
+                                                    <Preloader/>
+                                                )}
+                                            </React.Suspense>
+                                        }
+                                    />
+                                }
                             />
                         </Routes>
                     </React.Suspense>
