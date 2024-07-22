@@ -27,25 +27,23 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     }, []);
 
     const login = async (email: string, password: string) => {
-        // Реалізуйте функціонал для аутентифікації, наприклад, використовуючи API
         try {
             const response = await axiosClient.post('/login', {
                 email,
                 password
             }, {headers: {'Content-Type': 'application/json'}});
-            if (response.data.success) {
+
+            if (response.status === 200 && response.data.success) {
                 localStorage.setItem('token', response.data.token);
                 setIsAuthenticated(true);
             } else {
-                alert('Login failed');
+                alert('Login failed: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
             console.error('Login error:', error);
+            alert('Login failed: ' + (error.response?.data?.message || 'Network error'));
         }
-        // При успішній аутентифікації встановлюємо isAuthenticated в true
-        // setIsAuthenticated(true);
     };
-
     const logout = () => {
         // Реалізуйте функціонал для виходу, наприклад, викликаючи API для видалення токенів або сесії
         localStorage.removeItem('token');
