@@ -30,15 +30,15 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
         }
     }, []);
 
-    const login = async (email: string, password: string) => {
+    const login = async (email, password) => {
         try {
-            const response = await axiosClient.post('/login', {
-                email,
-                password
-            }, {headers: {'Content-Type': 'application/json'}});
+            const response = await axiosClient.post('/login', {email, password}, {
+                headers: {'Content-Type': 'application/json'}
+            });
 
             if (response.status === 200 && response.data.success) {
-                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('token', response.data.access_token);
+                localStorage.setItem('refresh_token', response.data.refresh_token);
                 setIsAuthenticated(true);
                 setCurrentUser(response.data.user_data);
             } else {
@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     const refreshAccessToken = async () => {
         const refreshToken = localStorage.getItem('refresh_token');
         try {
-            const response = await axios.post('/refresh', {}, {
+            const response = await axiosClient.post('/refresh', {}, {
                 headers: {
                     'Authorization': `Bearer ${refreshToken}`
                 }
