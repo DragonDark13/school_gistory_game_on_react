@@ -85,6 +85,8 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                                   testType = "article",
                                                   setSelectedSubArticle
                                               }) => {
+
+
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(""));
     const [results, setResults] = useState({correct: 0, incorrect: 0});
@@ -120,16 +122,28 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         }
     }, [setSelectedSubArticle, selectedSubArticleNumber]);
 
+    useEffect(() => {
+        if (historyList.length > 0) {
+            if (testType === "subArticle") {
+                selectedSubArticleNumber = parseInt(subtopicId || '0', 10);
+                currentArticle = historyList[selectedArticleNumber]?.subtopics?.[selectedSubArticleNumber]
+                currentArticleTitle = currentArticle?.title;
+
+
+            } else {
+                currentArticle = historyList[selectedArticleNumber];
+                currentArticleTitle = currentArticle.text;
+
+
+            }
+
+        }
+    }, [historyList]);
 
     if (testType === "subArticle") {
-        selectedSubArticleNumber = parseInt(subtopicId || '0', 10);
-        currentArticle = historyList[selectedArticleNumber]?.subtopics?.[selectedSubArticleNumber]
-        currentArticleTitle = currentArticle?.title;
 
 
     } else {
-        currentArticle = historyList[selectedArticleNumber];
-        currentArticleTitle = currentArticle.text;
 
 
         useEffect(() => {
@@ -294,7 +308,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     useEffect(() => {
 
-        const handleKeyPress = (event:KeyboardEvent) => {
+        const handleKeyPress = (event: KeyboardEvent) => {
             if (event.key === 'Enter') {
                 handleNextQuestion();
             }
@@ -401,7 +415,8 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                 Не сумуйте. Підготуйтесь та спробуйте знову
                             </Typography>
 
-                            <Grid flexDirection={ smUp ? "row-reverse" : "row"} spacing={2} container justifyContent={"space-between"}>
+                            <Grid flexDirection={smUp ? "row-reverse" : "row"} spacing={2} container
+                                  justifyContent={"space-between"}>
                                 <Grid item xs={12} sm={"auto"}>
                                     <Button size={"large"} fullWidth endIcon={<ReplayIcon/>}
                                             variant={"contained"}

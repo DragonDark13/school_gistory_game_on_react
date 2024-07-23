@@ -1,19 +1,21 @@
-import React, { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, {useContext} from 'react';
+import {Navigate} from 'react-router-dom';
 import {AuthContext} from "../AuthContext/AuthContext";
+import Preloader from "../Preloader/Preloader";
 
 interface PrivateRouteProps {
     element: React.ReactNode;
 }
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ element }) => {
-    const authContext = useContext(AuthContext);
+const PrivateRoute = ({ element }) => {
+    const { isAuthenticated, isLoading } = useContext(AuthContext);
 
-    if (!authContext) {
-        return null; // або повернути компонент для завантаження, якщо контекст ще не завантажено
+    console.log("isLoading-----",isLoading);
+    console.log("isAuthenticated -----",isAuthenticated );
+
+    if (isLoading) {
+        return <Preloader />; // Показуємо компонент завантаження, поки дані не завантажені
     }
-
-    const { isAuthenticated } = authContext;
 
     return isAuthenticated ? element : <Navigate to="/" />;
 };

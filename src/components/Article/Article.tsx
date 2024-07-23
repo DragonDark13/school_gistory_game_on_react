@@ -54,6 +54,8 @@ const Article: React.FC<IArticleProps> = ({
     const [currentArticleContent, setCurrentArticleContent] = useState<null | IArticleContentArrayItem[]>(null);
     const [subTopicsArray, setSubTopicsArray] = useState<ISubtopicsTextContent[] | []>([]);
 
+    subArticleSuccessLevels=[[true,true,true]]
+
     const navigate = useNavigate();
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
@@ -102,7 +104,7 @@ const Article: React.FC<IArticleProps> = ({
 
     const handleGoToSubArticleTest = (articleIndex: number) => {
         // Check if the article has subarticles
-        debugger
+
         if (historyList[selectedArticleNumber].subtopics && historyList[selectedArticleNumber].subtopics.length > 0) {
             // Find the index of the first uncompleted subarticle
             const firstUncompletedIndex = historyList[selectedArticleNumber].subtopics.findIndex((subArticle, subIndex) => {

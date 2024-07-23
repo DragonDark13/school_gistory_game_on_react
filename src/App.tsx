@@ -201,7 +201,7 @@ function App() {
     console.log("isLoading>>>", isLoading ? "isLoading true" : "isLoading false");
 
 
-    console.log("historyDataList:::::", historyDataList);
+    console.log("currentUser:::::", currentUser);
 
 
     return (
