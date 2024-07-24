@@ -50,7 +50,8 @@ export interface IHistoryListArray {
 
 export interface IHistoryTimelineProps extends IHistoryListArray, ISetSelectedArticle {
     buttonStates: Array<boolean>;
-    successLevels: Array<boolean>;
+    // successLevels: Array<boolean>;
+    successLevels: number,
     subArticleSuccessLevels: boolean[][]
     selectedArticle: number
     readonly setSelectedSubArticle: (arg0: number) => void;

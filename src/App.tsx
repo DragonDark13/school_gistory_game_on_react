@@ -15,6 +15,7 @@ import {useRequestProcessor} from "./requestProcessor";
 import axiosClient from "./axios";
 import Preloader from "./components/Preloader/Preloader";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import number = CSS.number;
 
 
 const HistoryTimeline = React.lazy(() => import('./components/HistoryTimeline/HistoryTimeline'));
@@ -45,7 +46,8 @@ function App() {
     const [subArticleSuccessLevels, setSubArticleSuccessLevels] = useState([]);
 
 
-    const [successLevels, setSuccessLevels] = useState(data.historyList.map((_, index) => index === -1))
+    // const [successLevels, setSuccessLevels] = useState(data.historyList.map((_, index) => index === -1))
+    const [successLevels, setSuccessLevels] = useState<number>(0)
     console.log(successLevels);
 
     const [achievements, setAchievements] = useState<[] | string[]>([])
@@ -65,11 +67,11 @@ function App() {
 
         console.log("selectedArticle", selectedArticle);
 
-        setSuccessLevels((prevStates) => {
-            const updatedStates = [...prevStates];
-            updatedStates[selectedArticle] = true;
-            return updatedStates;
-        });
+        // setSuccessLevels((prevStates) => {
+        //     const updatedStates = [...prevStates];
+        //     updatedStates[selectedArticle] = true;
+        //     return updatedStates;
+        // });
 
 
         setAchievements((prevAchievements) => {
@@ -172,6 +174,17 @@ function App() {
 
     const {currentUser} = useContext(UserContext)
 
+    useEffect(() => {
+
+        if (currentUser && currentUser.current_level){
+            setSuccessLevels(currentUser.current_level)
+
+        }
+
+    }, [currentUser]);
+
+
+
     const {query} = useRequestProcessor();
 
 
@@ -246,7 +259,7 @@ function App() {
                                                         achievements={achievements}
                                                         achievedList={data.achievedList}
                                                         avatar={avatarImg}
-                                                        lessonsVisited={7}
+                                                        lessonsVisited={currentUser?.current_level}
                                                         username={currentUser ? currentUser.name : "Петро Сагайдачний"}
                                                     />
                                                 ) : (

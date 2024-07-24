@@ -152,14 +152,14 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                     key={index + "history-timeline"}
                                     // date={event.date}
                                     dateClassName={"hidden"}
-                                    className={buttonStates[index] && !successLevels[index] ? "current_active_vertical_timeline_element" : ""}
+                                    className={buttonStates[index] && !successLevels ? "current_active_vertical_timeline_element" : ""}
 
                                     iconStyle={{
                                         background: theme.palette.primary.light,
                                         color: iconColorState(buttonStates[index]),
                                     }}
                                     contentStyle={{padding: 0, boxShadow: "none"}}
-                                    icon={successLevels[index] ? <CheckCircleOutlineIcon/> :
+                                    icon={successLevels===(index+1) ? <CheckCircleOutlineIcon/> :
                                         <RadioButtonUncheckedRoundedIcon/>}
 
                                 >
@@ -174,7 +174,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                             handleExpandArticle={handleExpandArticle}
                                             handleGoToSubArticleTest={handleGoToSubArticleTest}
                                             handleGoToTestNow={handleGoToTestNow}
-                                            successLevel={successLevels[index]}
+                                            successLevel={successLevels===index}
                                         />
                                     </Card>
                                 </VerticalTimelineElement>
