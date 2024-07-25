@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {createContext, ReactNode, useContext, useEffect, useState} from "react";
-import axios, {Axios} from "axios";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import axiosClient from "../../axios";
-import {UserContext} from "../MyProviders/MyProviders";
+import { UserContext } from "../MyProviders/MyProviders";
 
 export interface IAuthContextProps {
     isAuthenticated: boolean;
-    login: (username: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<void>;
+    register: (email: string, password: string, userName: string) => Promise<void>;
     logout: () => void;
     isLoading: boolean; // Додаємо стан для завантаження
 }
@@ -17,11 +17,10 @@ interface IAuthProviderProps {
     children: ReactNode;
 }
 
-export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
+export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const {setCurrentUser} = useContext(UserContext);
+    const { setCurrentUser } = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(true); // Додаємо стан для завантаження
-
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -30,14 +29,14 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
         }
     }, []);
 
-    const login = async (email, password) => {
+    const login = async (email: string, password: string) => {
         try {
-            const response = await axiosClient.post('/login', {email, password}, {
-                headers: {'Content-Type': 'application/json'}
+            const response = await axiosClient.post('/login', { email, password }, {
+                headers: { 'Content-Type': 'application/json' }
             });
 
             if (response.status === 200 && response.data.success) {
-                localStorage.setItem('token', response.data.access_token);
+                localStorage.setItem('token', response.data.token);
                 localStorage.setItem('refresh_token', response.data.refresh_token);
                 setIsAuthenticated(true);
                 setCurrentUser(response.data.user_data);
@@ -50,6 +49,25 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
         }
     };
 
+    const register = async (email: string, password: string, userName: string) => {
+        try {
+            const response = await axiosClient.post('/register', { email, password, userName }, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.status === 201) {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('refresh_token', response.data.refresh_token);
+                setIsAuthenticated(true);
+                setCurrentUser(response.data.user_data);
+            } else {
+                alert('Registration failed: ' + (response.data.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            alert('Registration failed: ' + (error.response?.data?.message || 'Network error'));
+        }
+    };
 
     const refreshAccessToken = async () => {
         const refreshToken = localStorage.getItem('refresh_token');
@@ -66,7 +84,6 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             return null;
         }
     };
-
 
     const fetchUserData = async () => {
         const token = localStorage.getItem('token');
@@ -123,15 +140,14 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     // empty dependency array means this runs once on mount
 
     const logout = () => {
-        // Реалізуйте функціонал для виходу, наприклад, викликаючи API для видалення токенів або сесії
         localStorage.removeItem('token');
-        // При виході встановлюємо isAuthenticated в false
+        localStorage.removeItem('refresh_token');
         setIsAuthenticated(false);
         setCurrentUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{isAuthenticated, login, logout, isLoading}}>
+        <AuthContext.Provider value={{ isAuthenticated, login, register, logout, isLoading }}>
             {children}
         </AuthContext.Provider>
     );

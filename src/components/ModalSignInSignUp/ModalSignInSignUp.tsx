@@ -78,7 +78,8 @@ const ModalSignInSignUp = ({
             <SignIn goToHistoryTimeLine={goToHistoryTimeLine} setShowSignUpForm={setShowSignUpForm}
                     setShowSignInForm={setShowSignInForm}/>}
             {showSignUpForm &&
-            <SignUp setShowSignInForm={setShowSignInForm} setShowSignUpForm={setShowSignUpForm}/>}
+            <SignUp goToHistoryTimeLine={goToHistoryTimeLine} setShowSignInForm={setShowSignInForm}
+                    setShowSignUpForm={setShowSignUpForm}/>}
 
         </Dialog>
 
