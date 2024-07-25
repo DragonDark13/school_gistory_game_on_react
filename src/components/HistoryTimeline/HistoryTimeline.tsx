@@ -170,11 +170,11 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                             isAllSubtaskDone={isAllSubtaskDone(index)}
                                             event={event}
                                             index={index}
-                                            buttonState={buttonStates[index]}
+                                            buttonState={(index+1)>successLevels}
                                             handleExpandArticle={handleExpandArticle}
                                             handleGoToSubArticleTest={handleGoToSubArticleTest}
                                             handleGoToTestNow={handleGoToTestNow}
-                                            successLevel={successLevels===index}
+                                            successLevel={successLevels>(index+1)}
                                         />
                                     </Card>
                                 </VerticalTimelineElement>

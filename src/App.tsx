@@ -260,7 +260,7 @@ function App() {
                                                         achievedList={data.achievedList}
                                                         avatar={avatarImg}
                                                         lessonsVisited={currentUser?.current_level}
-                                                        username={currentUser ? currentUser.name : "Петро Сагайдачний"}
+                                                        username={currentUser ? currentUser.user_name : "Петро Сагайдачний"}
                                                     />
                                                 ) : (
                                                     <Preloader/>
