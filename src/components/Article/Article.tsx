@@ -44,7 +44,7 @@ const Article: React.FC<IArticleProps> = ({
                                               subArticleSuccessLevels,
                                               setSelectedSubArticle,
                                               historyList,
-                                              isLoading,
+                                                isLoading,
                                               articleContentFromApp
                                           }) => {
 
@@ -54,7 +54,7 @@ const Article: React.FC<IArticleProps> = ({
     const [currentArticleContent, setCurrentArticleContent] = useState<null | IArticleContentArrayItem[]>(null);
     const [subTopicsArray, setSubTopicsArray] = useState<ISubtopicsTextContent[] | []>([]);
 
-    subArticleSuccessLevels=[[true,true,true]]
+    subArticleSuccessLevels=[]
 
     const navigate = useNavigate();
 

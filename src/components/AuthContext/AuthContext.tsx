@@ -8,7 +8,7 @@ export interface IAuthContextProps {
     login: (email: string, password: string) => Promise<void>;
     register: (email: string, password: string, userName: string) => Promise<void>;
     logout: () => void;
-    isLoading: boolean; // Додаємо стан для завантаження
+    isLoading: boolean;
     updateProfile: (user_name: string, email: string, country: string) => Promise<void>;
     deleteProfile: () => Promise<void>;
 }
@@ -23,17 +23,13 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const {setCurrentUser} = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(true);
-    const [isFetching, setIsFetching] = useState(false);
-    const [isFetched, setIsFetched] = useState(false);
 
     useEffect(() => {
-        if (!isFetched) {
-            fetchUserData();
-            setIsFetched(true);
-        }
-    }, [isFetched]);
+        fetchUserData();
+    }, []);
 
     const login = async (email: string, password: string) => {
+        setIsLoading(true);
         try {
             const response = await axiosClient.post('/login', {email, password}, {
                 headers: {'Content-Type': 'application/json'}
@@ -50,10 +46,13 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
         } catch (error) {
             console.error('Login error:', error);
             alert('Login failed: ' + (error.response?.data?.message || 'Network error'));
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const register = async (email: string, password: string, userName: string) => {
+        setIsLoading(true);
         try {
             const response = await axiosClient.post('/register', {email, password, userName}, {
                 headers: {'Content-Type': 'application/json'}
@@ -70,6 +69,8 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
         } catch (error) {
             console.error('Registration error:', error);
             alert('Registration failed: ' + (error.response?.data?.message || 'Network error'));
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -90,25 +91,19 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
         }
     };
 
-    const fetchUserData =  useCallback(async () => {
-        if (isFetching) return;
-
-        setIsFetching(true);
+    const fetchUserData = useCallback(async () => {
         const token = localStorage.getItem('token');
 
         if (!token) {
             setIsAuthenticated(false);
             setCurrentUser(null);
             setIsLoading(false);
-            setIsFetching(false);
             return;
         }
 
         try {
             const response = await axiosClient.get('/api/user', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: {'Authorization': `Bearer ${token}`}
             });
 
             if (response.status === 200) {
@@ -121,9 +116,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 if (newToken) {
                     try {
                         const retryResponse = await axiosClient.get('/api/user', {
-                            headers: {
-                                'Authorization': `Bearer ${newToken}`
-                            }
+                            headers: {'Authorization': `Bearer ${newToken}`}
                         });
 
                         if (retryResponse.status === 200) {
@@ -146,7 +139,6 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             }
         } finally {
             setIsLoading(false);
-            setIsFetching(false);
         }
     }, []);
 
@@ -158,11 +150,12 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     };
 
     const updateProfile = async (user_name: string, email: string, country: string) => {
+        setIsLoading(true);
         try {
             const response = await axiosClient.post('/update-profile', {
                 user_name,
                 email,
-                country,
+                country
             }, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -171,7 +164,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             });
 
             if (response.status === 200) {
-                fetchUserData();  // Оновити дані користувача після успішного оновлення профілю
+                fetchUserData();
                 alert('Profile updated successfully.');
             } else {
                 alert('Failed to update profile: ' + (response.data.message || 'Unknown error'));
@@ -179,32 +172,36 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
         } catch (error) {
             console.error('Update profile error:', error);
             alert('Failed to update profile: ' + (error.response?.data?.message || 'Network error'));
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const deleteProfile = async () => {
+        setIsLoading(true);
         try {
             const token = localStorage.getItem('token');
             const response = await axiosClient.delete('/delete-profile', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: {'Authorization': `Bearer ${token}`}
             });
 
             if (response.status === 200) {
                 alert('Profile deleted successfully.');
-                logout(); // Вихід користувача після видалення профілю
+                logout();
             } else {
                 alert('Failed to delete profile: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
             console.error('Delete profile error:', error);
             alert('Failed to delete profile: ' + (error.response?.data?.message || 'Network error'));
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <AuthContext.Provider value={{isAuthenticated, login, register, logout, isLoading, updateProfile, deleteProfile}}>
+        <AuthContext.Provider
+            value={{isAuthenticated, login, register, logout, isLoading, updateProfile, deleteProfile}}>
             {children}
         </AuthContext.Provider>
     );
