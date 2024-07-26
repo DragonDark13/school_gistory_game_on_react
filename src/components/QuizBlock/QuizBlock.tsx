@@ -107,6 +107,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     let currentArticle;
     let currentArticleTitle;
 
+
     const navigate = useNavigate();
     const {isAuthenticated} = useAuth();
 

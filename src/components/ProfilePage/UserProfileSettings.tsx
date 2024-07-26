@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
     Grid,
     Button,
     TextField,
     useMediaQuery,
-  Autocomplete
+    Autocomplete
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -13,29 +13,31 @@ import countries from "i18n-iso-countries";
 // Import the languages you want to use
 import enLocale from "i18n-iso-countries/langs/en.json";
 import itLocale from "i18n-iso-countries/langs/it.json";
+import {UserContext} from "../MyProviders/MyProviders";
+import {useAuth} from "../AuthContext/AuthContext";
 
-const UserProfileSettings: React.FC = () => {
+const UserProfileSettings=React.memo(() => {
+
+    const {currentUser} = useContext(UserContext);
+    const {updateProfile} = useAuth();
+
     const [isEditing, setIsEditing] = useState(false);
-    const [userName, setUserName] = useState('JohnDoe'); // Початкові значення
-    const [email, setEmail] = useState('john@example.com');
-    const [password, setPassword] = useState('********');
+    const [userName, setUserName] = useState(currentUser.user_name);
+    const [email, setEmail] = useState(currentUser.email);
+    const [country, setCountry] = useState(currentUser.country);
+    const [selectedCountry, setSelectedCountry] = useState({label: "Ukrainian", value: "UK"});
+    const theme = useTheme();
+
+    const mdUp = useMediaQuery(theme.breakpoints.up('md'))
 
     const handleEditClick = () => {
         setIsEditing(true);
     };
 
-    const handleSaveClick = () => {
+    const handleSaveClick = async () => {
         setIsEditing(false);
-        // Додайте логіку для збереження змінений даних
+        await updateProfile(userName, email, selectedCountry.value);
     };
-
-    const theme = useTheme();
-    const mdUp = useMediaQuery(theme.breakpoints.up('md'));
-
-    const [selectedCountry, setSelectedCountry] = useState({
-        label: "Ukrainian",
-        value: "UK"
-    });
 
     const selectCountryHandler = (value: { label: string; value: string } | null) => {
         if (value) {
@@ -43,18 +45,14 @@ const UserProfileSettings: React.FC = () => {
         }
     };
 
-    // Have to register the languages you want to use
-    countries.registerLocale(enLocale);
-    countries.registerLocale(itLocale);
-
     const countryObj = countries.getNames("en", {select: "official"});
-
     const countryArr = Object.entries(countryObj).map(([key, value]) => {
         return {
             label: value,
             value: key
         };
     });
+
 
     return (
         <React.Fragment>
@@ -68,8 +66,8 @@ const UserProfileSettings: React.FC = () => {
                            onChange={(e) => setEmail(e.target.value)}/>
 
 
-                <TextField label={"Password:"} disabled={!isEditing} fullWidth type="password" value={password}
-                           onChange={(e) => setPassword(e.target.value)}/>
+                {/*<TextField label={"Password:"} disabled={!isEditing} fullWidth type="password" value={password}*/}
+                {/*           onChange={(e) => setPassword(e.target.value)}/>*/}
 
                 <Autocomplete
                     disabled={!isEditing}
@@ -103,6 +101,6 @@ const UserProfileSettings: React.FC = () => {
             </Grid>
         </React.Fragment>
     );
-};
+});
 
 export default UserProfileSettings;

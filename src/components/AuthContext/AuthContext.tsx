@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from "react";
 import axiosClient from "../../axios";
-import { UserContext } from "../MyProviders/MyProviders";
+import {UserContext} from "../MyProviders/MyProviders";
 
 export interface IAuthContextProps {
     isAuthenticated: boolean;
@@ -9,6 +9,8 @@ export interface IAuthContextProps {
     register: (email: string, password: string, userName: string) => Promise<void>;
     logout: () => void;
     isLoading: boolean; // Додаємо стан для завантаження
+    updateProfile: (user_name: string, email: string, country: string) => Promise<void>;
+    deleteProfile: () => Promise<void>;
 }
 
 export const AuthContext = createContext<IAuthContextProps | undefined>(undefined);
@@ -17,22 +19,24 @@ interface IAuthProviderProps {
     children: ReactNode;
 }
 
-export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const { setCurrentUser } = useContext(UserContext);
-    const [isLoading, setIsLoading] = useState(true); // Додаємо стан для завантаження
+    const {setCurrentUser} = useContext(UserContext);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isFetching, setIsFetching] = useState(false);
+    const [isFetched, setIsFetched] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            setIsAuthenticated(true);
+        if (!isFetched) {
+            fetchUserData();
+            setIsFetched(true);
         }
-    }, []);
+    }, [isFetched]);
 
     const login = async (email: string, password: string) => {
         try {
-            const response = await axiosClient.post('/login', { email, password }, {
-                headers: { 'Content-Type': 'application/json' }
+            const response = await axiosClient.post('/login', {email, password}, {
+                headers: {'Content-Type': 'application/json'}
             });
 
             if (response.status === 200 && response.data.success) {
@@ -51,8 +55,8 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 
     const register = async (email: string, password: string, userName: string) => {
         try {
-            const response = await axiosClient.post('/register', { email, password, userName }, {
-                headers: { 'Content-Type': 'application/json' }
+            const response = await axiosClient.post('/register', {email, password, userName}, {
+                headers: {'Content-Type': 'application/json'}
             });
 
             if (response.status === 201) {
@@ -77,21 +81,26 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
                     'Authorization': `Bearer ${refreshToken}`
                 }
             });
-            localStorage.setItem('token', response.data.access_token);
-            return response.data.access_token;
+            const newAccessToken = response.data.access_token;
+            localStorage.setItem('token', newAccessToken);
+            return newAccessToken;
         } catch (error) {
             console.error('Error refreshing token:', error);
             return null;
         }
     };
 
-    const fetchUserData = async () => {
+    const fetchUserData =  useCallback(async () => {
+        if (isFetching) return;
+
+        setIsFetching(true);
         const token = localStorage.getItem('token');
 
         if (!token) {
             setIsAuthenticated(false);
             setCurrentUser(null);
             setIsLoading(false);
+            setIsFetching(false);
             return;
         }
 
@@ -110,15 +119,21 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
             if (error.response && error.response.data.msg === 'Token has expired') {
                 const newToken = await refreshAccessToken();
                 if (newToken) {
-                    const retryResponse = await axiosClient.get('/api/user', {
-                        headers: {
-                            'Authorization': `Bearer ${newToken}`
-                        }
-                    });
+                    try {
+                        const retryResponse = await axiosClient.get('/api/user', {
+                            headers: {
+                                'Authorization': `Bearer ${newToken}`
+                            }
+                        });
 
-                    if (retryResponse.status === 200) {
-                        setCurrentUser(retryResponse.data.user_data);
-                        setIsAuthenticated(true);
+                        if (retryResponse.status === 200) {
+                            setCurrentUser(retryResponse.data.user_data);
+                            setIsAuthenticated(true);
+                        }
+                    } catch (retryError) {
+                        console.error('Error fetching user data after token refresh:', retryError);
+                        setIsAuthenticated(false);
+                        setCurrentUser(null);
                     }
                 } else {
                     setIsAuthenticated(false);
@@ -131,13 +146,9 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
             }
         } finally {
             setIsLoading(false);
+            setIsFetching(false);
         }
-    };
-
-    useEffect(() => {
-        fetchUserData();
     }, []);
-    // empty dependency array means this runs once on mount
 
     const logout = () => {
         localStorage.removeItem('token');
@@ -146,8 +157,54 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
         setCurrentUser(null);
     };
 
+    const updateProfile = async (user_name: string, email: string, country: string) => {
+        try {
+            const response = await axiosClient.post('/update-profile', {
+                user_name,
+                email,
+                country,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            if (response.status === 200) {
+                fetchUserData();  // Оновити дані користувача після успішного оновлення профілю
+                alert('Profile updated successfully.');
+            } else {
+                alert('Failed to update profile: ' + (response.data.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Update profile error:', error);
+            alert('Failed to update profile: ' + (error.response?.data?.message || 'Network error'));
+        }
+    };
+
+    const deleteProfile = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axiosClient.delete('/delete-profile', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 200) {
+                alert('Profile deleted successfully.');
+                logout(); // Вихід користувача після видалення профілю
+            } else {
+                alert('Failed to delete profile: ' + (response.data.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Delete profile error:', error);
+            alert('Failed to delete profile: ' + (error.response?.data?.message || 'Network error'));
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, register, logout, isLoading }}>
+        <AuthContext.Provider value={{isAuthenticated, login, register, logout, isLoading, updateProfile, deleteProfile}}>
             {children}
         </AuthContext.Provider>
     );

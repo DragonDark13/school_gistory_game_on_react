@@ -21,6 +21,7 @@ import RocketIcon from '@mui/icons-material/Rocket';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import StarIcon from '@mui/icons-material/Star';
 import Preloader from "../Preloader/Preloader";
+import ChangePasswordForm from "./ChangePasswordForm";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -42,9 +43,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                                      achievements,
                                                      historyList,
                                                      achievedList,
-isLoading
+                                                     isLoading
                                                  }) => {
-
 
 
     const {isAuthenticated} = useAuth();
@@ -94,9 +94,16 @@ isLoading
     const mdUp = useMediaQuery(theme.breakpoints.up('md'))
     const smUp = useMediaQuery(theme.breakpoints.up('sm'))
 
+      const { deleteProfile } = useAuth();
+
+    const handleDeleteProfile = async () => {
+        if (window.confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {
+            await deleteProfile();
+        }
+    };
 
     return (
-        <Container  className={"profile_container"}>
+        <Container className={"profile_container"}>
             <Helmet>
                 <title>Профіль</title>
             </Helmet>
@@ -145,7 +152,8 @@ isLoading
                             <Grid className={"profile_progress_panel_container"} container alignItems={"center"}
                                   justifyContent={"center"} spacing={mdUp ? 2 : 0}>
                                 <Grid item xs={12} md={6} className={"profile_progress_item"}>
-                                    <Typography variant={mdUp ? "h6" : "subtitle1"}>Прогресс на поточному рівні</Typography>
+                                    <Typography variant={mdUp ? "h6" : "subtitle1"}>Прогресс на поточному
+                                        рівні</Typography>
                                     <Typography variant={mdUp ? "h6" : "body1"}
                                                 color="text.secondary">{progressAnswer + "%"}</Typography>
 
@@ -158,7 +166,8 @@ isLoading
 
                                 <Grid item xs={12} md={6} className={"profile_progress_item"}>
                                     <Typography variant={mdUp ? "h6" : "subtitle1"}>Загальний прогресс</Typography>
-                                    <Typography variant={ mdUp ? "h6" : "body1"} color="text.secondary">{progress + "%"}</Typography>
+                                    <Typography variant={mdUp ? "h6" : "body1"}
+                                                color="text.secondary">{progress + "%"}</Typography>
 
                                     <LinearProgress
                                         color={"primary"}
@@ -207,17 +216,22 @@ isLoading
                                     </Grid>
                                 </Grid>}
                                 <UserProfileSettings/>
+                                <ChangePasswordForm/>
                             </Paper>
                         )}
 
                         <Grid container justifyContent={"flex-end"}>
                             <Grid item lg={12}>
-                                <Button fullWidth variant="outlined" color={"secondary"}>
+                                <Button
+                                    fullWidth
+                                    variant="outlined"
+                                    color="secondary"
+                                    onClick={handleDeleteProfile}
+                                >
                                     Видалити профіль
                                 </Button>
                             </Grid>
                         </Grid>
-
                     </Grid>
 
                 </Grid>}
