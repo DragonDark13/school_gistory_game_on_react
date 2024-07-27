@@ -16,6 +16,7 @@ import axiosClient from "./axios";
 import Preloader from "./components/Preloader/Preloader";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import number = CSS.number;
+import {useAuth} from "./components/AuthContext/AuthContext";
 
 
 const HistoryTimeline = React.lazy(() => import('./components/HistoryTimeline/HistoryTimeline'));
@@ -37,6 +38,7 @@ function App() {
     const [quizOptionsArraySubArticle, setQuizOptionsArraySubArticle] = useState(data.options)
     const [correctAnswersSubArticle, setCorrectAnswersSubArticle] = useState(data.correctAnswers)
 
+    const {isAuthenticated} = useAuth();
 
     const [buttonStates, setButtonStates] = useState(
         data.historyList.map((_, index) => index === 0) // Початково активна лише перша кнопка
@@ -185,14 +187,19 @@ function App() {
 
 
 
+
     const {query} = useRequestProcessor();
 
-
-    const {data: historyDataList, isLoading, isError} = query(
+   const { data: historyDataList, isLoading, isError } = query(
         'users',
-        () => axiosClient.get('/get-events ').then((res) => res.data),
-        {enabled: true}
+        () => {
+            if (isAuthenticated) {  // Перевірка на автентифікацію перед виконанням запиту
+                return axiosClient.get('/get-events').then((res) => res.data);
+            }
+        },
+        { enabled: isAuthenticated }  // Виконувати запит тільки якщо користувач залогінений
     );
+
 
     console.log(isLoading ? "isLoading true" : "isLoading false");
     const [historyListFromData, setHistoryListFromData] = useState<any[]>([]); // Adjust the type as per your data structure
