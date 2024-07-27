@@ -133,6 +133,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
         }
     }, [isAuthenticated])
 
+
     return (
         <Container  className={"history_timeline_page"}>
             <Helmet>
@@ -170,11 +171,11 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                             isAllSubtaskDone={isAllSubtaskDone(index)}
                                             event={event}
                                             index={index}
-                                            buttonState={(index+1)>successLevels}
+                                            buttonState={successLevels}
                                             handleExpandArticle={handleExpandArticle}
                                             handleGoToSubArticleTest={handleGoToSubArticleTest}
                                             handleGoToTestNow={handleGoToTestNow}
-                                            successLevel={successLevels>(index+1)}
+                                            successLevel={successLevels}
                                         />
                                     </Card>
                                 </VerticalTimelineElement>

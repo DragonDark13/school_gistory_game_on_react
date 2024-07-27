@@ -53,7 +53,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
             </Hidden>
             <CardActions disableSpacing sx={{"flexWrap": "wrap"}}>
                 <Button variant={"outlined"} color={"secondary"} size={"small"} sx={{mb: 1}} fullWidth
-                        disabled={!buttonState}
+                        disabled={successLevel<(index)}
                         className="learn-more-button" onClick={(e) => {
                     e.stopPropagation();
                     handleExpandArticle(index);
@@ -63,7 +63,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
 
                 {!successLevel && (isAllSubtaskDone ?
 
-                        <Button size={"large"} variant={"contained"} fullWidth disabled={!buttonState}
+                        <Button size={"large"} variant={"contained"} fullWidth disabled={successLevel<(index)}
                                 className={"goToTest"} onClick={(e) => {
                             e.stopPropagation();
                             handleGoToTestNow(index);
