@@ -30,7 +30,10 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
                                                    }) => {
     const theme = useTheme();
 
-    const textColor = buttonState ? theme.palette.text.primary : theme.palette.text.disabled;
+
+    const notActiveCard =  successLevel<index;
+
+    const textColor = !notActiveCard ? theme.palette.text.primary : theme.palette.text.disabled;
     const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
 
 
@@ -38,7 +41,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
         <React.Fragment>
             <CardHeader titleTypographyProps={{color: textColor}} title={event.date}/>
             <CardMedia
-                className={!buttonState ? "imageOpacity" : ""}
+                className={notActiveCard ? "imageOpacity" : ""}
                 component="img"
                 height="194"
                 image={myImage}
@@ -53,7 +56,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
             </Hidden>
             <CardActions disableSpacing sx={{"flexWrap": "wrap"}}>
                 <Button variant={"outlined"} color={"secondary"} size={"small"} sx={{mb: 1}} fullWidth
-                        disabled={successLevel<(index)}
+                        disabled={notActiveCard}
                         className="learn-more-button" onClick={(e) => {
                     e.stopPropagation();
                     handleExpandArticle(index);
@@ -63,7 +66,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
 
                 {!successLevel && (isAllSubtaskDone ?
 
-                        <Button size={"large"} variant={"contained"} fullWidth disabled={successLevel<(index)}
+                        <Button size={"large"} variant={"contained"} fullWidth disabled={notActiveCard}
                                 className={"goToTest"} onClick={(e) => {
                             e.stopPropagation();
                             handleGoToTestNow(index);
