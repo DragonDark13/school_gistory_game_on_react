@@ -28,6 +28,7 @@ export interface SubtopicsProps extends ISubtopicsTextContent {
     title: string,
     content: string | IArticleContentArrayItem[]
     subArticleTest?: IDataForQuiz
+    sub_article_test_id?: number
 }
 
 export interface IArticleContentArrayItem {
@@ -41,6 +42,7 @@ export interface HistoricalEvent {
     readonly content?: string | IArticleContentArrayItem[]
     mainArticleTest?: IDataForQuiz
     readonly achieved: string
+    readonly main_article_test_id?: number
     readonly subtopics?: SubtopicsProps[] | undefined;
 }
 

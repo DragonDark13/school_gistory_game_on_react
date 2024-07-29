@@ -32,6 +32,7 @@ import {makeStyles} from "tss-react/mui";
 import AnswerReactionBlock from "./components/AnswerReactionBlock/АnswerReactionBlock";
 import TimeUpMessageBlock from "./components/TimeUpMessageBlock/TimeUpMessageBlock";
 import TimerProgress from "./components/TimerProgress/TimerProgress";
+import axiosClient from "../../axios";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -86,6 +87,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                                   setSelectedSubArticle
                                               }) => {
 
+    const {setCurrentUser} = useContext(UserContext);
 
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(""));
@@ -100,13 +102,13 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const [currentAnswerStatus, setCurrentAnswerStatus] = useState(false);
     const maxTimeStatic = 10;
     const [remainingTime, setRemainingTime] = useState(maxTimeStatic);
-
+    const [currentTestId, setCurrentTestId] = useState<number | null>(null)
+// Id test
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
     let selectedSubArticleNumber = 0;  // Default value in case it's not a subArticle
     let currentArticle;
     let currentArticleTitle;
-
 
     const navigate = useNavigate();
     const {isAuthenticated} = useAuth();
@@ -125,17 +127,18 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     useEffect(() => {
         if (historyList.length > 0) {
+
             if (testType === "subArticle") {
                 selectedSubArticleNumber = parseInt(subtopicId || '0', 10);
                 currentArticle = historyList[selectedArticleNumber]?.subtopics?.[selectedSubArticleNumber]
                 currentArticleTitle = currentArticle?.title;
+                setCurrentTestId(currentArticle?.sub_article_test_id)
 
 
             } else {
                 currentArticle = historyList[selectedArticleNumber];
                 currentArticleTitle = currentArticle.text;
-
-
+                setCurrentTestId(currentArticle?.main_article_test_id)
             }
 
         }
@@ -156,7 +159,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     }
 
-
+// Успішне завершення тесту
     useEffect(() => {
         if (results.correct === questions.length) {
             setAllAnswerIsCorrect(true);
@@ -170,6 +173,29 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                 }, 5000);
             }
 
+            debugger
+
+            // Відправлення даних про завершення тесту на сервер
+            axiosClient.post('/complete-test', {
+                test_id: currentTestId,
+                completed: true
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`  // Припускаємо, що токен зберігається в localStorage
+                }
+            })
+                .then(response => {
+                    console.log('Test completion recorded:', response.data);
+                    // Обробка даних користувача після успішного запиту
+                    // const userData = response.data;
+                    debugger
+                    setCurrentUser(response.data.user_data);
+
+                    // Додайте код для обробки userData, наприклад, оновлення стану
+                })
+                .catch(error => {
+                    console.error('Error recording test completion:', error);
+                });
         }
     }, [results.correct, questions.length]);
 
