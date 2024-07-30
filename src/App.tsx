@@ -122,7 +122,7 @@ function App() {
                 const {questions, options, correctAnswers} = selectedArticleTestData;
                 setQuestionsArray(questions);
                 setQuizOptionsArray(options);
-                setCorrectAnswers(correctAnswers);
+                setCorrectAnswers(correctAnswers.map(item=>item[0]));
             } else {
                 setQuestionsArray(data.questions);
                 setQuizOptionsArray(data.options);
@@ -174,11 +174,11 @@ function App() {
         setShowSignUpForm(false);
     };
 
-    const {currentUser} = useContext(UserContext)
+    const {currentUser, setCurrentUser} = useContext(UserContext)
 
     useEffect(() => {
 
-        if (currentUser && currentUser.current_level){
+        if (currentUser && currentUser.current_level) {
             setSuccessLevels(currentUser.current_level)
 
         }
@@ -186,18 +186,16 @@ function App() {
     }, [currentUser]);
 
 
-
-
     const {query} = useRequestProcessor();
 
-   const { data: historyDataList, isLoading, isError } = query(
+    const {data: historyDataList, isLoading, isError} = query(
         'users',
         () => {
             if (isAuthenticated) {  // Перевірка на автентифікацію перед виконанням запиту
                 return axiosClient.get('/get-events').then((res) => res.data);
             }
         },
-        { enabled: isAuthenticated }  // Виконувати запит тільки якщо користувач залогінений
+        {enabled: isAuthenticated}  // Виконувати запит тільки якщо користувач залогінений
     );
 
 
@@ -291,6 +289,7 @@ function App() {
                                                         setSelectedSubArticle={setSelectedSubArticle}
                                                         subArticleSuccessLevels={subArticleSuccessLevels}
                                                         setSelectedArticle={setSelectedArticle}
+                                                        currentUser={currentUser}
                                                     />
                                                 ) : (
                                                     <Preloader/>
@@ -307,6 +306,8 @@ function App() {
                                         element={
                                             <React.Suspense fallback={<Preloader/>}>
                                                 <QuizBlock
+                                                    currentUser={currentUser}
+                                                    setCurrentUser={setCurrentUser}
                                                     testType="article"
                                                     historyList={historyListFromData}
                                                     handleNextLevel={handleNextLevel}
@@ -329,6 +330,8 @@ function App() {
                                         element={
                                             <React.Suspense fallback={<Preloader/>}>
                                                 <QuizBlock
+                                                    currentUser={currentUser}
+                                                    setCurrentUser={setCurrentUser}
                                                     testType="subArticle"
                                                     historyList={historyListFromData}
                                                     handleNextLevel={handleNextLevel}

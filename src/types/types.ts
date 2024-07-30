@@ -1,5 +1,6 @@
 import {SvgIconComponent} from "@mui/icons-material";
 import exp from "constants";
+import {IUser, UserContextProps} from "../components/MyProviders/MyProviders";
 
 export interface ISignInForms {
     setShowSignInForm: (value: boolean) => void;
@@ -98,6 +99,8 @@ export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
     readonly setSelectedSubArticle: (arg0: number) => void;
     isLoading: boolean;
     articleContentFromApp: IArticleContentArrayItem[];
+    currentUser: null | IUser;
+
 }
 
 export interface ISubtopicCardProps extends SubtopicsProps {
@@ -111,7 +114,7 @@ interface IDataForQuiz {
     readonly correctAnswers: number[] | number[][];
 }
 
-export interface IQuizBlockProps extends IHistoryListArray, IDataForQuiz {
+export interface IQuizBlockProps extends IHistoryListArray, IDataForQuiz, UserContextProps {
     testType: 'article' | 'subArticle';
     readonly onAnswer: (results: { correct: number; incorrect: number }) => void;
     readonly handleNextLevel: () => void;

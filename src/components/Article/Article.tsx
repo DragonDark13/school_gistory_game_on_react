@@ -44,8 +44,10 @@ const Article: React.FC<IArticleProps> = ({
                                               subArticleSuccessLevels,
                                               setSelectedSubArticle,
                                               historyList,
-                                                isLoading,
-                                              articleContentFromApp
+                                              isLoading,
+                                              articleContentFromApp,
+                                              currentUser
+
                                           }) => {
 
     console.log("historyList", historyList);
@@ -54,7 +56,12 @@ const Article: React.FC<IArticleProps> = ({
     const [currentArticleContent, setCurrentArticleContent] = useState<null | IArticleContentArrayItem[]>(null);
     const [subTopicsArray, setSubTopicsArray] = useState<ISubtopicsTextContent[] | []>([]);
 
-    subArticleSuccessLevels=[]
+    const [completionPercentage, setCompletionPercentage] = useState(0);
+    const [completedSubtopics, setCompletedSubtopics] = useState(0);
+    const [totalSubtopics, setTotalSubtopics] = useState(0);
+
+
+    subArticleSuccessLevels = []
 
     const navigate = useNavigate();
 
@@ -150,10 +157,34 @@ const Article: React.FC<IArticleProps> = ({
     //
     // }, [currentArticleContentFromFetch, subTopicsArrayFromFetch]);
 
-    const totalSubtopics = historyList[selectedArticleNumber].subtopics ? historyList[selectedArticleNumber].subtopics.length : 0;
-    const completedSubtopics = subArticleSuccessLevels.length > 0 ? subArticleSuccessLevels[selectedArticleNumber].filter(done => done).length : 0;
-    const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
-    const finalTestIsNotOpen = (historyList[selectedArticleNumber].subtopics.length > 0 && subArticleSuccessLevels.length > 0) ? (subArticleSuccessLevels.length > 0 && !subArticleSuccessLevels[selectedArticleNumber].every(done => done)) : true;
+    // const totalSubtopics = historyList[selectedArticleNumber].subtopics ? historyList[selectedArticleNumber].subtopics.length : 0;
+    // const completedSubtopics = subArticleSuccessLevels.length > 0 ? subArticleSuccessLevels[selectedArticleNumber].filter(done => done).length : 0;
+    // const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
+    // const finalTestIsNotOpen = (historyList[selectedArticleNumber].subtopics.length > 0 && subArticleSuccessLevels.length > 0) ? (subArticleSuccessLevels.length > 0 && !subArticleSuccessLevels[selectedArticleNumber].every(done => done)) : true;
+
+    useEffect(() => {
+        if (historyList[selectedArticleNumber] && historyList[selectedArticleNumber].subtopics) {
+            const subtopics = historyList[selectedArticleNumber].subtopics;
+            const total = subtopics.length;
+
+            const completed = subtopics.reduce((acc, subtopic) => {
+                const testResult = currentUser.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
+                if (testResult && testResult.completed) {
+                    acc += 1;
+                }
+                return acc;
+            }, 0);
+
+            setTotalSubtopics(total);
+            setCompletedSubtopics(completed);
+            setCompletionPercentage(total > 0 ? (completed / total) * 100 : 0);
+        }
+    }, [historyList, selectedArticleNumber, currentUser.tests_completed_list]);
+
+    const finalTestIsNotOpen = (historyList[selectedArticleNumber].subtopics.length > 0 && !historyList[selectedArticleNumber].subtopics.every(subtopic => {
+        const testResult = currentUser.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
+        return testResult && testResult.completed;
+    }));
 
     return (
         <Container className={"article_page_container"}>
@@ -201,40 +232,46 @@ const Article: React.FC<IArticleProps> = ({
 
 
                         {/* Display subtopics as cards */}
-                        {(historyList[selectedArticleNumber].subtopics.length > 0) &&
-                        <Grid className={"subtopic_card_list"} container justifyContent={"center"}>
-
-                            <Grid item xs={12} sm={12} md={6} xl={6}>
-                                <Typography variant={"h6"}>Пройдіть додаткові завдання перед головним
-                                    тестом</Typography>
-                                {/* Display the progress bar */}
-                            </Grid>
-
-                            <Grid className={"additional_test_progress_container"} container justifyContent={"center"}>
-                                <Grid item xs={12} sm={8} md={6} xl={4}>
-                                    <LinearProgress color={"primary"} variant="determinate"
-                                                    value={completionPercentage}/>
-
-                                    {/* Display the progress percentage */}
-                                    <Typography className={"linear_progress_title"} variant="body2" gutterBottom>
-                                        Виконано: {completedSubtopics} із {totalSubtopics} ({completionPercentage.toFixed(2)}%)
-                                    </Typography>
-
+                        {historyList[selectedArticleNumber].subtopics.length > 0 && (
+                            <Grid className={"subtopic_card_list"} container justifyContent={"center"}>
+                                <Grid item xs={12} sm={12} md={6} xl={6}>
+                                    <Typography variant={"h6"}>Пройдіть додаткові завдання перед головним
+                                        тестом</Typography>
                                 </Grid>
-                            </Grid>
 
-                            <Grid item container xs={12} spacing={2}>
-                                {historyList[selectedArticleNumber].subtopics.map((subtopic, index) => (
-                                    <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
-                                        <SubtopicCard
-                                            done={subArticleSuccessLevels.length > 0 ? subArticleSuccessLevels[selectedArticleNumber][index] : false}
-                                            subArticleIndex={index}
-                                            title={subtopic.title} content={subtopic.content}/>
+                                <Grid className={"additional_test_progress_container"} container
+                                      justifyContent={"center"}>
+                                    <Grid item xs={12} sm={8} md={6} xl={4}>
+                                        <LinearProgress color={"primary"} variant="determinate"
+                                                        value={completionPercentage}/>
+                                        <Typography className={"linear_progress_title"} variant="body2" gutterBottom>
+                                            Виконано: {completedSubtopics} із {totalSubtopics} ({completionPercentage.toFixed(2)}%)
+                                        </Typography>
                                     </Grid>
-                                ))}
+                                </Grid>
+
+                                <Grid item container xs={12} spacing={2}>
+                                    {historyList[selectedArticleNumber].subtopics?.map((subtopic, index) => {
+
+                                        console.log('Subtopic ID:', subtopic.sub_article_test_id);
+                                        const testResult = currentUser.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
+                                        console.log('Test Result:', testResult);
+                                        const isCompleted = testResult ? testResult.completed : false;
+
+                                        return (
+                                            <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
+                                                <SubtopicCard
+                                                    id={subtopic.sub_article_test_id}
+                                                    done={isCompleted}
+                                                    subArticleIndex={index}
+                                                    title={subtopic.title}
+                                                    content={subtopic.content}
+                                                />
+                                            </Grid>
+                                        );
+                                    })}                                </Grid>
                             </Grid>
-                        </Grid>
-                        }
+                        )}
 
 
                         <Grid container justifyContent={"center"}>

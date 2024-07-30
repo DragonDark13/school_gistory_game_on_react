@@ -84,10 +84,11 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                                   historyList,
                                                   setAllAnswerIsCorrect,
                                                   testType = "article",
-                                                  setSelectedSubArticle
+                                                  setSelectedSubArticle,
+                                                  setCurrentUser,
+                                                  currentUser
                                               }) => {
 
-    const {setCurrentUser} = useContext(UserContext);
 
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(""));
@@ -173,7 +174,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                 }, 5000);
             }
 
-            debugger
 
             // Відправлення даних про завершення тесту на сервер
             axiosClient.post('/complete-test', {
@@ -202,7 +202,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const handleAnswer = (answerIndex: number) => {
         setAnswerChosen(true);
         setSelectedAnswer(answerIndex);
-
+        debugger
         // Перевірка, чи обрана відповідь вірна
         if (correctAnswers[currentQuestion] === answerIndex) {
             setResults({...results, correct: results.correct + 1});
@@ -239,8 +239,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         clearSettingsBeforeNewQuestion()
     };
 
-
-    const {currentUser} = useContext(UserContext);
 
     const handleNextQuestion = () => {
         if (!selectedAnswer && remainingTime > 0) {
@@ -406,30 +404,39 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                     </Grid>
                                 </Grid>
 
-                                {testType === "article" && <Card sx={{background: theme.palette.secondary.light}}>
-                                    <CardContent>
-                                        <Typography sx={{color: theme.palette.text.secondary}}>Вітаю, <Typography
-                                            component={"span"}
-                                            variant={"subtitle1"}>{currentUser ? currentUser.name : "Невідомий"}</Typography>,
-                                            ви
-                                            досягли наступного
-                                            рівня. Тепер
-                                            ви можити відправитися у наступний
-                                            пункт нашої
-                                            подорожі у часі.
-                                        </Typography>
+                                {testType === "article" &&
+                                <Grid container justifyContent={"center"}>
+                                    <Grid item xs={12} md={6}>
 
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button component={RouterLink} to={`/article/${selectedArticleNumber + 1}`}
-                                                fullWidth startIcon={<ArrowForwardIosIcon/>} color={"secondary"}
-                                                endIcon={<ArrowForwardIosIcon/>} variant={"contained"}
-                                                size={"large"}
-                                        >{selectedArticleNumber !== null ? historyList[selectedArticleNumber + 1].date : "Помилка" +
-                                            " у машині часу"}</Button>
-                                    </CardActions>
+                                        <Card sx={{background: theme.palette.secondary.light}}>
+                                            <CardContent>
+                                                <Typography sx={{color: theme.palette.text.secondary}}>Вітаю, <Typography
+                                                    component={"span"}
+                                                    variant={"subtitle1"}>{currentUser ? currentUser.user_name : "Невідомий"}</Typography>,
+                                                    ви
+                                                    досягли наступного
+                                                    рівня. Тепер
+                                                    ви можити відправитися у наступний
+                                                    пункт нашої
+                                                    подорожі у часі.
+                                                </Typography>
 
-                                </Card>}
+                                            </CardContent>
+                                            <CardActions>
+                                                <Button component={RouterLink} to={`/article/${selectedArticleNumber + 1}`}
+                                                        fullWidth startIcon={<ArrowForwardIosIcon/>} color={"secondary"}
+                                                        endIcon={<ArrowForwardIosIcon/>} variant={"contained"}
+                                                        size={"large"}
+                                                >{selectedArticleNumber !== null ? historyList[selectedArticleNumber + 1].date : "Помилка" +
+                                                    " у машині часу"}</Button>
+                                            </CardActions>
+
+                                        </Card>
+                                    </Grid>
+                                </Grid>
+
+
+                                }
 
 
                             </div>
@@ -550,6 +557,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
             <QuizSuccessModal openModal={openModal} handleClose={handleClose}/>
         </Container>
     );
-};
+}
+
 
 export default QuizBlock;
