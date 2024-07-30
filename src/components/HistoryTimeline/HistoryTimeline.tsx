@@ -32,9 +32,9 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
     const theme = useTheme();
 
-    console.log("isLoading----",isLoading);
+    console.log("isLoading----", isLoading);
 
-    const [subTopicsArray, setSubTopicsArray] = useState([]);
+    const [subTopicsArray, setSubTopicsArray] = useState<null | any>(null);
 
 
     const iconColorState = (active: boolean) => {
@@ -61,24 +61,34 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
         setSelectedSubArticle(subArticleIndex)
     }
 
-    const fetchDataSubTopicsArray = async (articleIndex: number) => {
-        try {
-            const response =
-                await axiosClient.get(`/ep/subtopics/${articleIndex}/ `);
-            setSubTopicsArray(response.data);
+    // const fetchDataSubTopicsArray = async (articleIndex: number) => {
+    //     try {
+    //         const response =
+    //             await axiosClient.get(`/ep/subtopics/${articleIndex}/ `);
+    //         setSubTopicsArray(response.data);
+    //
+    //
+    //     } catch (error) {
+    //         console.error('Error fetching data:', error);
+    //
+    //     }
+    // };
 
-
-        } catch (error) {
-            console.error('Error fetching data:', error);
+    useEffect(() => {
+        debugger
+        if (selectedArticle && historyList) {
+            setSubTopicsArray(historyList[selectedArticle].subtopics)
 
         }
-    };
+
+    }, [selectedArticle, historyList]);
 
 
     const handleGoToSubArticleTest = (articleIndex: number) => {
         // Check if the article has subarticles
         setSelectedArticle(articleIndex)
-        fetchDataSubTopicsArray(articleIndex);
+        // fetchDataSubTopicsArray(articleIndex);
+        setSubTopicsArray(historyList[articleIndex].subtopics)
     };
 
     useEffect(() => {
@@ -98,7 +108,8 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     }, [subTopicsArray, subArticleSuccessLevels, selectedArticle, handleGoToSubTestNow, handleGoToTestNow]);
 
     const isAllSubtaskDone = (articleIndex: number) => {
-        if (subTopicsArray.length > 0) {
+
+        if (subTopicsArray && subTopicsArray.length > 0) {
             return !subTopicsArray ||
                 (subTopicsArray.length > 0 &&
                     subTopicsArray.every(
@@ -135,7 +146,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
 
     return (
-        <Container  className={"history_timeline_page"}>
+        <Container className={"history_timeline_page"}>
             <Helmet>
                 <title>Часопростір</title>
             </Helmet>
@@ -153,18 +164,18 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                     key={index + "history-timeline"}
                                     // date={event.date}
                                     dateClassName={"hidden"}
-                                    className={buttonStates[index] && !successLevels ? "current_active_vertical_timeline_element" : ""}
+                                    className={successLevels===index ? "current_active_vertical_timeline_element" : ""}
 
                                     iconStyle={{
                                         background: theme.palette.primary.light,
-                                        color: iconColorState(buttonStates[index]),
+                                        color: iconColorState(successLevels>index),
                                     }}
                                     contentStyle={{padding: 0, boxShadow: "none"}}
-                                    icon={successLevels===(index+1) ? <CheckCircleOutlineIcon/> :
+                                    icon={successLevels === (index + 1) ? <CheckCircleOutlineIcon/> :
                                         <RadioButtonUncheckedRoundedIcon/>}
 
                                 >
-                                    <Card elevation={buttonStates[index] ? 4 : 1}>
+                                    <Card elevation={successLevels>=index ? 4 : 1}>
                                         <TimelineCard
                                             completedSubtopics={getCompletedSubtopics(index)}
                                             totalSubtopics={getTotalSubtopics(index)}

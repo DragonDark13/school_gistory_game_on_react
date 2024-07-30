@@ -17,21 +17,21 @@ import {ITimelineCardProps} from "../../../../types/types";
 
 
 const TimelineCard: React.FC<ITimelineCardProps> = ({
-                                                       event,
-                                                       index,
-                                                       buttonState,
-                                                       handleExpandArticle,
-                                                       handleGoToTestNow,
-                                                       handleGoToSubArticleTest,
-                                                       successLevel,
-                                                       isAllSubtaskDone,
-                                                       totalSubtopics,
-                                                       completedSubtopics
-                                                   }) => {
+                                                        event,
+                                                        index,
+                                                        buttonState,
+                                                        handleExpandArticle,
+                                                        handleGoToTestNow,
+                                                        handleGoToSubArticleTest,
+                                                        successLevel,
+                                                        isAllSubtaskDone,
+                                                        totalSubtopics,
+                                                        completedSubtopics
+                                                    }) => {
     const theme = useTheme();
+    console.log("isAllSubtaskDone",isAllSubtaskDone);
 
-
-    const notActiveCard =  successLevel<index;
+    const notActiveCard = successLevel < index;
 
     const textColor = !notActiveCard ? theme.palette.text.primary : theme.palette.text.disabled;
     const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
@@ -64,7 +64,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
                     Дізнатися більше
                 </Button>
 
-                {!successLevel && (isAllSubtaskDone ?
+                {(successLevel === index) && (isAllSubtaskDone ?
 
                         <Button size={"large"} variant={"contained"} fullWidth disabled={notActiveCard}
                                 className={"goToTest"} onClick={(e) => {
@@ -89,7 +89,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
                             <Button size={"large"} variant={"contained"} fullWidth disabled={!buttonState}
                                     className={"goToTest"} onClick={(e) => {
                                 e.stopPropagation();
-                                handleGoToSubArticleTest(index+1);
+                                handleGoToSubArticleTest(index + 1);
                             }}
                             >
                                 Пройти завдання

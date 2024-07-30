@@ -122,7 +122,7 @@ function App() {
                 const {questions, options, correctAnswers} = selectedArticleTestData;
                 setQuestionsArray(questions);
                 setQuizOptionsArray(options);
-                setCorrectAnswers(correctAnswers.map(item=>item[0]));
+                setCorrectAnswers(correctAnswers.map(item => item[0]));
             } else {
                 setQuestionsArray(data.questions);
                 setQuizOptionsArray(data.options);
@@ -180,7 +180,7 @@ function App() {
 
         if (currentUser && currentUser.current_level) {
             setSuccessLevels(currentUser.current_level)
-
+            setSelectedArticle(currentUser.current_level)
         }
 
     }, [currentUser]);

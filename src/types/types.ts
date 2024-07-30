@@ -68,7 +68,7 @@ export interface ITimelineCardProps {
     readonly handleExpandArticle: (index: number) => void;
     readonly handleGoToTestNow: (index: number) => void;
     readonly handleGoToSubArticleTest: (index: number) => void;
-    successLevel: boolean;
+    successLevel: number;
     isAllSubtaskDone: boolean;
     totalSubtopics: number,
     completedSubtopics: number,
