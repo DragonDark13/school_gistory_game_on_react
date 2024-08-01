@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Button, TextField, FormHelperText, Grid } from "@mui/material";
+import React, {useState} from "react";
+import {Button, TextField, FormHelperText, Grid} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit";
 import axiosClient from "../../axios";
+import axios from "axios";
 
 const ChangePasswordForm = React.memo(() => {
     const [isEditing, setIsEditing] = useState(false);
@@ -52,7 +53,13 @@ const ChangePasswordForm = React.memo(() => {
             }
         } catch (error) {
             console.error('Change password error:', error);
-            setPasswordError('Failed to change password: ' + (error.response?.data?.message || 'Network error'));
+
+            // Перевірка типу помилки
+            if (axios.isAxiosError(error)) {
+                setPasswordError('Failed to change password: ' + (error.response?.data?.message || 'Network error'));
+            } else {
+                setPasswordError('Failed to change password: Network error');
+            }
         }
     };
 
@@ -109,7 +116,7 @@ const ChangePasswordForm = React.memo(() => {
                             variant="contained"
                             color="primary"
                             onClick={handleChangePassword}
-                            startIcon={<SaveIcon />}
+                            startIcon={<SaveIcon/>}
                         >
                             Save
                         </Button>
@@ -119,7 +126,7 @@ const ChangePasswordForm = React.memo(() => {
                             variant="contained"
                             color="primary"
                             onClick={handleEditClick}
-                            startIcon={<EditIcon />}
+                            startIcon={<EditIcon/>}
                         >
                             Change Password
                         </Button>

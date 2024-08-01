@@ -44,7 +44,7 @@ export interface HistoricalEvent {
     mainArticleTest?: IDataForQuiz
     readonly achieved: string
     readonly main_article_test_id?: number
-    readonly subtopics?: SubtopicsProps[] | undefined;
+    readonly subtopics?: SubtopicsProps[];
 }
 
 export interface IHistoryListArray {
@@ -64,7 +64,7 @@ export interface IHistoryTimelineProps extends IHistoryListArray, ISetSelectedAr
 export interface ITimelineCardProps {
     event: HistoricalEvent;
     index: number;
-    buttonState: boolean;
+    buttonState: number;
     readonly handleExpandArticle: (index: number) => void;
     readonly handleGoToTestNow: (index: number) => void;
     readonly handleGoToSubArticleTest: (index: number) => void;
@@ -99,7 +99,7 @@ export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
     readonly setSelectedSubArticle: (arg0: number) => void;
     isLoading: boolean;
     articleContentFromApp: IArticleContentArrayItem[];
-    currentUser: null | IUser;
+    currentUser: IUser;
 
 }
 

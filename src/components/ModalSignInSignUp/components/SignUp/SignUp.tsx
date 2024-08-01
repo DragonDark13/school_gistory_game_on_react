@@ -80,7 +80,11 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
             setSuccess('Registration successful.');
             setError(null);
         } catch (error) {
-            setError(error.message || 'An error occurred');
+            if (error instanceof Error) {
+                setError(error.message || 'An error occurred');
+            } else {
+                setError('An unexpected error occurred');
+            }
             setSuccess(null);
         }
     };

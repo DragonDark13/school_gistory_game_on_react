@@ -17,6 +17,7 @@ import Preloader from "./components/Preloader/Preloader";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import number = CSS.number;
 import {useAuth} from "./components/AuthContext/AuthContext";
+import {useQuery} from 'react-query';
 
 
 const HistoryTimeline = React.lazy(() => import('./components/HistoryTimeline/HistoryTimeline'));
@@ -26,6 +27,18 @@ const Header = React.lazy(() => import('./components/Header/Header'));
 const ProfilePage = React.lazy(() => import('./components/ProfilePage/ProfilePage'));
 const MainPageContent = React.lazy(() => import('./components/MainPageContent/MainPageContent'));
 const Footer = React.lazy(() => import('./components/Footer/Footer'));
+
+
+const fetchEvents = async () => {
+    const response = await axiosClient.get('/get-events');
+    return response.data;
+};
+
+const useFetchEvents = (isAuthenticated:boolean) => {
+    return useQuery('users', fetchEvents, {
+        enabled: isAuthenticated,  // Execute the query only if the user is authenticated
+    });
+};
 
 
 function App() {
@@ -188,15 +201,7 @@ function App() {
 
     const {query} = useRequestProcessor();
 
-    const {data: historyDataList, isLoading, isError} = query(
-        'users',
-        () => {
-            if (isAuthenticated) {  // Перевірка на автентифікацію перед виконанням запиту
-                return axiosClient.get('/get-events').then((res) => res.data);
-            }
-        },
-        {enabled: isAuthenticated}  // Виконувати запит тільки якщо користувач залогінений
-    );
+    const {data: historyDataList, isLoading, isError} = useFetchEvents(isAuthenticated);
 
 
     console.log(isLoading ? "isLoading true" : "isLoading false");
@@ -264,7 +269,7 @@ function App() {
                                                         achievements={achievements}
                                                         achievedList={data.achievedList}
                                                         avatar={avatarImg}
-                                                        lessonsVisited={currentUser?.current_level}
+                                                        lessonsVisited={currentUser ? currentUser?.current_level : 0}
                                                         username={currentUser ? currentUser.user_name : "Петро Сагайдачний"}
                                                     />
                                                 ) : (
@@ -281,7 +286,7 @@ function App() {
                                     <PrivateRoute
                                         element={
                                             <React.Suspense fallback={<Preloader/>}>
-                                                {(historyListFromData.length > 0) ? (
+                                                {(historyListFromData.length > 0 && currentUser!==null) ? (
                                                     <Article
                                                         articleContentFromApp={historyListFromData[selectedArticle].content}
                                                         historyList={historyListFromData}

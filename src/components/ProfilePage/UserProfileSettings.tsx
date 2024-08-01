@@ -16,15 +16,15 @@ import itLocale from "i18n-iso-countries/langs/it.json";
 import {UserContext} from "../MyProviders/MyProviders";
 import {useAuth} from "../AuthContext/AuthContext";
 
-const UserProfileSettings=React.memo(() => {
+const UserProfileSettings = React.memo(() => {
 
     const {currentUser} = useContext(UserContext);
     const {updateProfile} = useAuth();
 
     const [isEditing, setIsEditing] = useState(false);
-    const [userName, setUserName] = useState(currentUser.user_name);
-    const [email, setEmail] = useState(currentUser.email);
-    const [country, setCountry] = useState(currentUser.country);
+    const [userName, setUserName] = useState(currentUser ? currentUser.user_name : "");
+    const [email, setEmail] = useState(currentUser ? currentUser.email : "");
+    const [country, setCountry] = useState(currentUser ? currentUser.country : "");
     const [selectedCountry, setSelectedCountry] = useState({label: "Ukrainian", value: "UK"});
     const theme = useTheme();
 

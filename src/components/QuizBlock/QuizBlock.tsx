@@ -103,7 +103,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const [currentAnswerStatus, setCurrentAnswerStatus] = useState(false);
     const maxTimeStatic = 10;
     const [remainingTime, setRemainingTime] = useState(maxTimeStatic);
-    const [currentTestId, setCurrentTestId] = useState<number | null>(null)
+    const [currentTestId, setCurrentTestId] = useState<number | null | undefined>(null)
 // Id test
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);

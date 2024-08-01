@@ -44,8 +44,14 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Login failed: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            console.error('Login error:', error);
-            alert('Login failed: ' + (error.response?.data?.message || 'Network error'));
+
+            if (error instanceof Error) {
+                console.error('Login error:', error);
+                alert('Login failed: ' + (error?.message || 'Network error'));
+            } else {
+                console.error('An unexpected error occurred');
+            }
+
         } finally {
             setIsLoading(false);
         }
@@ -67,8 +73,13 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Registration failed: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            console.error('Registration error:', error);
-            alert('Registration failed: ' + (error.response?.data?.message || 'Network error'));
+
+            if (error instanceof Error) {
+                console.error('Registration error:', error);
+                alert('Registration failed: ' + (error.message || 'Network error'));
+            } else {
+                console.error('An unexpected error occurred');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -92,55 +103,62 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     };
 
     const fetchUserData = useCallback(async () => {
-        const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token');
 
-        if (!token) {
-            setIsAuthenticated(false);
-            setCurrentUser(null);
-            setIsLoading(false);
-            return;
-        }
-
-        try {
-            const response = await axiosClient.get('/api/user', {
-                headers: {'Authorization': `Bearer ${token}`}
-            });
-
-            if (response.status === 200) {
-                setCurrentUser(response.data.user_data);
-                setIsAuthenticated(true);
+            if (!token) {
+                setIsAuthenticated(false);
+                setCurrentUser(null);
+                setIsLoading(false);
+                return;
             }
-        } catch (error) {
-            if (error.response && error.response.data.msg === 'Token has expired') {
-                const newToken = await refreshAccessToken();
-                if (newToken) {
-                    try {
-                        const retryResponse = await axiosClient.get('/api/user', {
-                            headers: {'Authorization': `Bearer ${newToken}`}
-                        });
 
-                        if (retryResponse.status === 200) {
-                            setCurrentUser(retryResponse.data.user_data);
-                            setIsAuthenticated(true);
+            try {
+                const response = await axiosClient.get('/api/user', {
+                    headers: {'Authorization': `Bearer ${token}`}
+                });
+
+                if (response.status === 200) {
+                    setCurrentUser(response.data.user_data);
+                    setIsAuthenticated(true);
+                }
+            } catch (error) {
+                if (error instanceof Error) {
+                    if (error && error.message === 'Token has expired') {
+                        const newToken = await refreshAccessToken();
+                        if (newToken) {
+                            try {
+                                const retryResponse = await axiosClient.get('/api/user', {
+                                    headers: {'Authorization': `Bearer ${newToken}`}
+                                });
+
+                                if (retryResponse.status === 200) {
+                                    setCurrentUser(retryResponse.data.user_data);
+                                    setIsAuthenticated(true);
+                                }
+                            } catch (retryError) {
+                                console.error('Error fetching user data after token refresh:', retryError);
+                                setIsAuthenticated(false);
+                                setCurrentUser(null);
+                            }
+                        } else {
+                            setIsAuthenticated(false);
+                            setCurrentUser(null);
                         }
-                    } catch (retryError) {
-                        console.error('Error fetching user data after token refresh:', retryError);
-                        setIsAuthenticated(false);
-                        setCurrentUser(null);
+                    } else {
+                        console.error('An unexpected error occurred');
                     }
                 } else {
+                    console.error('Error fetching user data:', error);
                     setIsAuthenticated(false);
                     setCurrentUser(null);
                 }
-            } else {
-                console.error('Error fetching user data:', error);
-                setIsAuthenticated(false);
-                setCurrentUser(null);
+            } finally {
+                setIsLoading(false);
             }
-        } finally {
-            setIsLoading(false);
         }
-    }, []);
+        ,
+        []
+    );
 
     const logout = () => {
         localStorage.removeItem('token');
@@ -170,8 +188,11 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Failed to update profile: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            console.error('Update profile error:', error);
-            alert('Failed to update profile: ' + (error.response?.data?.message || 'Network error'));
+            if (error instanceof Error) {
+                alert('Failed to update profile: ' + (error.message || 'Network error'));
+            } else {
+                alert('Failed to update profile: Unknown error');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -192,8 +213,14 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Failed to delete profile: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            console.error('Delete profile error:', error);
-            alert('Failed to delete profile: ' + (error.response?.data?.message || 'Network error'));
+            if (error instanceof Error) {
+                console.error('Delete profile error:', error);
+                alert('Failed to delete profile: ' + (error?.message || 'Network error'));
+            } else {
+                console.error('Delete profile error:', error);
+
+            }
+
         } finally {
             setIsLoading(false);
         }
@@ -209,7 +236,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    if (!context) {
+    if (context === undefined) {
         throw new Error('useAuth must be used within an AuthProvider');
     }
     return context;

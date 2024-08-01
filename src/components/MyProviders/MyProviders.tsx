@@ -33,6 +33,11 @@ export const LanguageContext = createContext<ILanguageContextProps>({
 
 export interface IUser {
     name: string;
+    current_level: number
+    user_name: string
+    tests_completed_list: any[]
+    country: any
+    email: string
     // Додайте інші властивості користувача, які вам потрібні
 }
 

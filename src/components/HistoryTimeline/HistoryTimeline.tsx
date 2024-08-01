@@ -11,7 +11,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import TimelineCard from "./components/TimelineCard/TimelineCard";
 import {useNavigate} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
-import {IHistoryTimelineProps} from "../../types/types";
+import {IHistoryTimelineProps, SubtopicsProps} from "../../types/types";
 import {useAuth} from "../AuthContext/AuthContext";
 import axios from "axios";
 import axiosClient from "../../axios";
@@ -94,7 +94,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     useEffect(() => {
         if (subTopicsArray && subTopicsArray.length > 0) {
             // Find the index of the first uncompleted subarticle
-            const firstUncompletedIndex = subTopicsArray.findIndex((subArticle, subIndex) => {
+            const firstUncompletedIndex = subTopicsArray.findIndex((subArticle:SubtopicsProps, subIndex: number) => {
                 return !subArticleSuccessLevels[selectedArticle]?.[subIndex];
             });
 
@@ -113,7 +113,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
             return !subTopicsArray ||
                 (subTopicsArray.length > 0 &&
                     subTopicsArray.every(
-                        (_, subIndex) => subArticleSuccessLevels[articleIndex]?.[subIndex]
+                        (_:any, subIndex: number) => subArticleSuccessLevels[articleIndex]?.[subIndex]
                     ));
 
         } else return true;
@@ -164,18 +164,18 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                     key={index + "history-timeline"}
                                     // date={event.date}
                                     dateClassName={"hidden"}
-                                    className={successLevels===index ? "current_active_vertical_timeline_element" : ""}
+                                    className={successLevels === index ? "current_active_vertical_timeline_element" : ""}
 
                                     iconStyle={{
                                         background: theme.palette.primary.light,
-                                        color: iconColorState(successLevels>index),
+                                        color: iconColorState(successLevels > index),
                                     }}
                                     contentStyle={{padding: 0, boxShadow: "none"}}
                                     icon={successLevels === (index + 1) ? <CheckCircleOutlineIcon/> :
                                         <RadioButtonUncheckedRoundedIcon/>}
 
                                 >
-                                    <Card elevation={successLevels>=index ? 4 : 1}>
+                                    <Card elevation={successLevels >= index ? 4 : 1}>
                                         <TimelineCard
                                             completedSubtopics={getCompletedSubtopics(index)}
                                             totalSubtopics={getTotalSubtopics(index)}

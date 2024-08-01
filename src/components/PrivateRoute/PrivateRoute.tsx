@@ -3,21 +3,28 @@ import {Navigate} from 'react-router-dom';
 import {AuthContext} from "../AuthContext/AuthContext";
 import Preloader from "../Preloader/Preloader";
 
-interface PrivateRouteProps {
+interface IPrivateRouteProps {
     element: React.ReactNode;
 }
 
-const PrivateRoute = ({ element }) => {
-    const { isAuthenticated, isLoading } = useContext(AuthContext);
+const PrivateRoute = ({element}:IPrivateRouteProps) => {
+    const authContext = useContext(AuthContext);
 
-    console.log("isLoading-----",isLoading);
-    console.log("isAuthenticated -----",isAuthenticated );
-
-    if (isLoading) {
-        return <Preloader />; // Показуємо компонент завантаження, поки дані не завантажені
+    // Перевірка, що контекст визначений
+    if (authContext === undefined) {
+        throw new Error('AuthContext must be used within an AuthProvider');
     }
 
-    return isAuthenticated ? element : <Navigate to="/" />;
+    const { isAuthenticated, isLoading } = authContext;
+
+    console.log("isLoading-----", isLoading);
+    console.log("isAuthenticated -----", isAuthenticated);
+
+    if (isLoading) {
+        return <Preloader/>; // Показуємо компонент завантаження, поки дані не завантажені
+    }
+
+    return isAuthenticated ? element : <Navigate to="/"/>;
 };
 
 export default PrivateRoute;

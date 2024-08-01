@@ -6,7 +6,7 @@ import myImage from "../../static/image/city.jpg";
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 import SubtopicCard from "./components/SubtopicCard/SubtopicCard";
-import {IArticleContentArrayItem, IArticleProps, ISubtopicsTextContent} from "../../types/types";
+import {IArticleContentArrayItem, IArticleProps, ISubtopicsTextContent, SubtopicsProps} from "../../types/types";
 import {useTheme} from "@mui/system";
 import {useAuth} from "../AuthContext/AuthContext";
 import {contentRenderFunction} from "../../utils/utils";
@@ -54,7 +54,8 @@ const Article: React.FC<IArticleProps> = ({
     console.log("isLoading::", isLoading);
     const {selectedArticle} = useParams();
     const [currentArticleContent, setCurrentArticleContent] = useState<null | IArticleContentArrayItem[]>(null);
-    const [subTopicsArray, setSubTopicsArray] = useState<ISubtopicsTextContent[] | []>([]);
+    const [subTopicTextArray, setSubTopicTextArray] = useState<ISubtopicsTextContent[] | []>([]);
+    const [subArticlesArray, setSubArticlesArray] = useState<SubtopicsProps[] | []>([]);
 
     const [completionPercentage, setCompletionPercentage] = useState(0);
     const [completedSubtopics, setCompletedSubtopics] = useState(0);
@@ -73,6 +74,13 @@ const Article: React.FC<IArticleProps> = ({
 
         if (selectedArticleNumber) {
             setSelectedArticle(selectedArticleNumber);
+            const subtopics = historyList[selectedArticleNumber]?.subtopics;
+            setSubArticlesArray(subtopics ?? []);
+
+            const content = historyList[selectedArticleNumber]?.content;
+            setCurrentArticleContent(typeof content === "object" ? content : null);
+
+
         }
 
     }, [selectedArticleNumber])
@@ -112,9 +120,15 @@ const Article: React.FC<IArticleProps> = ({
     const handleGoToSubArticleTest = (articleIndex: number) => {
         // Check if the article has subarticles
 
-        if (historyList[selectedArticleNumber].subtopics && historyList[selectedArticleNumber].subtopics.length > 0) {
+        if (!historyList || selectedArticleNumber === undefined || selectedArticleNumber < 0 || selectedArticleNumber >= historyList.length) {
+            return; // або можете показати повідомлення про помилку
+        }
+
+        const selectedArticle = historyList[selectedArticleNumber];
+
+        if (selectedArticle.subtopics && selectedArticle.subtopics.length > 0) {
             // Find the index of the first uncompleted subarticle
-            const firstUncompletedIndex = historyList[selectedArticleNumber].subtopics.findIndex((subArticle, subIndex) => {
+            const firstUncompletedIndex = selectedArticle.subtopics.findIndex((subArticle, subIndex) => {
                 return !subArticleSuccessLevels[articleIndex]?.[subIndex];
             });
 
@@ -163,8 +177,14 @@ const Article: React.FC<IArticleProps> = ({
     // const finalTestIsNotOpen = (historyList[selectedArticleNumber].subtopics.length > 0 && subArticleSuccessLevels.length > 0) ? (subArticleSuccessLevels.length > 0 && !subArticleSuccessLevels[selectedArticleNumber].every(done => done)) : true;
 
     useEffect(() => {
-        if (historyList[selectedArticleNumber] && historyList[selectedArticleNumber].subtopics) {
-            const subtopics = historyList[selectedArticleNumber].subtopics;
+        if (!historyList || selectedArticleNumber === undefined || selectedArticleNumber < 0 || selectedArticleNumber >= historyList.length) {
+            return; // або можете показати повідомлення про помилку
+        }
+
+        const selectedArticle = historyList[selectedArticleNumber];
+
+        if (selectedArticle && selectedArticle.subtopics) {
+            const subtopics = selectedArticle.subtopics;
             const total = subtopics.length;
 
             const completed = subtopics.reduce((acc, subtopic) => {
@@ -181,7 +201,8 @@ const Article: React.FC<IArticleProps> = ({
         }
     }, [historyList, selectedArticleNumber, currentUser.tests_completed_list]);
 
-    const finalTestIsNotOpen = (historyList[selectedArticleNumber].subtopics.length > 0 && !historyList[selectedArticleNumber].subtopics.every(subtopic => {
+
+    const finalTestIsNotOpen = (subArticlesArray.length > 0 && !subArticlesArray.every(subtopic => {
         const testResult = currentUser.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
         return testResult && testResult.completed;
     }));
@@ -226,13 +247,13 @@ const Article: React.FC<IArticleProps> = ({
                             <Grid item xs={12} md={5}> <img src={myImage} alt=""/></Grid>
                             <Grid item xs={12} md={7}>
                                 <div
-                                    className={"content_container"}>{historyList[selectedArticleNumber].content && contentRenderFunction(historyList[selectedArticleNumber].content)}</div>
+                                    className={"content_container"}>{historyList[selectedArticleNumber].content && contentRenderFunction(currentArticleContent ? currentArticleContent : "" )}</div>
                             </Grid>
                         </Grid>
 
 
                         {/* Display subtopics as cards */}
-                        {historyList[selectedArticleNumber].subtopics.length > 0 && (
+                        {subArticlesArray.length > 0 && (
                             <Grid className={"subtopic_card_list"} container justifyContent={"center"}>
                                 <Grid item xs={12} sm={12} md={6} xl={6}>
                                     <Typography variant={"h6"}>Пройдіть додаткові завдання перед головним
@@ -251,7 +272,7 @@ const Article: React.FC<IArticleProps> = ({
                                 </Grid>
 
                                 <Grid item container xs={12} spacing={2}>
-                                    {historyList[selectedArticleNumber].subtopics?.map((subtopic, index) => {
+                                    {subArticlesArray.map((subtopic, index) => {
 
                                         console.log('Subtopic ID:', subtopic.sub_article_test_id);
                                         const testResult = currentUser.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
@@ -261,7 +282,6 @@ const Article: React.FC<IArticleProps> = ({
                                         return (
                                             <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
                                                 <SubtopicCard
-                                                    id={subtopic.sub_article_test_id}
                                                     done={isCompleted}
                                                     subArticleIndex={index}
                                                     title={subtopic.title}
