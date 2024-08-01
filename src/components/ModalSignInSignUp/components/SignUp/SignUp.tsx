@@ -29,15 +29,36 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    const goToSignInForm = () => {
-        setShowSignUpForm(false);
-        setShowSignInForm(true);
-    }
+    const [emailErrorState, setEmailErrorState] = useState<boolean>(false)
+    const [emailErrorText, setEmailErrorText] = useState<string>("")
+    const [allowExtraEmails, setAllowExtraEmails] = useState(false);
+
+
+    const validateEmail = () => {
+        if ("" === email || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+            setEmailErrorState(true)
+        }
+
+        if ("" === email) {
+            setEmailErrorText("Please enter your email")
+            return false
+        }
+
+        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+            setEmailErrorText("Please enter a valid email")
+            return false
+        }
+
+        return true
+    };
 
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        setEmailErrorState(false);
+
+        if (!validateEmail()) return;
 
         if (!userName || !email || !password || !password2) {
             setError('All fields are required.');
@@ -46,6 +67,11 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
 
         if (password !== password2) {
             setError('Passwords do not match.');
+            return;
+        }
+
+        if (!allowExtraEmails) {
+            setError('You must agree to receive inspiration, marketing promotions, and updates via email.');
             return;
         }
 
@@ -61,7 +87,7 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
 
     useEffect(() => {
         if (isAuthenticated) {
-            setShowSignInForm(false)
+            setShowSignUpForm(false)
 
             if (!goToHistoryTimeLine) {
                 navigate("/profile");
@@ -101,6 +127,8 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
                             autoComplete="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            error={emailErrorState}
+                            helperText={emailErrorState && emailErrorText}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -131,7 +159,10 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
                     </Grid>
                     <Grid item xs={12}>
                         <FormControlLabel
-                            control={<Checkbox value="allowExtraEmails" color="primary"/>}
+                            required={true}
+                            control={<Checkbox checked={allowExtraEmails}
+                                               onChange={(e) => setAllowExtraEmails(e.target.checked)}
+                                               value="allowExtraEmails" color="primary"/>}
                             label="I want to receive inspiration, marketing promotions and updates via email."
                         />
                     </Grid>
