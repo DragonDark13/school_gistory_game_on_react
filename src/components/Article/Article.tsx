@@ -176,7 +176,7 @@ const Article: React.FC<IArticleProps> = ({
     // const finalTestIsNotOpen = (historyList[selectedArticleNumber].subtopics.length > 0 && subArticleSuccessLevels.length > 0) ? (subArticleSuccessLevels.length > 0 && !subArticleSuccessLevels[selectedArticleNumber].every(done => done)) : true;
 
     useEffect(() => {
-        if (!historyList || !selectedArticleNumber || selectedArticleNumber < 0 || selectedArticleNumber >= historyList.length) {
+        if (!historyList  ||  selectedArticleNumber >= historyList.length) {
             return; // або можете показати повідомлення про помилку
         }
 

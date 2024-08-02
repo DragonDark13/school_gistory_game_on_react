@@ -87,29 +87,49 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
 
     const handleGoToSubArticleTest = (articleIndex: number) => {
-        // Check if the article has subarticles
-
-
         // Знаходимо перший тест, де completed === false
         const firstIncompleteTest = currentUser?.tests_completed_list?.find(test =>
             test.test_type === "Sub Article" &&
-            test.event_id === articleIndex+1 &&
+            test.event_id === articleIndex + 1 &&
             !test.completed
         );
 
-        const subArticle = historyList[articleIndex].subtopics;
+        if (!firstIncompleteTest) {
+            console.error('No incomplete test found.');
+            return;
+        }
+
+        const subArticle = historyList[articleIndex]?.subtopics;
+
+        if (!subArticle) {
+            console.error('SubArticle is not available.');
+            return;
+        }
 
         const findIndexBySubArticleTestId = (testId: number): number => {
             return subArticle.findIndex(subArticle => subArticle.sub_article_test_id === testId);
         };
 
-        const selectedSubArticleIndex = findIndexBySubArticleTestId(firstIncompleteTest.test_id)
+        const id = firstIncompleteTest.test_id;
 
-        setSelectedArticle(articleIndex)
-        // fetchDataSubTopicsArray(articleIndex);
-        // setSubTopicsArray(historyList[articleIndex].subtopics)
-        handleGoToSubTestNow(selectedArticle, selectedSubArticleIndex);
+        const selectedSubArticleIndex = findIndexBySubArticleTestId(id);
 
+        setSelectedArticle(articleIndex);
+        handleGoToSubTestNow(articleIndex, selectedSubArticleIndex);
+    };
+
+// Інші місця, де потрібні зміни
+    const getCompletedSubtopics = (articleIndex: number): number => {
+        const article = historyList[articleIndex];
+        if (!article || !article.subtopics) {
+            return 0;
+        }
+
+        return article.subtopics.reduce((count, subtopic) => {
+            const tests_completed_list = currentUser?.tests_completed_list
+            const testResult = tests_completed_list?.find(result => result.test_id === subtopic.sub_article_test_id);
+            return testResult && testResult.completed ? count + 1 : count;
+        }, 0);
     };
 
     useEffect(() => {
@@ -146,14 +166,19 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
         return article && article.subtopics ? article.subtopics.length : 0;
     }
 
-    const getCompletedSubtopics = (articleIndex: number) => {
-
-        if (subArticleSuccessLevels.length > 0) {
-            return subArticleSuccessLevels[articleIndex].filter(done => done).length;
-        } else {
-            return 0;
-        }
-    }
+    // const getCompletedSubtopics = (articleIndex: number) => {
+    //     const article = historyList[articleIndex];
+    //
+    //     const completed = article.subtopics?.reduce((acc, subtopic) => {
+    //         const testResult = article.subtopics.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
+    //         if (testResult && testResult.completed) {
+    //             acc += 1;
+    //         }
+    //         return acc;
+    //     }, 0);
+    //
+    //     return completed;
+    // }
 
     const {isAuthenticated} = useAuth();
 
