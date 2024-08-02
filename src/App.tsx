@@ -63,24 +63,24 @@ function App() {
 
     // const [successLevels, setSuccessLevels] = useState(data.historyList.map((_, index) => index === -1))
     const [successLevels, setSuccessLevels] = useState<number>(0)
-    console.log(successLevels);
+    // console.log(successLevels);
 
     const [achievements, setAchievements] = useState<[] | string[]>([])
     const [allAnswerIsCorrect, setAllAnswerIsCorrect] = useState(false)
     const [subArticleAllAnswerIsCorrect, setSubArticleAllAnswerIsCorrect] = useState(false);
-    console.log(subArticleAllAnswerIsCorrect);
+    // console.log(subArticleAllAnswerIsCorrect);
 
     const allAnswerIsCorrectFunc = useCallback(() => {
 
-        console.log("selectedArticle", selectedArticle);
-        console.log(buttonStates);
+        // console.log("selectedArticle", selectedArticle);
+        // console.log(buttonStates);
         setButtonStates((prevStates) => {
             const updatedStates = [...prevStates];
             updatedStates[selectedArticle + 1] = true;
             return updatedStates;
         });
 
-        console.log("selectedArticle", selectedArticle);
+        // console.log("selectedArticle", selectedArticle);
 
         // setSuccessLevels((prevStates) => {
         //     const updatedStates = [...prevStates];
@@ -158,7 +158,7 @@ function App() {
         effect();
     }, [subArticleAllAnswerIsCorrect, selectedSubArticle, selectedArticle]);
 
-    console.log("subArticleSuccessLevels:::", subArticleSuccessLevels);
+    // console.log("subArticleSuccessLevels:::", subArticleSuccessLevels);
 
 
     const handleQuizComplete = (results: { correct: number; incorrect: number }) => {
@@ -204,7 +204,7 @@ function App() {
     const {data: historyDataList, isLoading, isError} = useFetchEvents(isAuthenticated);
 
 
-    console.log(isLoading ? "isLoading true" : "isLoading false");
+    // console.log(isLoading ? "isLoading true" : "isLoading false");
     const [historyListFromData, setHistoryListFromData] = useState<any[]>([]); // Adjust the type as per your data structure
     // console.log("dataFromQuery", dataFromQuery);
 
@@ -219,12 +219,12 @@ function App() {
     }, [historyDataList]);
 
 
-    console.log("historyListFromData:::", historyListFromData);
+    // console.log("historyListFromData:::", historyListFromData);
 
-    console.log("isLoading>>>", isLoading ? "isLoading true" : "isLoading false");
+    // console.log("isLoading>>>", isLoading ? "isLoading true" : "isLoading false");
 
 
-    console.log("currentUser:::::", currentUser);
+    // console.log("currentUser:::::", currentUser);
 
 
     return (

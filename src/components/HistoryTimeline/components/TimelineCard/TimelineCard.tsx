@@ -29,7 +29,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
                                                         completedSubtopics
                                                     }) => {
     const theme = useTheme();
-    console.log("isAllSubtaskDone",isAllSubtaskDone);
+    // console.log("isAllSubtaskDone",isAllSubtaskDone);
 
     const notActiveCard = successLevel < index;
 

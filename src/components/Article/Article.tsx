@@ -50,8 +50,8 @@ const Article: React.FC<IArticleProps> = ({
 
                                           }) => {
 
-    console.log("historyList", historyList);
-    console.log("isLoading::", isLoading);
+    // console.log("historyList", historyList);
+    // console.log("isLoading::", isLoading);
     const {selectedArticle} = useParams();
     const [currentArticleContent, setCurrentArticleContent] = useState<null | IArticleContentArrayItem[]>(null);
     const [subTopicTextArray, setSubTopicTextArray] = useState<ISubtopicsTextContent[] | []>([]);
@@ -68,7 +68,7 @@ const Article: React.FC<IArticleProps> = ({
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
 
-    console.log("selectedArticleNumber", selectedArticleNumber);
+    // console.log("selectedArticleNumber", selectedArticleNumber);
 
     useEffect(() => {
 
@@ -274,9 +274,9 @@ const Article: React.FC<IArticleProps> = ({
                                 <Grid item container xs={12} spacing={2}>
                                     {subArticlesArray.map((subtopic, index) => {
 
-                                        console.log('Subtopic ID:', subtopic.sub_article_test_id);
+                                        // console.log('Subtopic ID:', subtopic.sub_article_test_id);
                                         const testResult = currentUser.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
-                                        console.log('Test Result:', testResult);
+                                        // console.log('Test Result:', testResult);
                                         const isCompleted = testResult ? testResult.completed : false;
 
                                         return (

@@ -32,7 +32,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
     const theme = useTheme();
 
-    console.log("isLoading----", isLoading);
+    // console.log("isLoading----", isLoading);
 
     const [subTopicsArray, setSubTopicsArray] = useState<null | any>(null);
 

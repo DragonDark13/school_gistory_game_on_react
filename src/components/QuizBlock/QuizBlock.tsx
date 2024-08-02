@@ -185,7 +185,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                 }
             })
                 .then(response => {
-                    console.log('Test completion recorded:', response.data);
+                    // console.log('Test completion recorded:', response.data);
                     // Обробка даних користувача після успішного запиту
                     // const userData = response.data;
                     debugger

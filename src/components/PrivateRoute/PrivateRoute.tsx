@@ -17,8 +17,8 @@ const PrivateRoute = ({element}:IPrivateRouteProps) => {
 
     const { isAuthenticated, isLoading } = authContext;
 
-    console.log("isLoading-----", isLoading);
-    console.log("isAuthenticated -----", isAuthenticated);
+    // console.log("isLoading-----", isLoading);
+    // console.log("isAuthenticated -----", isAuthenticated);
 
     if (isLoading) {
         return <Preloader/>; // Показуємо компонент завантаження, поки дані не завантажені

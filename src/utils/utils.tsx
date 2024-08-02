@@ -5,7 +5,7 @@ import {IArticleContentArrayItem} from "../types/types";
 
 export const contentRenderFunction = (content: IArticleContentArrayItem[] | string) => {
 
-    console.log('content', content);
+    // console.log('content', content);
 
     let loremIpismText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n" +
         "                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco\n" +
