@@ -4,7 +4,7 @@ import {
     Card, Container, Typography,
     useTheme
 } from '@mui/material';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {VerticalTimeline, VerticalTimelineElement} from 'react-vertical-timeline-component';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -16,6 +16,7 @@ import {useAuth} from "../AuthContext/AuthContext";
 import axios from "axios";
 import axiosClient from "../../axios";
 import Preloader from "../Preloader/Preloader";
+import {UserContext} from "../MyProviders/MyProviders";
 
 
 const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
@@ -32,6 +33,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
     const theme = useTheme();
 
+    const {currentUser} = useContext(UserContext)
     // console.log("isLoading----", isLoading);
 
     const [subTopicsArray, setSubTopicsArray] = useState<null | any>(null);
@@ -51,11 +53,13 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     };
 
     const handleGoToTestNow = (articleIndex: number) => {
+        debugger
         navigate(`/test/${articleIndex}`);
         setSelectedArticle(articleIndex)
     }
 
     const handleGoToSubTestNow = (articleIndex: number, subArticleIndex: number) => {
+        debugger
         navigate(`/test/${articleIndex}/${subArticleIndex}`);
         setSelectedArticle(articleIndex)
         setSelectedSubArticle(subArticleIndex)
@@ -75,10 +79,8 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     // };
 
     useEffect(() => {
-        debugger
-        if (selectedArticle && historyList) {
+        if (historyList) {
             setSubTopicsArray(historyList[selectedArticle].subtopics)
-
         }
 
     }, [selectedArticle, historyList]);
@@ -86,43 +88,62 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
     const handleGoToSubArticleTest = (articleIndex: number) => {
         // Check if the article has subarticles
+
+
+        // Знаходимо перший тест, де completed === false
+        const firstIncompleteTest = currentUser?.tests_completed_list?.find(test =>
+            test.test_type === "Sub Article" &&
+            test.event_id === articleIndex+1 &&
+            !test.completed
+        );
+
+        const subArticle = historyList[articleIndex].subtopics;
+
+        const findIndexBySubArticleTestId = (testId: number): number => {
+            return subArticle.findIndex(subArticle => subArticle.sub_article_test_id === testId);
+        };
+
+        const selectedSubArticleIndex = findIndexBySubArticleTestId(firstIncompleteTest.test_id)
+
         setSelectedArticle(articleIndex)
         // fetchDataSubTopicsArray(articleIndex);
-        setSubTopicsArray(historyList[articleIndex].subtopics)
+        // setSubTopicsArray(historyList[articleIndex].subtopics)
+        handleGoToSubTestNow(selectedArticle, selectedSubArticleIndex);
+
     };
 
     useEffect(() => {
         if (subTopicsArray && subTopicsArray.length > 0) {
             // Find the index of the first uncompleted subarticle
-            const firstUncompletedIndex = subTopicsArray.findIndex((subArticle:SubtopicsProps, subIndex: number) => {
+            const firstUncompletedIndex = subTopicsArray.findIndex((subArticle: SubtopicsProps, subIndex: number) => {
                 return !subArticleSuccessLevels[selectedArticle]?.[subIndex];
             });
 
             // If there is an uncompleted subarticle, navigate to its test page
             if (firstUncompletedIndex !== -1) {
-                handleGoToSubTestNow(selectedArticle, firstUncompletedIndex);
+                // handleGoToSubTestNow(selectedArticle, firstUncompletedIndex);
             } else {
-                handleGoToTestNow(selectedArticle);
+                // handleGoToTestNow(selectedArticle);
             }
         }
     }, [subTopicsArray, subArticleSuccessLevels, selectedArticle, handleGoToSubTestNow, handleGoToTestNow]);
 
-    const isAllSubtaskDone = (articleIndex: number) => {
+    const isAllSubtaskDone = (articleIndex: number): boolean => {
+        const article = historyList[articleIndex];
+        if (!article || !currentUser || !article.subtopics) {
+            return false;
+        }
 
-        if (subTopicsArray && subTopicsArray.length > 0) {
-            return !subTopicsArray ||
-                (subTopicsArray.length > 0 &&
-                    subTopicsArray.every(
-                        (_:any, subIndex: number) => subArticleSuccessLevels[articleIndex]?.[subIndex]
-                    ));
-
-        } else return true;
-
+        return article.subtopics.every(subtopic => {
+            const testResult = currentUser.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
+            return testResult && testResult.completed;
+        });
     };
 
     const getTotalSubtopics = (articleIndex: number) => {
 
-        return setSubTopicsArray ? setSubTopicsArray.length : 0;
+        const article = historyList[articleIndex];
+        return article && article.subtopics ? article.subtopics.length : 0;
     }
 
     const getCompletedSubtopics = (articleIndex: number) => {

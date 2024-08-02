@@ -188,7 +188,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                     // console.log('Test completion recorded:', response.data);
                     // Обробка даних користувача після успішного запиту
                     // const userData = response.data;
-                    debugger
                     setCurrentUser(response.data.user_data);
 
                     // Додайте код для обробки userData, наприклад, оновлення стану
@@ -202,7 +201,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const handleAnswer = (answerIndex: number) => {
         setAnswerChosen(true);
         setSelectedAnswer(answerIndex);
-        debugger
         // Перевірка, чи обрана відповідь вірна
         if (correctAnswers[currentQuestion] === answerIndex) {
             setResults({...results, correct: results.correct + 1});

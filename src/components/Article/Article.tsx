@@ -10,9 +10,6 @@ import {IArticleContentArrayItem, IArticleProps, ISubtopicsTextContent, Subtopic
 import {useTheme} from "@mui/system";
 import {useAuth} from "../AuthContext/AuthContext";
 import {contentRenderFunction} from "../../utils/utils";
-// import axios from "axios";
-// import {useQuery} from "react-query";
-// import axiosClient from "../../axios";
 import Preloader from "../Preloader/Preloader";
 
 
@@ -72,7 +69,7 @@ const Article: React.FC<IArticleProps> = ({
 
     useEffect(() => {
 
-        if (selectedArticleNumber) {
+
             setSelectedArticle(selectedArticleNumber);
             const subtopics = historyList[selectedArticleNumber]?.subtopics;
             setSubArticlesArray(subtopics ?? []);
@@ -81,11 +78,12 @@ const Article: React.FC<IArticleProps> = ({
             setCurrentArticleContent(typeof content === "object" ? content : null);
 
 
-        }
+
 
     }, [selectedArticleNumber])
 
     const handleShowQuiz = () => {
+        debugger
         navigate(`/test/${selectedArticleNumber}`);
     }
 
@@ -111,6 +109,7 @@ const Article: React.FC<IArticleProps> = ({
     }
 
     const handleGoToSubTestNow = (articleIndex: number, subArticleIndex: number) => {
+        debugger
         navigate(`/test/${articleIndex}/${subArticleIndex}`);
         setSelectedArticle(articleIndex)
         setSelectedSubArticle(subArticleIndex)
@@ -177,7 +176,7 @@ const Article: React.FC<IArticleProps> = ({
     // const finalTestIsNotOpen = (historyList[selectedArticleNumber].subtopics.length > 0 && subArticleSuccessLevels.length > 0) ? (subArticleSuccessLevels.length > 0 && !subArticleSuccessLevels[selectedArticleNumber].every(done => done)) : true;
 
     useEffect(() => {
-        if (!historyList || selectedArticleNumber === undefined || selectedArticleNumber < 0 || selectedArticleNumber >= historyList.length) {
+        if (!historyList || !selectedArticleNumber || selectedArticleNumber < 0 || selectedArticleNumber >= historyList.length) {
             return; // або можете показати повідомлення про помилку
         }
 
@@ -247,7 +246,7 @@ const Article: React.FC<IArticleProps> = ({
                             <Grid item xs={12} md={5}> <img src={myImage} alt=""/></Grid>
                             <Grid item xs={12} md={7}>
                                 <div
-                                    className={"content_container"}>{historyList[selectedArticleNumber].content && contentRenderFunction(currentArticleContent ? currentArticleContent : "" )}</div>
+                                    className={"content_container"}>{historyList[selectedArticleNumber].content && contentRenderFunction(currentArticleContent ? currentArticleContent : "")}</div>
                             </Grid>
                         </Grid>
 

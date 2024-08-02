@@ -37,6 +37,7 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
     const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
 
 
+
     return (
         <React.Fragment>
             <CardHeader titleTypographyProps={{color: textColor}} title={event.date}/>
@@ -86,10 +87,10 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
                                 </Typography>
                             </div>
 
-                            <Button size={"large"} variant={"contained"} fullWidth disabled={!buttonState}
+                            <Button size={"large"} variant={"contained"} fullWidth
                                     className={"goToTest"} onClick={(e) => {
                                 e.stopPropagation();
-                                handleGoToSubArticleTest(index + 1);
+                                handleGoToSubArticleTest(index );
                             }}
                             >
                                 Пройти завдання

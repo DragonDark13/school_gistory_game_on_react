@@ -2,6 +2,7 @@ import * as React from 'react';
 import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from "react";
 import axiosClient from "../../axios";
 import {UserContext} from "../MyProviders/MyProviders";
+import {AxiosError} from "axios";
 
 export interface IAuthContextProps {
     isAuthenticated: boolean;
@@ -43,14 +44,12 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             } else {
                 alert('Login failed: ' + (response.data.message || 'Unknown error'));
             }
-        } catch (error) {
-
-            if (error instanceof Error) {
-                console.error('Login error:', error);
-                alert('Login failed: ' + (error?.message || 'Network error'));
-            } else {
-                console.error('An unexpected error occurred');
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                console.error('Login error:', error?.response?.data.message);
+                alert('Login failed: ' + (error?.response?.data.message || 'Network error'));
             }
+
 
         } finally {
             setIsLoading(false);

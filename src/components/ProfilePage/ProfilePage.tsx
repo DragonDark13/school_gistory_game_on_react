@@ -22,6 +22,7 @@ import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import StarIcon from '@mui/icons-material/Star';
 import Preloader from "../Preloader/Preloader";
 import ChangePasswordForm from "./ChangePasswordForm";
+import ResetAchievementsButton from "./ResetAchievementsButton";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -94,7 +95,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     const mdUp = useMediaQuery(theme.breakpoints.up('md'))
     const smUp = useMediaQuery(theme.breakpoints.up('sm'))
 
-      const { deleteProfile } = useAuth();
+    const {deleteProfile} = useAuth();
 
     const handleDeleteProfile = async () => {
         if (window.confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {
@@ -192,7 +193,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                     ))}
                                 </Grid>
                             </div>
-
+                            <ResetAchievementsButton/>
                         </Paper>
                     </Grid>
 

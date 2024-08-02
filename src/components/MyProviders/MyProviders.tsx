@@ -31,13 +31,22 @@ export const LanguageContext = createContext<ILanguageContextProps>({
     setLanguage: () => null,
 });
 
+export interface ITestCompletedItem {
+    completed: boolean;
+    event_id: number;
+    parent_article_title: string;
+    test_id: number;
+    test_type: string;
+}
+
+// Оновлений інтерфейс IUser
 export interface IUser {
     name: string;
-    current_level: number
-    user_name: string
-    tests_completed_list: any[]
-    country: any
-    email: string
+    current_level: number;
+    user_name: string;
+    tests_completed_list: ITestCompletedItem[]; // Використання нового інтерфейсу
+    country: any;
+    email: string;
     // Додайте інші властивості користувача, які вам потрібні
 }
 
