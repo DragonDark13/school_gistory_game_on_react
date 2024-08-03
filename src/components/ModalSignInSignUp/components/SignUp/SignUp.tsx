@@ -16,6 +16,7 @@ import axiosClient from "../../../../axios";
 import {Alert} from "@mui/material";
 import {useAuth} from "../../../AuthContext/AuthContext";
 import {useNavigate} from "react-router-dom";
+import {emailPattern, validateEmail} from "../../../../utils/utils";
 
 
 export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistoryTimeLine}: ISignInForms) {
@@ -34,22 +35,6 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
     const [allowExtraEmails, setAllowExtraEmails] = useState(false);
 
 
-    const validateEmail = () => {
-        // Оновлений регулярний вираз для перевірки email
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-        if (email === "" || !emailPattern.test(email)) {
-            setEmailErrorState(true);
-            if (email === "") {
-                setEmailErrorText("Please enter your email");
-            } else {
-                setEmailErrorText("Please enter a valid email");
-            }
-            return false;
-        }
-
-        return true;
-    };
 
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -57,7 +42,7 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
 
         setEmailErrorState(false);
 
-        if (!validateEmail()) return;
+        if (!validateEmail(email, setEmailErrorText, setEmailErrorState)) return;
 
         if (!userName || !email || !password || !password2) {
             setError('All fields are required.');

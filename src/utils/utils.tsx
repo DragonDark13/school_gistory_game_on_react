@@ -29,3 +29,28 @@ export const contentRenderFunction = (content: IArticleContentArrayItem[] | stri
 
 
 }
+
+export const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+export const validateEmail = (
+    email: string,
+    setEmailErrorText: (text: string) => void,
+    setEmailErrorState: (state: boolean) => void
+): boolean => {
+    // Оновлений регулярний вираз для перевірки email
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (email === "" || !emailPattern.test(email)) {
+        setEmailErrorState(true);
+        if (email === "") {
+            setEmailErrorText("Please enter your email");
+        } else {
+            setEmailErrorText("Please enter a valid email");
+        }
+        return false;
+    }
+
+    setEmailErrorState(false);  // Очистити помилку, якщо email валідний
+    return true;
+};
+

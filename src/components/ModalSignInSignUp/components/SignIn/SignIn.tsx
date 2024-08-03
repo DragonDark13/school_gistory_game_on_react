@@ -14,6 +14,7 @@ import {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {ISignInForms} from "../../../../types/types";
 import {makeStyles} from "tss-react/mui";
+import {emailPattern, validateEmail} from "../../../../utils/utils";
 
 const useStyles = makeStyles()((theme) => ({
 
@@ -52,26 +53,6 @@ export default function SignIn({setShowSignInForm, setShowSignUpForm, goToHistor
     const {cx, classes} = useStyles();
 
 
-    const validateEmail = () => {
-        // Email validation logic
-        // Check if the user has entered both fields correctly
-        if ("" === email || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-            setEmailErrorState(true)
-        }
-
-        if ("" === email) {
-            setEmailErrorText("Please enter your email")
-            return false
-        }
-
-        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-            setEmailErrorText("Please enter a valid email")
-            return false
-        }
-
-        return true
-    };
-
     const validatePassword = () => {
         // Password validation logic
         if ("" === password || password.length < 7) {
@@ -92,12 +73,12 @@ export default function SignIn({setShowSignInForm, setShowSignUpForm, goToHistor
 
     };
 
-    const onLogInButtonClick =  async (e: React.FormEvent) =>{
+    const onLogInButtonClick = async (e: React.FormEvent) => {
         e.preventDefault();
         setEmailErrorState(false);
         setPasswordErrorState(false);
 
-        if (!validateEmail()) return;
+        if (!validateEmail(email, setEmailErrorText, setEmailErrorState)) return;
         if (!validatePassword()) return;
 
         await login(email, password);
