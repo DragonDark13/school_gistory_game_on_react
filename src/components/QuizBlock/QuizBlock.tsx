@@ -104,12 +104,12 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const maxTimeStatic = 10;
     const [remainingTime, setRemainingTime] = useState(maxTimeStatic);
     const [currentTestId, setCurrentTestId] = useState<number | null | undefined>(null)
+    const [currentArticleTitle, setCurrentArticleTitle] = useState<string>("")
 // Id test
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
     let selectedSubArticleNumber = 0;  // Default value in case it's not a subArticle
     let currentArticle;
-    let currentArticleTitle;
 
     const navigate = useNavigate();
     const {isAuthenticated} = useAuth();
@@ -132,13 +132,13 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
             if (testType === "subArticle") {
                 selectedSubArticleNumber = parseInt(subtopicId || '0', 10);
                 currentArticle = historyList[selectedArticleNumber]?.subtopics?.[selectedSubArticleNumber]
-                currentArticleTitle = currentArticle?.title;
+                setCurrentArticleTitle(currentArticle?.title)
                 setCurrentTestId(currentArticle?.sub_article_test_id)
 
 
             } else {
                 currentArticle = historyList[selectedArticleNumber];
-                currentArticleTitle = currentArticle.text;
+                setCurrentArticleTitle(currentArticle.text)
                 setCurrentTestId(currentArticle?.main_article_test_id)
             }
 
