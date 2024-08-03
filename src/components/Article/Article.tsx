@@ -11,6 +11,7 @@ import {useTheme} from "@mui/system";
 import {useAuth} from "../AuthContext/AuthContext";
 import {contentRenderFunction} from "../../utils/utils";
 import Preloader from "../Preloader/Preloader";
+import {ITestCompletedItem} from "../MyProviders/MyProviders";
 
 
 // const fetchDataArticleContent = async (selectedArticleNumber: number) => {
@@ -52,7 +53,7 @@ const Article: React.FC<IArticleProps> = ({
     const {selectedArticle} = useParams();
     const [currentArticleContent, setCurrentArticleContent] = useState<null | IArticleContentArrayItem[]>(null);
     const [subTopicTextArray, setSubTopicTextArray] = useState<ISubtopicsTextContent[] | []>([]);
-    const [subArticlesArray, setSubArticlesArray] = useState<SubtopicsProps[] | []>([]);
+    const [subArticlesArray, setSubArticlesArray] = useState<SubtopicsProps[]>([]);
 
     const [completionPercentage, setCompletionPercentage] = useState(0);
     const [completedSubtopics, setCompletedSubtopics] = useState(0);
@@ -70,14 +71,12 @@ const Article: React.FC<IArticleProps> = ({
     useEffect(() => {
 
 
-            setSelectedArticle(selectedArticleNumber);
-            const subtopics = historyList[selectedArticleNumber]?.subtopics;
-            setSubArticlesArray(subtopics ?? []);
+        setSelectedArticle(selectedArticleNumber);
+        const subtopics = historyList[selectedArticleNumber]?.subtopics;
+        setSubArticlesArray(subtopics ?? []);
 
-            const content = historyList[selectedArticleNumber]?.content;
-            setCurrentArticleContent(typeof content === "object" ? content : null);
-
-
+        const content = historyList[selectedArticleNumber]?.content;
+        setCurrentArticleContent(typeof content === "object" ? content : null);
 
 
     }, [selectedArticleNumber])
@@ -176,7 +175,7 @@ const Article: React.FC<IArticleProps> = ({
     // const finalTestIsNotOpen = (historyList[selectedArticleNumber].subtopics.length > 0 && subArticleSuccessLevels.length > 0) ? (subArticleSuccessLevels.length > 0 && !subArticleSuccessLevels[selectedArticleNumber].every(done => done)) : true;
 
     useEffect(() => {
-        if (!historyList  ||  selectedArticleNumber >= historyList.length) {
+        if (!historyList || selectedArticleNumber >= historyList.length) {
             return; // або можете показати повідомлення про помилку
         }
 
@@ -201,10 +200,11 @@ const Article: React.FC<IArticleProps> = ({
     }, [historyList, selectedArticleNumber, currentUser.tests_completed_list]);
 
 
-    const finalTestIsNotOpen = (subArticlesArray.length > 0 && !subArticlesArray.every(subtopic => {
-        const testResult = currentUser.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
-        return testResult && testResult.completed;
-    }));
+    const finalTestIsNotOpen = (subArticlesArray.length > 0 &&
+        !subArticlesArray.every((subtopic: SubtopicsProps) => {
+            const testResult = currentUser.tests_completed_list.find((result: ITestCompletedItem) => result.test_id === subtopic.sub_article_test_id);
+            return testResult && testResult.completed;
+        }));
 
     return (
         <Container className={"article_page_container"}>
@@ -235,10 +235,16 @@ const Article: React.FC<IArticleProps> = ({
 
                         <Grid container justifyContent={"center"}>
                             <Grid item xs={"auto"}>
-                                <Button className={"start_button_top"}
-                                        onClick={() => handleGoToSubArticleTest(selectedArticleNumber)}
-                                        variant={"contained"}>Start
-                                    Tests</Button>
+                                {finalTestIsNotOpen ?
+                                    <Button className={"start_button_top"}
+                                            onClick={() => handleGoToSubArticleTest(selectedArticleNumber)}
+                                            variant={"contained"}>Start
+                                        Tests</Button>
+                                    :
+                                    <Button className={"start_button_top"}
+                                            onClick={handleShowQuiz}
+                                            variant={"contained"}>End Level</Button>
+                                }
                             </Grid>
                         </Grid>
 
@@ -314,4 +320,4 @@ const Article: React.FC<IArticleProps> = ({
 
 }
 
-export default Article;
+export default Article
