@@ -16,7 +16,7 @@ import {useAuth} from "../AuthContext/AuthContext";
 import axios from "axios";
 import axiosClient from "../../axios";
 import Preloader from "../Preloader/Preloader";
-import {UserContext} from "../MyProviders/MyProviders";
+import {ITestCompletedItem, UserContext} from "../MyProviders/MyProviders";
 
 
 const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
@@ -88,7 +88,13 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
     const handleGoToSubArticleTest = (articleIndex: number) => {
         // Знаходимо перший тест, де completed === false
-        const firstIncompleteTest = currentUser?.tests_completed_list?.find(test =>
+        let tests_completed_list =  currentUser.tests_completed_list;
+
+        if (!tests_completed_list) {
+            console.error('User tests_completed_list is not available.');
+            return;
+        }
+        const firstIncompleteTest = tests_completed_list.find(test =>
             test.test_type === "Sub Article" &&
             test.event_id === articleIndex + 1 &&
             !test.completed
@@ -125,9 +131,12 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
             return 0;
         }
 
-        return article.subtopics.reduce((count, subtopic) => {
+        return article.subtopics.reduce((count, subtopic:SubtopicsProps) => {
             const tests_completed_list = currentUser?.tests_completed_list
-            const testResult = tests_completed_list?.find(result => result.test_id === subtopic.sub_article_test_id);
+            let testResult;
+            if (tests_completed_list) {
+                const testResult = tests_completed_list.find((result: ITestCompletedItem) => result.test_id === subtopic.sub_article_test_id);
+            }
             return testResult && testResult.completed ? count + 1 : count;
         }, 0);
     };
