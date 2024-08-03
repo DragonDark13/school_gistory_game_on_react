@@ -1,6 +1,7 @@
 import {SvgIconComponent} from "@mui/icons-material";
 import exp from "constants";
 import {IUser, UserContextProps} from "../components/MyProviders/MyProviders";
+import {Dispatch, SetStateAction} from "react";
 
 export interface ISignInForms {
     setShowSignInForm: (value: boolean) => void;
@@ -142,3 +143,39 @@ export interface IAchievedItem extends IAchievedListItem {
     active: boolean
     icon: ColoredSvgIconProps
 }
+
+export interface ITestCompletedItem {
+    completed: boolean;
+    event_id: number;
+    parent_article_title: string;
+    test_id: number;
+    test_type: string;
+}
+
+// Оновлений інтерфейс IUser
+export interface IUser {
+    name: string;
+    current_level: number;
+    user_name: string;
+    tests_completed_list: ITestCompletedItem[]; // Використання нового інтерфейсу
+    country: any;
+    email: string;
+    // Додайте інші властивості користувача, які вам потрібні
+}
+
+export interface UserContextProps {
+    currentUser: null | IUser;
+    setCurrentUser: Dispatch<SetStateAction<null | object>>;
+}
+
+
+export interface ILanguageContextProps {
+    language: 'uk' | 'en';
+    setLanguage: Dispatch<SetStateAction<'uk' | 'en'>>;
+}
+
+export interface IThemeContextProps {
+    theme: 'light' | 'dark';
+    setTheme: Dispatch<SetStateAction<'light' | 'dark'>>;
+}
+

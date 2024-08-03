@@ -3,6 +3,7 @@ import {createTheme, CssBaseline, PaletteMode, ThemeProvider} from "@mui/materia
 import getDesignTokens from "../../themes/getDesignTokens";
 import {HelmetProvider} from "react-helmet-async";
 import {AuthProvider} from "../AuthContext/AuthContext";
+import {ILanguageContextProps, IThemeContextProps, UserContextProps} from "../../types/types";
 
 
 export const ColorModeContext = React.createContext({
@@ -11,49 +12,17 @@ export const ColorModeContext = React.createContext({
 });
 
 
-export interface IThemeContextProps {
-    theme: 'light' | 'dark';
-    setTheme: Dispatch<SetStateAction<'light' | 'dark'>>;
-}
 
 export const ThemeContext = createContext<IThemeContextProps>({
     theme: 'light',
     setTheme: () => null,
 });
 
-export interface ILanguageContextProps {
-    language: 'uk' | 'en';
-    setLanguage: Dispatch<SetStateAction<'uk' | 'en'>>;
-}
-
 export const LanguageContext = createContext<ILanguageContextProps>({
     language: 'uk',
     setLanguage: () => null,
 });
 
-export interface ITestCompletedItem {
-    completed: boolean;
-    event_id: number;
-    parent_article_title: string;
-    test_id: number;
-    test_type: string;
-}
-
-// Оновлений інтерфейс IUser
-export interface IUser {
-    name: string;
-    current_level: number;
-    user_name: string;
-    tests_completed_list: ITestCompletedItem[]; // Використання нового інтерфейсу
-    country: any;
-    email: string;
-    // Додайте інші властивості користувача, які вам потрібні
-}
-
-export interface UserContextProps {
-    currentUser: null | IUser;
-    setCurrentUser: Dispatch<SetStateAction<null | object>>;
-}
 
 export const UserContext = createContext<UserContextProps>({
     currentUser: null,
