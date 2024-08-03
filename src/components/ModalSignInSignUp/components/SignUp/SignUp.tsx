@@ -35,21 +35,20 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
 
 
     const validateEmail = () => {
-        if ("" === email || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-            setEmailErrorState(true)
+        // Оновлений регулярний вираз для перевірки email
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (email === "" || !emailPattern.test(email)) {
+            setEmailErrorState(true);
+            if (email === "") {
+                setEmailErrorText("Please enter your email");
+            } else {
+                setEmailErrorText("Please enter a valid email");
+            }
+            return false;
         }
 
-        if ("" === email) {
-            setEmailErrorText("Please enter your email")
-            return false
-        }
-
-        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-            setEmailErrorText("Please enter a valid email")
-            return false
-        }
-
-        return true
+        return true;
     };
 
 
