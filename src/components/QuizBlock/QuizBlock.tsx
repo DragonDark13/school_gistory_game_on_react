@@ -26,7 +26,7 @@ import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 import {UserContext} from "../MyProviders/MyProviders";
 import QuizSuccessModal from "../../QuizSuccessModal/QuizSuccessModal";
-import {IQuizBlockProps} from "../../types/types";
+import {HistoricalEvent, IQuizBlockProps, SubtopicsProps} from "../../types/types";
 import {useAuth} from "../AuthContext/AuthContext";
 import {makeStyles} from "tss-react/mui";
 import AnswerReactionBlock from "./components/AnswerReactionBlock/АnswerReactionBlock";
@@ -105,11 +105,10 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const [remainingTime, setRemainingTime] = useState(maxTimeStatic);
     const [currentTestId, setCurrentTestId] = useState<number | null | undefined>(null)
     const [currentArticleTitle, setCurrentArticleTitle] = useState<string>("")
-// Id test
+    const [currentArticle, setCurrentArticle] = useState<SubtopicsProps | HistoricalEvent | null>(null);
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
     let selectedSubArticleNumber = 0;  // Default value in case it's not a subArticle
-    let currentArticle;
 
     const navigate = useNavigate();
     const {isAuthenticated} = useAuth();
@@ -131,15 +130,35 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
             if (testType === "subArticle") {
                 selectedSubArticleNumber = parseInt(subtopicId || '0', 10);
-                currentArticle = historyList[selectedArticleNumber]?.subtopics?.[selectedSubArticleNumber]
-                setCurrentArticleTitle(currentArticle?.title)
-                setCurrentTestId(currentArticle?.sub_article_test_id)
+                const selectedArticle = historyList[selectedArticleNumber];
+                if (selectedArticle && selectedArticle.subtopics) {
+                    const selectedSubtopic = selectedArticle.subtopics[selectedSubArticleNumber];
+                    if (selectedSubtopic) {
+                        setCurrentArticle(selectedSubtopic);
+                    }
+                }
+                if (currentArticle) {
+                    if ("title" in currentArticle) {
+                        setCurrentArticleTitle(currentArticle.title)
+                    }
+                    if ("sub_article_test_id" in currentArticle) {
+                        setCurrentTestId(currentArticle?.sub_article_test_id)
+                    }
+
+
+                }
 
 
             } else {
-                currentArticle = historyList[selectedArticleNumber];
-                setCurrentArticleTitle(currentArticle.text)
-                setCurrentTestId(currentArticle?.main_article_test_id)
+                setCurrentArticle(historyList[selectedArticleNumber])
+                if (currentArticle) {
+                    if ("text" in currentArticle) {
+                        setCurrentArticleTitle(currentArticle.text)
+                    }
+                    if ("main_article_test_id" in currentArticle) {
+                        setCurrentTestId(currentArticle?.main_article_test_id)
+                    }
+                }
             }
 
         }

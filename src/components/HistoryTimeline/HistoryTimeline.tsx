@@ -88,7 +88,10 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
 
     const handleGoToSubArticleTest = (articleIndex: number) => {
         // Знаходимо перший тест, де completed === false
-        let tests_completed_list =  currentUser.tests_completed_list;
+        if (currentUser === null) {
+            return false
+        }
+        let tests_completed_list = currentUser.tests_completed_list;
 
         if (!tests_completed_list) {
             console.error('User tests_completed_list is not available.');
@@ -131,12 +134,19 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
             return 0;
         }
 
-        return article.subtopics.reduce((count, subtopic:SubtopicsProps) => {
-            const tests_completed_list = currentUser?.tests_completed_list
-            let testResult;
+        return article.subtopics.reduce((count, subtopic: SubtopicsProps) => {
+            const tests_completed_list = currentUser?.tests_completed_list;
+
+            // Ініціалізуємо testResult як undefined або тип ITestCompletedItem
+            let testResult: ITestCompletedItem | undefined;
+
             if (tests_completed_list) {
-                const testResult = tests_completed_list.find((result: ITestCompletedItem) => result.test_id === subtopic.sub_article_test_id);
+                testResult = tests_completed_list.find(
+                    (result: ITestCompletedItem) => result.test_id === subtopic.sub_article_test_id
+                );
             }
+
+            // Перевірка на undefined перед доступом до властивостей
             return testResult && testResult.completed ? count + 1 : count;
         }, 0);
     };
