@@ -162,7 +162,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
             }
 
         }
-    }, [historyList]);
+    }, [historyList,subtopicId]);
 
     if (testType === "subArticle") {
 
