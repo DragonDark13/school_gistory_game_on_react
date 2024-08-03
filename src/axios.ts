@@ -13,10 +13,10 @@ const isLocalhost = () => {
 // Змінна для зберігання baseURL
 let baseURL = 'https://aleksdark1313.pythonanywhere.com/';
 
-let remoteServer = false;
+let remoteServer = true;
 
 // Якщо поточний сайт localhost, змінюємо baseURL
-if (isLocalhost() && !remoteServer) {
+if (isLocalhost()) {
     baseURL = 'http://127.0.0.1:5000/';
 }
 

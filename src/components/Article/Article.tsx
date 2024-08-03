@@ -6,12 +6,17 @@ import myImage from "../../static/image/city.jpg";
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 import SubtopicCard from "./components/SubtopicCard/SubtopicCard";
-import {IArticleContentArrayItem, IArticleProps, ISubtopicsTextContent, SubtopicsProps} from "../../types/types";
+import {
+    IArticleContentArrayItem,
+    IArticleProps,
+    ISubtopicsTextContent,
+    ITestCompletedItem,
+    SubtopicsProps
+} from "../../types/types";
 import {useTheme} from "@mui/system";
 import {useAuth} from "../AuthContext/AuthContext";
 import {contentRenderFunction} from "../../utils/utils";
 import Preloader from "../Preloader/Preloader";
-import {ITestCompletedItem} from "../MyProviders/MyProviders";
 
 
 // const fetchDataArticleContent = async (selectedArticleNumber: number) => {

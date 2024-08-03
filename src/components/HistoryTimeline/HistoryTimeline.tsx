@@ -11,12 +11,12 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import TimelineCard from "./components/TimelineCard/TimelineCard";
 import {useNavigate} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
-import {IHistoryTimelineProps, SubtopicsProps} from "../../types/types";
+import {IHistoryTimelineProps, ITestCompletedItem, SubtopicsProps} from "../../types/types";
 import {useAuth} from "../AuthContext/AuthContext";
 import axios from "axios";
 import axiosClient from "../../axios";
 import Preloader from "../Preloader/Preloader";
-import {ITestCompletedItem, UserContext} from "../MyProviders/MyProviders";
+import {UserContext} from "../MyProviders/MyProviders";
 
 
 const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
