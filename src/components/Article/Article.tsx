@@ -58,6 +58,7 @@ const Article: React.FC<IArticleProps> = ({
     const [completionPercentage, setCompletionPercentage] = useState(0);
     const [completedSubtopics, setCompletedSubtopics] = useState(0);
     const [totalSubtopics, setTotalSubtopics] = useState(0);
+    const [currentLevelCompleted, setCurrentLevelCompleted] = useState(false);
 
 
     subArticleSuccessLevels = []
@@ -67,6 +68,13 @@ const Article: React.FC<IArticleProps> = ({
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
 
     // console.log("selectedArticleNumber", selectedArticleNumber);
+
+    useEffect(
+        () => {
+            setCurrentLevelCompleted(currentUser.current_level > selectedArticleNumber)
+
+        }, [selectedArticleNumber, currentUser]
+    )
 
     useEffect(() => {
 
@@ -235,16 +243,15 @@ const Article: React.FC<IArticleProps> = ({
 
                         <Grid container justifyContent={"center"}>
                             <Grid item xs={"auto"}>
-                                {finalTestIsNotOpen ?
-                                    <Button className={"start_button_top"}
-                                            onClick={() => handleGoToSubArticleTest(selectedArticleNumber)}
-                                            variant={"contained"}>Start
-                                        Tests</Button>
-                                    :
-                                    <Button className={"start_button_top"}
-                                            onClick={handleShowQuiz}
-                                            variant={"contained"}>End Level</Button>
-                                }
+                                {!currentLevelCompleted && (finalTestIsNotOpen ?
+                                        <Button className={"start_button_top"}
+                                                onClick={() => handleGoToSubArticleTest(selectedArticleNumber)}
+                                                variant={"contained"}>Start Test</Button>
+                                        :
+                                        <Button className={"start_button_top"}
+                                                onClick={handleShowQuiz}
+                                                variant={"contained"}>Start Test</Button>
+                                )}
                             </Grid>
                         </Grid>
 
@@ -260,11 +267,13 @@ const Article: React.FC<IArticleProps> = ({
                         {/* Display subtopics as cards */}
                         {subArticlesArray.length > 0 && (
                             <Grid className={"subtopic_card_list"} container justifyContent={"center"}>
-                                <Grid item xs={12} sm={12} md={6} xl={6}>
+
+                                {!currentLevelCompleted && <Grid item xs={12} sm={12} md={6} xl={6}>
                                     <Typography variant={"h6"}>Пройдіть додаткові завдання перед головним
                                         тестом</Typography>
-                                </Grid>
+                                </Grid>}
 
+                                {!currentLevelCompleted &&
                                 <Grid className={"additional_test_progress_container"} container
                                       justifyContent={"center"}>
                                     <Grid item xs={12} sm={8} md={6} xl={4}>
@@ -274,7 +283,7 @@ const Article: React.FC<IArticleProps> = ({
                                             Виконано: {completedSubtopics} із {totalSubtopics} ({completionPercentage.toFixed(2)}%)
                                         </Typography>
                                     </Grid>
-                                </Grid>
+                                </Grid>}
 
                                 <Grid item container xs={12} spacing={2}>
                                     {subArticlesArray.map((subtopic, index) => {
@@ -299,7 +308,7 @@ const Article: React.FC<IArticleProps> = ({
                         )}
 
 
-                        <Grid container justifyContent={"center"}>
+                        {!currentLevelCompleted && <Grid container justifyContent={"center"}>
                             <Grid item xs={12} sm={6} md={"auto"}>
                                 <Button
                                     disabled={finalTestIsNotOpen}
@@ -311,7 +320,7 @@ const Article: React.FC<IArticleProps> = ({
                                     Завершити рівень
                                 </Button>
                             </Grid>
-                        </Grid>
+                        </Grid>}
                     </React.Fragment>
             }
 
