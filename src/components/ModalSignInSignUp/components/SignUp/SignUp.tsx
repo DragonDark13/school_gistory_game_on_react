@@ -71,7 +71,7 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
         }
 
         try {
-            // await register(email, password, userName);
+            await register(email, password, userName);
             console.log('Registration successful.');
             setSuccess('Registration successful.');
             setError(null);
