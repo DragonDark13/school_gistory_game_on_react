@@ -16,7 +16,7 @@ import axiosClient from "../../../../axios";
 import {Alert} from "@mui/material";
 import {useAuth} from "../../../AuthContext/AuthContext";
 import {useNavigate} from "react-router-dom";
-import {validateEmail, validatePassword, validatePasswordSettings, validateUsername} from "../../../../utils/utils";
+import {validateEmail, validatePassword,  validateUsername} from "../../../../utils/utils";
 
 
 export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistoryTimeLine}: ISignInForms) {
@@ -58,11 +58,7 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
 
         if (!validatePassword(password, setPasswordErrorText, setPasswordErrorState)) return;
 
-        if (password.length < validatePasswordSettings.min || password.length > validatePasswordSettings.max) {
-            setPasswordErrorText(`Password must be between ${validatePasswordSettings.min} and ${validatePasswordSettings.max} characters.`);
-            setPasswordErrorState(true);
-            return;
-        }
+
 
         if (password !== password2) {
             setError('Passwords do not match.');
@@ -153,9 +149,6 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                inputProps={{
-                                    minLength: validatePasswordSettings.min, maxLength: validatePasswordSettings.max
-                                }}
                                 required
                                 fullWidth
                                 name="password"
@@ -172,9 +165,6 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                inputProps={{
-                                    minLength: validatePasswordSettings.min, maxLength: validatePasswordSettings.max
-                                }}
                                 required
                                 fullWidth
                                 name="password2"

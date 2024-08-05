@@ -14,7 +14,7 @@ import {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {ISignInForms} from "../../../../types/types";
 import {makeStyles} from "tss-react/mui";
-import {emailPattern, validateEmail, validatePassword, validateUsername} from "../../../../utils/utils";
+import { validateEmail, validatePassword, validateUsername} from "../../../../utils/utils";
 import {Alert} from "@mui/material";
 
 const useStyles = makeStyles()((theme) => ({
