@@ -14,7 +14,8 @@ import {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {ISignInForms} from "../../../../types/types";
 import {makeStyles} from "tss-react/mui";
-import {emailPattern, validateEmail} from "../../../../utils/utils";
+import {emailPattern, validateEmail, validatePassword, validateUsername} from "../../../../utils/utils";
+import {Alert} from "@mui/material";
 
 const useStyles = makeStyles()((theme) => ({
 
@@ -49,39 +50,35 @@ export default function SignIn({setShowSignInForm, setShowSignUpForm, goToHistor
     const [emailErrorText, setEmailErrorText] = useState<string>("")
     const [passwordErrorState, setPasswordErrorState] = useState<boolean>(false)
     const [passwordErrorText, setPasswordErrorText] = useState<string>("")
+    const [error, setError] = useState<string | null>(null);
+
 
     const {cx, classes} = useStyles();
 
-
-    const validatePassword = () => {
-        // Password validation logic
-        if ("" === password || password.length < 7) {
-            setPasswordErrorState(true)
-        }
-
-        if ("" === password) {
-            setPasswordErrorText("Please enter a password")
-            return false
-        }
-
-        if (password.length < 7) {
-            setPasswordErrorText("The password must be 8 characters or longer")
-            return false
-        }
-
-        return true
-
-    };
 
     const onLogInButtonClick = async (e: React.FormEvent) => {
         e.preventDefault();
         setEmailErrorState(false);
         setPasswordErrorState(false);
 
+        // Валідація email
         if (!validateEmail(email, setEmailErrorText, setEmailErrorState)) return;
-        if (!validatePassword()) return;
 
-        await login(email, password);
+        // Валідація пароля
+        if (!validatePassword(password, setPasswordErrorText, setPasswordErrorState)) return;
+
+
+        if (!email || !password) {
+            setError('All fields are required.');
+            return;
+        }
+        // Логін
+        try {
+            await login(email, password);
+        } catch (error) {
+            console.error('Login error:', error);
+            // Додати обробку помилок для логіну
+        }
     };
 
     useEffect(() => {
@@ -109,6 +106,8 @@ export default function SignIn({setShowSignInForm, setShowSignUpForm, goToHistor
                     Sign in
                 </Typography>
                 <Box sx={{mt: 1}}>
+                    {error && <Alert severity="error">{error}</Alert>}
+
                     <TextField
                         margin="normal"
                         error={emailErrorState}

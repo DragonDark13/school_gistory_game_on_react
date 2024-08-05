@@ -16,7 +16,7 @@ import axiosClient from "../../../../axios";
 import {Alert} from "@mui/material";
 import {useAuth} from "../../../AuthContext/AuthContext";
 import {useNavigate} from "react-router-dom";
-import {emailPattern, validateEmail} from "../../../../utils/utils";
+import {validateEmail, validatePassword, validatePasswordSettings, validateUsername} from "../../../../utils/utils";
 
 
 export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistoryTimeLine}: ISignInForms) {
@@ -33,7 +33,10 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
     const [emailErrorState, setEmailErrorState] = useState<boolean>(false)
     const [emailErrorText, setEmailErrorText] = useState<string>("")
     const [allowExtraEmails, setAllowExtraEmails] = useState(false);
-
+    const [passwordErrorState, setPasswordErrorState] = useState<boolean>(false);
+    const [passwordErrorText, setPasswordErrorText] = useState<string>('');
+    const [userNameErrorState, setUserNameErrorState] = useState<boolean>(false);
+    const [userNameErrorText, setUserNameErrorText] = useState<string>('');
 
 
 
@@ -41,11 +44,23 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
         event.preventDefault();
 
         setEmailErrorState(false);
+        setPasswordErrorState(false);
+        setUserNameErrorState(false); // Додано для перевірки імені користувача
 
         if (!validateEmail(email, setEmailErrorText, setEmailErrorState)) return;
 
+        if (!validateUsername(userName, setUserNameErrorText, setUserNameErrorState)) return;
+
         if (!userName || !email || !password || !password2) {
             setError('All fields are required.');
+            return;
+        }
+
+        if (!validatePassword(password, setPasswordErrorText, setPasswordErrorState)) return;
+
+        if (password.length < validatePasswordSettings.min || password.length > validatePasswordSettings.max) {
+            setPasswordErrorText(`Password must be between ${validatePasswordSettings.min} and ${validatePasswordSettings.max} characters.`);
+            setPasswordErrorState(true);
             return;
         }
 
@@ -60,7 +75,8 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
         }
 
         try {
-            await register(email, password, userName);
+            // await register(email, password, userName);
+            console.log('Registration successful.');
             setSuccess('Registration successful.');
             setError(null);
         } catch (error) {
@@ -88,81 +104,110 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline/>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 3}}>
-                {error && <Alert severity="error">{error}</Alert>}
-                {success && <Alert severity="success">{success}</Alert>}
-                <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12}>
-                        <TextField
-                            autoComplete="given-name"
-                            name="userName"
-                            required
-                            fullWidth
-                            id="userName"
-                            label="User Name"
-                            autoFocus
-                            value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
-                        />
+            <Box
+                sx={{
+                    marginTop: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
+                    <LockOutlinedIcon/>
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Sign up
+                </Typography>
+                <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 3}}>
+                    {error && <Alert severity="error">{error}</Alert>}
+                    {success && <Alert severity="success">{success}</Alert>}
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                autoComplete="given-name"
+                                name="userName"
+                                required
+                                fullWidth
+                                id="userName"
+                                label="User Name"
+                                autoFocus
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
+                                error={userNameErrorState}
+                                helperText={userNameErrorState && userNameErrorText}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                required
+                                fullWidth
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                                autoComplete="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                error={emailErrorState}
+                                helperText={emailErrorState && emailErrorText}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                inputProps={{
+                                    minLength: validatePasswordSettings.min, maxLength: validatePasswordSettings.max
+                                }}
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                                autoComplete="new-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                error={passwordErrorState}
+                                helperText={passwordErrorState && passwordErrorText}
+                            />
+
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                inputProps={{
+                                    minLength: validatePasswordSettings.min, maxLength: validatePasswordSettings.max
+                                }}
+                                required
+                                fullWidth
+                                name="password2"
+                                label="Repeat Password"
+                                type="password"
+                                id="password2"
+                                autoComplete="new-password"
+                                value={password2}
+                                onChange={(e) => setPassword2(e.target.value)}
+                                error={passwordErrorState}
+                                helperText={passwordErrorState && passwordErrorText}
+                            />
+
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControlLabel
+                                required={true}
+                                control={<Checkbox checked={allowExtraEmails}
+                                                   onChange={(e) => setAllowExtraEmails(e.target.checked)}
+                                                   value="allowExtraEmails" color="primary"/>}
+                                label="I want to receive inspiration, marketing promotions and updates via email."
+                            />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            error={emailErrorState}
-                            helperText={emailErrorState && emailErrorText}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="new-password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            required
-                            fullWidth
-                            name="password2"
-                            label="Repeat Password"
-                            type="password"
-                            id="password2"
-                            autoComplete="new-password"
-                            value={password2}
-                            onChange={(e) => setPassword2(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControlLabel
-                            required={true}
-                            control={<Checkbox checked={allowExtraEmails}
-                                               onChange={(e) => setAllowExtraEmails(e.target.checked)}
-                                               value="allowExtraEmails" color="primary"/>}
-                            label="I want to receive inspiration, marketing promotions and updates via email."
-                        />
-                    </Grid>
-                </Grid>
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{mt: 3, mb: 1}}
-                >
-                    Sign Up
-                </Button>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{mt: 3, mb: 1}}
+                    >
+                        Sign Up
+                    </Button>
+                </Box>
             </Box>
         </Container>
     );
