@@ -53,13 +53,13 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     };
 
     const handleGoToTestNow = (articleIndex: number) => {
-        debugger
+        // debugger
         navigate(`/test/${articleIndex}`);
         setSelectedArticle(articleIndex)
     }
 
     const handleGoToSubTestNow = (articleIndex: number, subArticleIndex: number) => {
-        debugger
+        // debugger
         navigate(`/test/${articleIndex}/${subArticleIndex}`);
         setSelectedArticle(articleIndex)
         setSelectedSubArticle(subArticleIndex)

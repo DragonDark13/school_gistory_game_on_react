@@ -95,7 +95,7 @@ const Article: React.FC<IArticleProps> = ({
     }, [selectedArticleNumber])
 
     const handleShowQuiz = () => {
-        debugger
+        // debugger
         navigate(`/test/${selectedArticleNumber}`);
     }
 
@@ -121,7 +121,7 @@ const Article: React.FC<IArticleProps> = ({
     }
 
     const handleGoToSubTestNow = (articleIndex: number, subArticleIndex: number) => {
-        debugger
+        // debugger
         navigate(`/test/${articleIndex}/${subArticleIndex}`);
         setSelectedArticle(articleIndex)
         setSelectedSubArticle(subArticleIndex)
