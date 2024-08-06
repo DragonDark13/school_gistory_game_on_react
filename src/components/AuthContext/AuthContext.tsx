@@ -29,10 +29,10 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
         fetchUserData();
     }, []);
 
-    const login = async (email: string, password: string) => {
+    const login = async (userName: string, password: string) => {
         setIsLoading(true);
         try {
-            const response = await axiosClient.post('/login', {email, password}, {
+            const response = await axiosClient.post('/login', {user_name: userName, password}, {
                 headers: {'Content-Type': 'application/json'}
             });
 
@@ -49,13 +49,10 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 console.error('Login error:', error?.response?.data.message);
                 alert('Login failed: ' + (error?.response?.data.message || 'Network error'));
             }
-
-
         } finally {
             setIsLoading(false);
         }
     };
-
     const register = async (email: string, password: string, userName: string) => {
         setIsLoading(true);
         try {
