@@ -135,34 +135,40 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                     const selectedSubtopic = selectedArticle.subtopics[selectedSubArticleNumber];
                     if (selectedSubtopic) {
                         setCurrentArticle(selectedSubtopic);
-                    }
-                }
-                if (currentArticle) {
-                    if ("title" in currentArticle) {
-                        setCurrentArticleTitle(currentArticle.title)
-                    }
-                    if ("sub_article_test_id" in currentArticle) {
-                        setCurrentTestId(currentArticle?.sub_article_test_id)
-                    }
 
-
+                    }
                 }
 
 
             } else {
                 setCurrentArticle(historyList[selectedArticleNumber])
-                if (currentArticle) {
-                    if ("text" in currentArticle) {
-                        setCurrentArticleTitle(currentArticle.text)
-                    }
-                    if ("main_article_test_id" in currentArticle) {
-                        setCurrentTestId(currentArticle?.main_article_test_id)
-                    }
-                }
+
             }
 
         }
-    }, [historyList,subtopicId]);
+    }, [historyList, subtopicId]);
+
+    useEffect(() => {
+        if (currentArticle) {
+            if (testType === "subArticle") {
+                if ("title" in currentArticle) {
+                    setCurrentArticleTitle(currentArticle.title)
+                }
+                if ("sub_article_test_id" in currentArticle) {
+                    setCurrentTestId(currentArticle?.sub_article_test_id)
+                }
+            } else {
+                if ("text" in currentArticle) {
+                    setCurrentArticleTitle(currentArticle.text)
+                }
+                if ("main_article_test_id" in currentArticle) {
+                    setCurrentTestId(currentArticle?.main_article_test_id)
+                }
+            }
+        }
+
+
+    }, [currentArticle])
 
     if (testType === "subArticle") {
 
