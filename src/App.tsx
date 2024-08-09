@@ -113,7 +113,7 @@ function App() {
     useEffect(() => {
 
         if (selectedSubArticle !== null) {
-            const selectedSubArticleTest = data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.subArticleTest;
+            const selectedSubArticleTest = data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.sub_article_test_questions;
 
             if (selectedSubArticleTest?.questions && selectedSubArticleTest?.options && selectedSubArticleTest?.correctAnswers) {
                 const {questions, options, correctAnswers} = selectedSubArticleTest;
@@ -128,7 +128,7 @@ function App() {
 
         } else {
 
-            const selectedArticleTestData = data.historyList[selectedArticle]?.mainArticleTest;
+            const selectedArticleTestData = data.historyList[selectedArticle]?.main_article_test_questions;
 
             if (selectedArticleTestData?.questions && selectedArticleTestData?.options && selectedArticleTestData?.correctAnswers) {
 

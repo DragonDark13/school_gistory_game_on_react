@@ -236,7 +236,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                         color: iconColorState(successLevels > index),
                                     }}
                                     contentStyle={{padding: 0, boxShadow: "none"}}
-                                    icon={successLevels === (index + 1) ? <CheckCircleOutlineIcon/> :
+                                    icon={successLevels >= (index + 1) ? <CheckCircleOutlineIcon/> :
                                         <RadioButtonUncheckedRoundedIcon/>}
 
                                 >

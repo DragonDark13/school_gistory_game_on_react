@@ -122,36 +122,52 @@ const Article: React.FC<IArticleProps> = ({
 
     const handleGoToSubTestNow = (articleIndex: number, subArticleIndex: number) => {
         // debugger
+        // setSelectedArticle(articleIndex)
+        // setSelectedSubArticle(subArticleIndex)
         navigate(`/test/${articleIndex}/${subArticleIndex}`);
-        setSelectedArticle(articleIndex)
-        setSelectedSubArticle(subArticleIndex)
+
     }
 
 
     const handleGoToSubArticleTest = (articleIndex: number) => {
-        // Check if the article has subarticles
+        // Знаходимо перший тест, де completed === false
+        if (currentUser === null) {
+            return false
+        }
+        let tests_completed_list = currentUser.tests_completed_list;
 
-        if (!historyList || selectedArticleNumber === undefined || selectedArticleNumber < 0 || selectedArticleNumber >= historyList.length) {
-            return; // або можете показати повідомлення про помилку
+        if (!tests_completed_list) {
+            console.error('User tests_completed_list is not available.');
+            return;
+        }
+        const firstIncompleteTest = tests_completed_list.find(test =>
+            test.test_type === "Sub Article" &&
+            test.event_id === articleIndex + 1 &&
+            !test.completed
+        );
+
+        if (!firstIncompleteTest) {
+            console.error('No incomplete test found.');
+            return;
         }
 
-        const selectedArticle = historyList[selectedArticleNumber];
+        const subArticle = historyList[articleIndex]?.subtopics;
 
-        if (selectedArticle.subtopics && selectedArticle.subtopics.length > 0) {
-            // Find the index of the first uncompleted subarticle
-            const firstUncompletedIndex = selectedArticle.subtopics.findIndex((subArticle, subIndex) => {
-                return !subArticleSuccessLevels[articleIndex]?.[subIndex];
-            });
-
-            // If there is an uncompleted subarticle, navigate to its test page
-            if (firstUncompletedIndex !== -1) {
-                handleGoToSubTestNow(articleIndex, firstUncompletedIndex);
-            } else {
-                handleGoToTestNow(articleIndex);
-            }
-        } else {
-            handleGoToTestNow(articleIndex);
+        if (!subArticle) {
+            console.error('SubArticle is not available.');
+            return;
         }
+
+        const findIndexBySubArticleTestId = (testId: number): number => {
+            return subArticle.findIndex(subArticle => subArticle.sub_article_test_id === testId);
+        };
+
+        const id = firstIncompleteTest.test_id;
+
+        const selectedSubArticleIndex = findIndexBySubArticleTestId(id);
+
+        setSelectedArticle(articleIndex);
+        handleGoToSubTestNow(articleIndex, selectedSubArticleIndex);
     };
 
 
@@ -302,9 +318,11 @@ const Article: React.FC<IArticleProps> = ({
                                             <Grid item key={index + "card"} xs={12} sm={6} md={4} xl={3}>
                                                 <SubtopicCard
                                                     done={isCompleted}
+                                                    selectedArticleNumber={selectedArticleNumber}
                                                     subArticleIndex={index}
                                                     title={subtopic.title}
                                                     content={subtopic.content}
+                                                    handleGoToSubTestNow={handleGoToSubTestNow}
                                                 />
                                             </Grid>
                                         );

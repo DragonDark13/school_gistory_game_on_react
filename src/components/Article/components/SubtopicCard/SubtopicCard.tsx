@@ -14,16 +14,21 @@ import "./subtopics_card.scss"
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import {useNavigate, useParams} from "react-router-dom";
 import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import {ISubtopicCardProps} from "../../../../types/types";
 import {contentRenderFunction} from "../../../../utils/utils";
-import {styled} from "@mui/material/styles";
 import CloseIcon from '@mui/icons-material/Close';
 
 
-const SubtopicCard = ({content, title, subArticleIndex, done}: ISubtopicCardProps) => {
+const SubtopicCard = ({
+                          content,
+                          title,
+                          subArticleIndex,
+                          done,
+                          handleGoToSubTestNow,
+                          selectedArticleNumber
+                      }: ISubtopicCardProps) => {
 
     const [expanded, setExpanded] = React.useState(false);
     const [openModalAdditional, setOpenModalAdditional] = React.useState(false);
@@ -32,20 +37,7 @@ const SubtopicCard = ({content, title, subArticleIndex, done}: ISubtopicCardProp
         setOpenModalAdditional(false);
     };
 
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
 
-    const {selectedArticle} = useParams();
-    const navigate = useNavigate();
-
-    // Your logic to extract subtopics from historyList based on selectedArticle
-
-    const handleGoToTest = () => {
-        // Navigate to the test page with the selectedArticle parameter
-
-        navigate(`/test/${selectedArticle}/${subArticleIndex}`);
-    };
     return (
         <React.Fragment>
             <Card elevation={done ? 6 : 0} className={"subtopics_card"}>
@@ -77,7 +69,9 @@ const SubtopicCard = ({content, title, subArticleIndex, done}: ISubtopicCardProp
                 </CardActions>}
 
                     {!done ? <CardActions disableSpacing>
-                        <Button onClick={handleGoToTest} endIcon={<ArrowForwardIosIcon/>} color={"secondary"}
+                        <Button
+                            onClick={() => handleGoToSubTestNow(selectedArticleNumber, subArticleIndex)}
+                                endIcon={<ArrowForwardIosIcon/>} color={"secondary"}
                                 size={"small"}
                                 fullWidth
                                 variant={"outlined"}
@@ -100,7 +94,7 @@ const SubtopicCard = ({content, title, subArticleIndex, done}: ISubtopicCardProp
 
                 {expanded && <CardActions disableSpacing>
 
-                    <Button onClick={()=>setOpenModalAdditional(true)}
+                    <Button onClick={() => setOpenModalAdditional(true)}
                             endIcon={<ExpandLessIcon/>}
                             color={"secondary"}
                             aria-expanded={expanded} size={"small"} fullWidth variant={"contained"}
@@ -132,7 +126,7 @@ const SubtopicCard = ({content, title, subArticleIndex, done}: ISubtopicCardProp
                 <DialogActions>
                     <Grid container spacing={2} justifyContent={"end"}>
                         <Grid item xs={"auto"}>
-                            <Button onClick={handleGoToTest} endIcon={<ArrowForwardIosIcon/>} color={"primary"}
+                            <Button onClick={() => handleGoToSubTestNow(selectedArticleNumber, subArticleIndex)} endIcon={<ArrowForwardIosIcon/>} color={"primary"}
                                     size={"medium"}
 
                                     variant={"contained"}

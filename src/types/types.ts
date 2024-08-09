@@ -28,7 +28,7 @@ export interface ISubtopicsTextContent {
 export interface SubtopicsProps extends ISubtopicsTextContent {
     title: string,
     content: string | IArticleContentArrayItem[]
-    subArticleTest?: IDataForQuiz
+    sub_article_test_questions?: IDataForQuiz
     sub_article_test_id?: number
 }
 
@@ -41,7 +41,7 @@ export interface HistoricalEvent {
     readonly date: string;
     readonly text: string;
     readonly content?: string | IArticleContentArrayItem[]
-    mainArticleTest?: IDataForQuiz
+    main_article_test_questions?: IDataForQuiz
     readonly achieved: string
     readonly main_article_test_id?: number
     readonly subtopics?: SubtopicsProps[];
@@ -106,15 +106,17 @@ export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
 export interface ISubtopicCardProps extends SubtopicsProps {
     subArticleIndex: number;
     done: boolean,
+    selectedArticleNumber: number,
+    handleGoToSubTestNow: (articleIndex: number, subArticleIndex: number) => void;
 }
 
-interface IDataForQuiz {
+export interface IDataForQuiz {
     readonly questions: string[];
     readonly options: string[][];
     readonly correctAnswers: number[] | number[][];
 }
 
-export interface IQuizBlockProps extends IHistoryListArray, IDataForQuiz, UserContextProps {
+export interface IQuizBlockProps extends IHistoryListArray, UserContextProps {
     testType: 'article' | 'subArticle';
     readonly onAnswer: (results: { correct: number; incorrect: number }) => void;
     readonly handleNextLevel: () => void;

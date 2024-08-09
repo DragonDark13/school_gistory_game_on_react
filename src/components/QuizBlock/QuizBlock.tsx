@@ -77,9 +77,9 @@ const useStyles = makeStyles()((theme) => ({
 
 
 const QuizBlock: React.FC<IQuizBlockProps> = ({
-                                                  questions,
-                                                  options,
-                                                  correctAnswers,
+                                                  // questions,
+                                                  // options,
+                                                  // correctAnswers,
                                                   onAnswer,
                                                   historyList,
                                                   setAllAnswerIsCorrect,
@@ -91,7 +91,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
 
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [userAnswers, setUserAnswers] = useState(Array(questions.length).fill(""));
+    const [userAnswers, setUserAnswers] = useState([]);
     const [results, setResults] = useState({correct: 0, incorrect: 0});
     const [isQuizFinished, setIsQuizFinished] = useState(false);
     const [nextLevelAvailable, setNextLevelAvailable] = useState(false);
@@ -106,6 +106,11 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const [currentTestId, setCurrentTestId] = useState<number | null | undefined>(null)
     const [currentArticleTitle, setCurrentArticleTitle] = useState<string>("")
     const [currentArticle, setCurrentArticle] = useState<SubtopicsProps | HistoricalEvent | null>(null);
+
+    const [quizQuestions, setQuizQuestions] = useState<string[]>([]);
+    const [quizOptions, setQuizOptions] = useState<string[][]>([]);
+    const [quizCorrectAnswers, setQuizCorrectAnswers] = useState<number[]>([]);
+
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
     let selectedSubArticleNumber = 0;  // Default value in case it's not a subArticle
@@ -149,26 +154,61 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     }, [historyList, subtopicId]);
 
     useEffect(() => {
-        if (currentArticle) {
-            if (testType === "subArticle") {
-                if ("title" in currentArticle) {
-                    setCurrentArticleTitle(currentArticle.title)
-                }
-                if ("sub_article_test_id" in currentArticle) {
-                    setCurrentTestId(currentArticle?.sub_article_test_id)
-                }
-            } else {
-                if ("text" in currentArticle) {
-                    setCurrentArticleTitle(currentArticle.text)
-                }
-                if ("main_article_test_id" in currentArticle) {
-                    setCurrentTestId(currentArticle?.main_article_test_id)
+            if (currentArticle) {
+                if (testType === "subArticle") {
+                    if ("title" in currentArticle) {
+                        setCurrentArticleTitle(currentArticle.title)
+                    }
+                    if ("sub_article_test_id" in currentArticle) {
+                        setCurrentTestId(currentArticle?.sub_article_test_id)
+                    }
+
+                    if ("sub_article_test_questions" in currentArticle) {
+                        const questionsArray = currentArticle.sub_article_test_questions.map(item => item.question);
+
+                        // Оновлюємо стейт
+                        setQuizQuestions(questionsArray);
+
+                        const optionArray = currentArticle.sub_article_test_questions.map(item => item.options);
+
+                        setQuizOptions(optionArray);
+
+                        const correctAnswersArray = currentArticle.sub_article_test_questions.map(item => item.correct_answers as Number[]);
+
+
+                        setQuizCorrectAnswers(correctAnswersArray);
+
+
+                    }
+
+                } else {
+                    if ("text" in currentArticle) {
+                        setCurrentArticleTitle(currentArticle.text)
+                    }
+                    if ("main_article_test_id" in currentArticle) {
+                        setCurrentTestId(currentArticle.main_article_test_id)
+                    }
+                    if ("main_article_test_questions" in currentArticle) {
+                        const questionsArray = currentArticle.main_article_test_questions.map(item => item.question);
+
+                        // Оновлюємо стейт
+                        setQuizQuestions(questionsArray);
+
+                        const optionArray = currentArticle.main_article_test_questions.map(item => item.options);
+
+                        setQuizOptions(optionArray);
+
+                        const correctAnswersArray = currentArticle.main_article_test_questions.map(item => item.correct_answers as Number[]);
+
+
+                        setQuizCorrectAnswers(correctAnswersArray);
+                    }
                 }
             }
-        }
 
 
-    }, [currentArticle])
+        }, [currentArticle]
+    )
 
     if (testType === "subArticle") {
 
@@ -187,7 +227,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
 // Успішне завершення тесту
     useEffect(() => {
-        if (results.correct === questions.length) {
+        if (results.correct === quizQuestions.length && (quizQuestions.length > 0 && results.correct > 0)) {
             setAllAnswerIsCorrect(true);
             setNextLevelAvailable(true)
 
@@ -221,13 +261,13 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                     console.error('Error recording test completion:', error);
                 });
         }
-    }, [results.correct, questions.length]);
+    }, [results.correct, quizQuestions.length]);
 
     const handleAnswer = (answerIndex: number) => {
         setAnswerChosen(true);
         setSelectedAnswer(answerIndex);
         // Перевірка, чи обрана відповідь вірна
-        if (correctAnswers[currentQuestion] === answerIndex) {
+        if (quizCorrectAnswers[currentQuestion] === answerIndex) {
             setResults({...results, correct: results.correct + 1});
             setCurrentAnswerStatus(true);
         } else {
@@ -256,21 +296,19 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     }
     const handleRetakeQuiz = () => {
         setCurrentQuestion(0);
-        setUserAnswers(Array(questions.length).fill(""));
+        // setUserAnswers(Array(quizQuestions.length).fill(""));
         setResults({correct: 0, incorrect: 0});
         setIsQuizFinished(false);
-        clearSettingsBeforeNewQuestion()
+        clearSettingsBeforeNewQuestion();
     };
 
 
     const handleNextQuestion = () => {
         if (!selectedAnswer && remainingTime > 0) {
-            // Якщо не обрано відповідь, не переходьте до наступного питання
             return;
         }
 
-
-        if (currentQuestion < questions.length - 1) {
+        if (currentQuestion < quizQuestions.length - 1) {
             setCurrentQuestion(currentQuestion + 1);
             clearSettingsBeforeNewQuestion();
         } else {
@@ -332,24 +370,24 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     }, [answerChosen]); // Runs whenever answerChosen changes; // Runs whenever answerChosen changes; // Runs once when the component mounts
 
-    // Calculate the progress for CircularProgress
+// Calculate the progress for CircularProgress
 
     const optionHighlight = (option: number) => {
 
         if (option === selectedAnswer) {
 
-            if (option === correctAnswers[currentQuestion]) {
+            if (option === quizCorrectAnswers[currentQuestion]) {
                 return classes.sucessOptionSelected;
             } else return classes.errorOptionSelected;
 
-        } else if (option === correctAnswers[currentQuestion]) {
+        } else if (option === quizCorrectAnswers[currentQuestion]) {
             return classes.sucessOptionSelected;
         } else return "";
 
     }
 
     const optionsHighlightWhenTimerIsFinished = (option: number) => {
-        if (option === correctAnswers[currentQuestion]) {
+        if (option === quizCorrectAnswers[currentQuestion]) {
             return classes.sucessOptionSelected;
         } else return "";
     }
@@ -397,13 +435,13 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
                     <Grid container justifyContent={"center"}>
                         <Grid item xs={12} sm={8} md={5}><Card className={"result_test_card"}>
-                            <CardHeader title={` ${options.length}/${results.correct}`}
+                            <CardHeader title={` ${quizOptions.length}/${results.correct}`}
                                         subheader={resultIcon(nextLevelAvailable)}
                             />
                             <CardContent>
                                 <LinearProgress
                                     color={"success"}
-                                    value={Math.round((100 / options.length) * results.correct)}
+                                    value={Math.round((100 / quizQuestions.length) * results.correct)}
                                     variant={"determinate"}
                                 />
                             </CardContent>
@@ -501,7 +539,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                 <div className={"question_container"}>
                     <LinearProgress
                         color={"secondary"}
-                        value={Math.round((100 / options.length) * results.correct)}
+                        value={Math.round((100 / quizOptions.length) * results.correct)}
                         variant={"determinate"}
                     />
 
@@ -510,16 +548,16 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                           alignItems={"center"}
                           justifyContent={"center"}>
                         <Grid item xs={12} sm={6}>
-                            <Typography variant={smUp ? "h6" : 'body1'}>{questions[currentQuestion]}</Typography>
-                        </Grid>
+                            <Typography variant={smUp ? "h6" : 'body1'}>
+                                {quizQuestions[currentQuestion]}
+                            </Typography> </Grid>
                         <Grid item xs={12} sm={6}>
                             <RadioGroup
                                 name="radio-buttons-group"
                                 onKeyPress={handleAnswerKeyPress}
                             >
-                                {options[currentQuestion].map((option, index) => (
+                                {(quizOptions && quizOptions.length > 0) && quizOptions[currentQuestion].map((option, index) => (
                                     <FormControlLabel
-
                                         key={index + "button"}
                                         className={cx(remainingTime == 0 ? optionsHighlightWhenTimerIsFinished(index + 1) : optionHighlight(index + 1))}
                                         onKeyPress={handleAnswerKeyPress}
@@ -531,13 +569,10 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                         control={<Radio checked={selectedAnswer === index + 1}/>}
                                         label={option}
                                         value={option}
-                                        disabled={answerChosen || remainingTime == 0} // Заборона вибору, якщо вже
-                                        // обрано
-                                        //
+                                        disabled={answerChosen || remainingTime == 0}
                                     />
                                 ))}
-                            </RadioGroup>
-                        </Grid>
+                            </RadioGroup> </Grid>
                     </Grid>
 
 
