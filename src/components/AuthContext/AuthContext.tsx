@@ -53,6 +53,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             setIsLoading(false);
         }
     };
+
     const register = async (email: string, password: string, userName: string) => {
         setIsLoading(true);
         try {
@@ -66,13 +67,17 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 setIsAuthenticated(true);
                 setCurrentUser(response.data.user_data);
             } else {
+                setIsAuthenticated(false);
+
                 alert('Registration failed: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
+            setIsAuthenticated(false);
 
-            if (error instanceof Error) {
-                console.error('Registration error:', error);
-                alert('Registration failed: ' + (error.message || 'Network error'));
+            if (error instanceof AxiosError) {
+                console.error('Registration error:', error?.response?.data.message);
+                alert('Registration failed: ' + (error?.response?.data.message || 'Network error'));
+                throw new Error(error.response?.data.message || 'Registration failed');
             } else {
                 console.error('An unexpected error occurred');
             }

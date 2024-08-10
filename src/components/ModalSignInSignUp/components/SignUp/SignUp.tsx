@@ -27,7 +27,7 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
     const [userName, setUserName] = useState('');
-    const [error, setError] = useState<string | null>(null);
+    const [errorText, setErrorText] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
     const [emailErrorState, setEmailErrorState] = useState<boolean>(false)
@@ -52,7 +52,7 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
         if (!validateUsername(userName, setUserNameErrorText, setUserNameErrorState)) return;
 
         if (!userName || !email || !password || !password2) {
-            setError('All fields are required.');
+            setErrorText('All fields are required.');
             return;
         }
 
@@ -61,12 +61,12 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
 
 
         if (password !== password2) {
-            setError('Passwords do not match.');
+            setErrorText('Passwords do not match.');
             return;
         }
 
         if (!allowExtraEmails) {
-            setError('You must agree to receive inspiration, marketing promotions, and updates via email.');
+            setErrorText('You must agree to receive inspiration, marketing promotions, and updates via email.');
             return;
         }
 
@@ -74,12 +74,12 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
             await register(email, password, userName);
             console.log('Registration successful.');
             setSuccess('Registration successful.');
-            setError(null);
+            setErrorText(null);
         } catch (error) {
             if (error instanceof Error) {
-                setError(error.message || 'An error occurred');
+                setErrorText(error.message || 'An errorText occurred');
             } else {
-                setError('An unexpected error occurred');
+                setErrorText('An unexpected errorText occurred');
             }
             setSuccess(null);
         }
@@ -115,7 +115,7 @@ export default function SignUp({setShowSignInForm, setShowSignUpForm, goToHistor
                     Sign up
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 3}}>
-                    {error && <Alert severity="error">{error}</Alert>}
+                    {errorText && <Alert severity="error">{errorText}</Alert>}
                     {success && <Alert severity="success">{success}</Alert>}
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={12}>

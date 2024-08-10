@@ -47,7 +47,7 @@ export default function SignIn({ setShowSignInForm, setShowSignUpForm, goToHisto
     const [userNameErrorText, setUserNameErrorText] = useState<string>("")
     const [passwordErrorState, setPasswordErrorState] = useState<boolean>(false)
     const [passwordErrorText, setPasswordErrorText] = useState<string>("")
-    const [error, setError] = useState<string | null>(null);
+    const [errorText, setErrorText] = useState<string | null>(null);
 
     const { cx, classes } = useStyles();
 
@@ -63,14 +63,14 @@ export default function SignIn({ setShowSignInForm, setShowSignUpForm, goToHisto
         if (!validatePassword(password, setPasswordErrorText, setPasswordErrorState)) return;
 
         if (!userName || !password) {
-            setError('All fields are required.');
+            setErrorText('All fields are required.');
             return;
         }
         // Логін
         try {
             await login(userName, password);
         } catch (error) {
-            console.error('Login error:', error);
+            console.error('Login errorText:', error);
             // Додати обробку помилок для логіну
         }
     };
@@ -99,7 +99,7 @@ export default function SignIn({ setShowSignInForm, setShowSignUpForm, goToHisto
                     Sign in
                 </Typography>
                 <Box sx={{ mt: 1 }}>
-                    {error && <Alert severity="error">{error}</Alert>}
+                    {errorText && <Alert severity="error">{errorText}</Alert>}
                     <TextField
                         margin="normal"
                         error={userNameErrorState}
