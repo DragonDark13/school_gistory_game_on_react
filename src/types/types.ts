@@ -28,7 +28,7 @@ export interface ISubtopicsTextContent {
 export interface SubtopicsProps extends ISubtopicsTextContent {
     title: string,
     content: string | IArticleContentArrayItem[]
-    sub_article_test_questions?: IDataForQuiz
+    sub_article_test_questions?: IDataForQuiz[]
     sub_article_test_id?: number
 }
 
@@ -41,7 +41,7 @@ export interface HistoricalEvent {
     readonly date: string;
     readonly text: string;
     readonly content?: string | IArticleContentArrayItem[]
-    main_article_test_questions?: IDataForQuiz
+    main_article_test_questions?: IDataForQuiz[]
     readonly achieved: string
     readonly main_article_test_id?: number
     readonly subtopics?: SubtopicsProps[];
@@ -111,9 +111,10 @@ export interface ISubtopicCardProps extends SubtopicsProps {
 }
 
 export interface IDataForQuiz {
-    readonly questions: string[];
-    readonly options: string[][];
-    readonly correctAnswers: number[] | number[][];
+    correct_answers: number;  // Індекс правильної відповіді (від 1 до 4)
+    id: number;  // Унікальний ідентифікатор питання
+    options: string[];  // Масив варіантів відповіді
+    question: string;  // Текст питання
 }
 
 export interface IQuizBlockProps extends IHistoryListArray, UserContextProps {

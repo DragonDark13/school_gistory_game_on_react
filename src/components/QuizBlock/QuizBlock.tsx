@@ -164,16 +164,23 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                     }
 
                     if ("sub_article_test_questions" in currentArticle) {
-                        const questionsArray = currentArticle.sub_article_test_questions.map(item => item.question);
+
+                        const sub_article_test_questions = currentArticle?.sub_article_test_questions;
+
+                        if (sub_article_test_questions) {
+                            const questionsArray: string[] = sub_article_test_questions?.map(item => item.question) || [];
+                            setQuizQuestions(questionsArray);
+                        }
+
 
                         // Оновлюємо стейт
-                        setQuizQuestions(questionsArray);
 
-                        const optionArray = currentArticle.sub_article_test_questions.map(item => item.options);
 
+                        const optionArray: string[][] = sub_article_test_questions?.map(item => item.options) || [];
                         setQuizOptions(optionArray);
 
-                        const correctAnswersArray = currentArticle.sub_article_test_questions.map(item => item.correct_answers as Number[]);
+
+                        const correctAnswersArray: number[] = sub_article_test_questions?.map(item => item.correct_answers) || [];
 
 
                         setQuizCorrectAnswers(correctAnswersArray);
@@ -189,18 +196,14 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                         setCurrentTestId(currentArticle.main_article_test_id)
                     }
                     if ("main_article_test_questions" in currentArticle) {
-                        const questionsArray = currentArticle.main_article_test_questions.map(item => item.question);
-
-                        // Оновлюємо стейт
+                        const questionsArray = currentArticle?.main_article_test_questions?.map(item => item.question) || [];
                         setQuizQuestions(questionsArray);
 
-                        const optionArray = currentArticle.main_article_test_questions.map(item => item.options);
 
-                        setQuizOptions(optionArray);
+                        const optionsArray: string[][] = currentArticle?.main_article_test_questions?.map(item => item.options) || [];
+                        setQuizOptions(optionsArray);
 
-                        const correctAnswersArray = currentArticle.main_article_test_questions.map(item => item.correct_answers as Number[]);
-
-
+                        const correctAnswersArray: number[] = currentArticle?.main_article_test_questions?.map(item => item.correct_answers) || [];
                         setQuizCorrectAnswers(correctAnswersArray);
                     }
                 }
@@ -210,20 +213,20 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         }, [currentArticle]
     )
 
-    if (testType === "subArticle") {
-
-
-    } else {
-
-
-        useEffect(() => {
-            if (!isAuthenticated) {
-                navigate("/");
-
-            }
-        }, [isAuthenticated])
-
-    }
+    // if (testType === "subArticle") {
+    //
+    //
+    // } else {
+    //
+    //
+    //     useEffect(() => {
+    //         if (!isAuthenticated) {
+    //             navigate("/");
+    //
+    //         }
+    //     }, [isAuthenticated])
+    //
+    // }
 
 // Успішне завершення тесту
     useEffect(() => {

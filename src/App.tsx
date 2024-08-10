@@ -110,41 +110,41 @@ function App() {
     }, [allAnswerIsCorrect, selectedArticle, allAnswerIsCorrectFunc]);
 
 
-    useEffect(() => {
-
-        if (selectedSubArticle !== null) {
-            const selectedSubArticleTest = data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.sub_article_test_questions;
-
-            if (selectedSubArticleTest?.questions && selectedSubArticleTest?.options && selectedSubArticleTest?.correctAnswers) {
-                const {questions, options, correctAnswers} = selectedSubArticleTest;
-                setQuestionsArraySubArticle(questions);
-                setQuizOptionsArraySubArticle(options);
-                setCorrectAnswersSubArticle(correctAnswers);
-            } else {
-                setQuestionsArraySubArticle(data.questions);
-                setQuizOptionsArraySubArticle(data.options);
-                setCorrectAnswersSubArticle(data.correctAnswers);
-            }
-
-        } else {
-
-            const selectedArticleTestData = data.historyList[selectedArticle]?.main_article_test_questions;
-
-            if (selectedArticleTestData?.questions && selectedArticleTestData?.options && selectedArticleTestData?.correctAnswers) {
-
-                const {questions, options, correctAnswers} = selectedArticleTestData;
-                setQuestionsArray(questions);
-                setQuizOptionsArray(options);
-                setCorrectAnswers(correctAnswers.map(item => item[0]));
-            } else {
-                setQuestionsArray(data.questions);
-                setQuizOptionsArray(data.options);
-                setCorrectAnswers(data.correctAnswers);
-            }
-        }
-
-
-    }, [selectedArticle, selectedSubArticle]);
+    // useEffect(() => {
+    //
+    //     if (selectedSubArticle !== null) {
+    //         const selectedSubArticleTest = data.historyList[selectedArticle]?.subtopics?.[selectedSubArticle]?.sub_article_test_questions;
+    //
+    //         if (selectedSubArticleTest?.questions && selectedSubArticleTest?.options && selectedSubArticleTest?.correctAnswers) {
+    //             const {questions, options, correctAnswers} = selectedSubArticleTest;
+    //             setQuestionsArraySubArticle(questions);
+    //             setQuizOptionsArraySubArticle(options);
+    //             setCorrectAnswersSubArticle(correctAnswers);
+    //         } else {
+    //             setQuestionsArraySubArticle(data.questions);
+    //             setQuizOptionsArraySubArticle(data.options);
+    //             setCorrectAnswersSubArticle(data.correctAnswers);
+    //         }
+    //
+    //     } else {
+    //
+    //         const selectedArticleTestData = data.historyList[selectedArticle]?.main_article_test_questions;
+    //
+    //         if (selectedArticleTestData?.questions && selectedArticleTestData?.options && selectedArticleTestData?.correctAnswers) {
+    //
+    //             const {questions, options, correctAnswers} = selectedArticleTestData;
+    //             setQuestionsArray(questions);
+    //             setQuizOptionsArray(options);
+    //             setCorrectAnswers(correctAnswers.map(item => item[0]));
+    //         } else {
+    //             setQuestionsArray(data.questions);
+    //             setQuizOptionsArray(data.options);
+    //             setCorrectAnswers(data.correctAnswers);
+    //         }
+    //     }
+    //
+    //
+    // }, [selectedArticle, selectedSubArticle]);
 
     useEffect(() => {
         const effect = () => {
@@ -317,9 +317,6 @@ function App() {
                                                     historyList={historyListFromData}
                                                     handleNextLevel={handleNextLevel}
                                                     setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                                    questions={questionsArray}
-                                                    options={quizOptionsArray}
-                                                    correctAnswers={correctAnswers}
                                                     onAnswer={handleQuizComplete}
                                                 />
                                             </React.Suspense>
@@ -341,9 +338,6 @@ function App() {
                                                     historyList={historyListFromData}
                                                     handleNextLevel={handleNextLevel}
                                                     setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
-                                                    questions={questionsArraySubArticle}
-                                                    options={quizOptionsArraySubArticle}
-                                                    correctAnswers={correctAnswersSubArticle}
                                                     onAnswer={handleQuizComplete}
                                                     setSelectedSubArticle={setSelectedSubArticle}
                                                 />
