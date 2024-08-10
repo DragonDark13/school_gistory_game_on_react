@@ -116,7 +116,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     let selectedSubArticleNumber = 0;  // Default value in case it's not a subArticle
 
     const navigate = useNavigate();
-    const {isAuthenticated} = useAuth();
 
     const {cx, classes} = useStyles();
     const themeDefault = useTheme();
