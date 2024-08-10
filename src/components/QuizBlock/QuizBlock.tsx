@@ -26,7 +26,7 @@ import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 import {UserContext} from "../MyProviders/MyProviders";
 import QuizSuccessModal from "../../QuizSuccessModal/QuizSuccessModal";
-import {HistoricalEvent, IQuizBlockProps, SubtopicsProps} from "../../types/types";
+import {HistoricalEvent, IDataForQuiz, IQuizBlockProps, SubtopicsProps} from "../../types/types";
 import {useAuth} from "../AuthContext/AuthContext";
 import {makeStyles} from "tss-react/mui";
 import AnswerReactionBlock from "./components/AnswerReactionBlock/АnswerReactionBlock";
@@ -153,65 +153,37 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         }
     }, [historyList, subtopicId]);
 
-    useEffect(() => {
-            if (currentArticle) {
-                if (testType === "subArticle") {
-                    if ("title" in currentArticle) {
-                        setCurrentArticleTitle(currentArticle.title)
-                    }
-                    if ("sub_article_test_id" in currentArticle) {
-                        setCurrentTestId(currentArticle?.sub_article_test_id)
-                    }
+useEffect(() => {
+    const updateStateFromArticle = (questions: IDataForQuiz[]) => {
+        const questionsArray: string[] = questions.map(item => item.question) || [];
+        setQuizQuestions(questionsArray);
 
-                    if ("sub_article_test_questions" in currentArticle) {
+        const optionsArray: string[][] = questions.map(item => item.options) || [];
+        setQuizOptions(optionsArray);
 
-                        const sub_article_test_questions = currentArticle?.sub_article_test_questions;
+        const correctAnswersArray: number[] = questions.map(item => item.correct_answers) || [];
+        setQuizCorrectAnswers(correctAnswersArray);
+    };
 
-                        if (sub_article_test_questions) {
-                            const questionsArray: string[] = sub_article_test_questions?.map(item => item.question) || [];
-                            setQuizQuestions(questionsArray);
-                        }
+    if (currentArticle) {
+        if (testType === "subArticle") {
+            setCurrentArticleTitle("title" in currentArticle ? currentArticle.title : "");
+            setCurrentTestId("sub_article_test_id" in currentArticle ? currentArticle.sub_article_test_id : undefined);
 
-
-                        // Оновлюємо стейт
-
-
-                        const optionArray: string[][] = sub_article_test_questions?.map(item => item.options) || [];
-                        setQuizOptions(optionArray);
-
-
-                        const correctAnswersArray: number[] = sub_article_test_questions?.map(item => item.correct_answers) || [];
-
-
-                        setQuizCorrectAnswers(correctAnswersArray);
-
-
-                    }
-
-                } else {
-                    if ("text" in currentArticle) {
-                        setCurrentArticleTitle(currentArticle.text)
-                    }
-                    if ("main_article_test_id" in currentArticle) {
-                        setCurrentTestId(currentArticle.main_article_test_id)
-                    }
-                    if ("main_article_test_questions" in currentArticle) {
-                        const questionsArray = currentArticle?.main_article_test_questions?.map(item => item.question) || [];
-                        setQuizQuestions(questionsArray);
-
-
-                        const optionsArray: string[][] = currentArticle?.main_article_test_questions?.map(item => item.options) || [];
-                        setQuizOptions(optionsArray);
-
-                        const correctAnswersArray: number[] = currentArticle?.main_article_test_questions?.map(item => item.correct_answers) || [];
-                        setQuizCorrectAnswers(correctAnswersArray);
-                    }
-                }
+            if ("sub_article_test_questions" in currentArticle && currentArticle.sub_article_test_questions) {
+                updateStateFromArticle(currentArticle.sub_article_test_questions);
             }
+        } else {
+            setCurrentArticleTitle("text" in currentArticle ? currentArticle.text : "");
+            setCurrentTestId("main_article_test_id" in currentArticle ? currentArticle.main_article_test_id : undefined);
 
+            if ("main_article_test_questions" in currentArticle && currentArticle.main_article_test_questions) {
+                updateStateFromArticle(currentArticle.main_article_test_questions);
+            }
+        }
+    }
+}, [currentArticle, testType]);
 
-        }, [currentArticle]
-    )
 
     // if (testType === "subArticle") {
     //
