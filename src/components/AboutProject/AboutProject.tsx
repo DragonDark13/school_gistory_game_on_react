@@ -36,7 +36,7 @@ const AboutProject: React.FC<IAboutProject> = ({handleClickOpenModalSignIn}) => 
         <div className={"about"}>
             <LogoIcon className={cx(classes.aboutLogoIcon, "about_logo")}/>
             <Typography className={"big_title"} component={"h1"} variant={"h3"}>
-                Шкала Історіі
+                Шкала ІсторіЇ
             </Typography>
             <Typography className={"subtitle"} variant={"h6"}>Грай та Навчайся</Typography>
 
