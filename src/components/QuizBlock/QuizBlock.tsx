@@ -184,20 +184,7 @@ useEffect(() => {
 }, [currentArticle, testType]);
 
 
-    // if (testType === "subArticle") {
-    //
-    //
-    // } else {
-    //
-    //
-    //     useEffect(() => {
-    //         if (!isAuthenticated) {
-    //             navigate("/");
-    //
-    //         }
-    //     }, [isAuthenticated])
-    //
-    // }
+
 
 // Успішне завершення тесту
     useEffect(() => {
@@ -513,7 +500,7 @@ useEffect(() => {
                 <div className={"question_container"}>
                     <LinearProgress
                         color={"secondary"}
-                        value={Math.round((100 / quizOptions.length) * results.correct)}
+                        value={quizOptions ? Math.round((100 / quizOptions.length) * results.correct) : 0}
                         variant={"determinate"}
                     />
 
