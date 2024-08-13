@@ -1,8 +1,8 @@
-import React, {EventHandler, useContext, useEffect, useState} from "react";
+import React, { useEffect, useState} from "react";
 import {
     Button,
     Card, CardActions,
-    CardContent, CardHeader, CircularProgress,
+    CardContent, CardHeader,
     Container,
     FormControlLabel,
     Grid,
@@ -77,9 +77,6 @@ const useStyles = makeStyles()((theme) => ({
 
 
 const QuizBlock: React.FC<IQuizBlockProps> = ({
-                                                  // questions,
-                                                  // options,
-                                                  // correctAnswers,
                                                   onAnswer,
                                                   historyList,
                                                   setAllAnswerIsCorrect,
@@ -91,7 +88,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
 
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [userAnswers, setUserAnswers] = useState([]);
     const [results, setResults] = useState({correct: 0, incorrect: 0});
     const [isQuizFinished, setIsQuizFinished] = useState(false);
     const [nextLevelAvailable, setNextLevelAvailable] = useState(false);
@@ -110,6 +106,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const [quizQuestions, setQuizQuestions] = useState<string[]>([]);
     const [quizOptions, setQuizOptions] = useState<string[][]>([]);
     const [quizCorrectAnswers, setQuizCorrectAnswers] = useState<number[]>([]);
+    const [percentCompleted, setPercentCompleted] = useState<number>(0)
 
 
     const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
@@ -152,42 +149,45 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         }
     }, [historyList, subtopicId]);
 
-useEffect(() => {
-    const updateStateFromArticle = (questions: IDataForQuiz[]) => {
-        const questionsArray: string[] = questions.map(item => item.question) || [];
-        setQuizQuestions(questionsArray);
+    useEffect(() => {
+        const updateStateFromArticle = (questions: IDataForQuiz[]) => {
+            const questionsArray: string[] = questions.map(item => item.question) || [];
+            setQuizQuestions(questionsArray);
 
-        const optionsArray: string[][] = questions.map(item => item.options) || [];
-        setQuizOptions(optionsArray);
+            const optionsArray: string[][] = questions.map(item => item.options) || [];
+            setQuizOptions(optionsArray);
 
-        const correctAnswersArray: number[] = questions.map(item => item.correct_answers) || [];
-        setQuizCorrectAnswers(correctAnswersArray);
-    };
+            const correctAnswersArray: number[] = questions.map(item => item.correct_answers) || [];
+            setQuizCorrectAnswers(correctAnswersArray);
+        };
 
-    if (currentArticle) {
-        if (testType === "subArticle") {
-            setCurrentArticleTitle("title" in currentArticle ? currentArticle.title : "");
-            setCurrentTestId("sub_article_test_id" in currentArticle ? currentArticle.sub_article_test_id : undefined);
+        if (currentArticle) {
+            if (testType === "subArticle") {
+                setCurrentArticleTitle("title" in currentArticle ? currentArticle.title : "");
+                setCurrentTestId("sub_article_test_id" in currentArticle ? currentArticle.sub_article_test_id : undefined);
 
-            if ("sub_article_test_questions" in currentArticle && currentArticle.sub_article_test_questions) {
-                updateStateFromArticle(currentArticle.sub_article_test_questions);
-            }
-        } else {
-            setCurrentArticleTitle("text" in currentArticle ? currentArticle.text : "");
-            setCurrentTestId("main_article_test_id" in currentArticle ? currentArticle.main_article_test_id : undefined);
+                if ("sub_article_test_questions" in currentArticle && currentArticle.sub_article_test_questions) {
+                    updateStateFromArticle(currentArticle.sub_article_test_questions);
+                }
+            } else {
+                setCurrentArticleTitle("text" in currentArticle ? currentArticle.text : "");
+                setCurrentTestId("main_article_test_id" in currentArticle ? currentArticle.main_article_test_id : undefined);
 
-            if ("main_article_test_questions" in currentArticle && currentArticle.main_article_test_questions) {
-                updateStateFromArticle(currentArticle.main_article_test_questions);
+                if ("main_article_test_questions" in currentArticle && currentArticle.main_article_test_questions) {
+                    updateStateFromArticle(currentArticle.main_article_test_questions);
+                }
             }
         }
-    }
-}, [currentArticle, testType]);
-
-
+    }, [currentArticle, testType]);
 
 
 // Успішне завершення тесту
     useEffect(() => {
+
+        if (quizQuestions.length > 0) {
+            setPercentCompleted(Math.round((100 / quizQuestions.length) * results.correct))
+        }
+
         if (results.correct === quizQuestions.length && (quizQuestions.length > 0 && results.correct > 0)) {
             setAllAnswerIsCorrect(true);
             setNextLevelAvailable(true)
@@ -396,13 +396,14 @@ useEffect(() => {
 
                     <Grid container justifyContent={"center"}>
                         <Grid item xs={12} sm={8} md={5}><Card className={"result_test_card"}>
-                            <CardHeader title={` ${quizOptions.length}/${results.correct}`}
+                            <CardHeader title={` ${quizQuestions.length}/${results.correct}`}
                                         subheader={resultIcon(nextLevelAvailable)}
                             />
                             <CardContent>
                                 <LinearProgress
+                                    defaultValue={0}
                                     color={"success"}
-                                    value={Math.round((100 / quizQuestions.length) * results.correct)}
+                                    value={percentCompleted}
                                     variant={"determinate"}
                                 />
                             </CardContent>
@@ -500,7 +501,7 @@ useEffect(() => {
                 <div className={"question_container"}>
                     <LinearProgress
                         color={"secondary"}
-                        value={quizOptions ? Math.round((100 / quizOptions.length) * results.correct) : 0}
+                        value={quizQuestions ? Math.round((100 / quizQuestions.length) * results.correct) : 0}
                         variant={"determinate"}
                     />
 
