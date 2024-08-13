@@ -158,16 +158,6 @@ function App() {
         effect();
     }, [subArticleAllAnswerIsCorrect, selectedSubArticle, selectedArticle]);
 
-    // console.log("subArticleSuccessLevels:::", subArticleSuccessLevels);
-
-
-    const handleQuizComplete = (results: { correct: number; incorrect: number }) => {
-        // Ваш код для обробки результатів тесту
-        console.log('Результати тесту:');
-        console.log(`Правильних відповідей: ${results.correct}`);
-        console.log(`Неправильних відповідей: ${results.incorrect}`);
-    };
-
     const handleNextLevel = () => {
         setSelectedArticle(selectedArticle + 1);
     };
@@ -317,7 +307,6 @@ function App() {
                                                     historyList={historyListFromData}
                                                     handleNextLevel={handleNextLevel}
                                                     setAllAnswerIsCorrect={setAllAnswerIsCorrect}
-                                                    onAnswer={handleQuizComplete}
                                                 />
                                             </React.Suspense>
                                         }
@@ -338,7 +327,6 @@ function App() {
                                                     historyList={historyListFromData}
                                                     handleNextLevel={handleNextLevel}
                                                     setAllAnswerIsCorrect={setSubArticleAllAnswerIsCorrect}
-                                                    onAnswer={handleQuizComplete}
                                                     setSelectedSubArticle={setSelectedSubArticle}
                                                 />
                                             </React.Suspense>

@@ -119,7 +119,6 @@ export interface IDataForQuiz {
 
 export interface IQuizBlockProps extends IHistoryListArray, UserContextProps {
     readonly testType: 'article' | 'subArticle';
-    readonly onAnswer: (results: { correct: number; incorrect: number }) => void;
     readonly handleNextLevel: () => void;
     readonly setAllAnswerIsCorrect: (arg0: boolean) => void
     readonly setSelectedSubArticle?: (arg0: number) => void;
@@ -181,3 +180,13 @@ export interface IThemeContextProps {
     setTheme: Dispatch<SetStateAction<'light' | 'dark'>>;
 }
 
+export type QuizResultsProps = {
+    results: any;
+    percentCompleted: number;
+    nextLevelAvailable: boolean;
+    handleRetakeQuiz: () => void;
+    currentUser: any;
+    selectedArticleNumber: number;
+    historyList: any[];
+    testType: string;
+};

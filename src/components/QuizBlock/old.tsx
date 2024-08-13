@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState} from "react";
 import {
     Button,
     Card, CardActions,
@@ -31,9 +31,6 @@ import AnswerReactionBlock from "./components/AnswerReactionBlock/АnswerReactio
 import TimeUpMessageBlock from "./components/TimeUpMessageBlock/TimeUpMessageBlock";
 import TimerProgress from "./components/TimerProgress/TimerProgress";
 import axiosClient from "../../axios";
-import QuizResults from "./components/QuizResults/QuizResults";
-import QuizActions from "./components/QuizActions/QuizActions";
-import QuestionContainer from "./components/QuestionContainer/QuestionContainer";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -75,22 +72,6 @@ const useStyles = makeStyles()((theme) => ({
 
 
 }))
-
-
-const QuizHeader: React.FC<{ selectedArticleNumber: number }> = ({selectedArticleNumber}) => (
-    <Grid sx={{display: "none"}} className={"back_button_container"} container justifyContent={"space-between"}>
-        <Grid item>
-            <Button component={RouterLink} to={`/article/${selectedArticleNumber}`} startIcon={<ArrowBackIosIcon/>}>
-                До бібліотеки
-            </Button>
-        </Grid>
-        <Grid item>
-            <Button component={RouterLink} to={"/timeline"} endIcon={<ArrowUpwardIcon/>} color={"secondary"}>
-                До Часопростору
-            </Button>
-        </Grid>
-    </Grid>
-);
 
 
 const QuizBlock: React.FC<IQuizBlockProps> = ({
@@ -299,7 +280,13 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         }
     };
 
+    const resultIcon = (result: boolean) => {
 
+        if (result) {
+            return <CheckCircleIcon color={"success"}/>
+        } else return <DoNotDisturbOnIcon color={"error"}/>
+
+    }
     const theme = useTheme();
 
 
@@ -378,48 +365,209 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     }, [handleNextQuestion]);
 
 
-    const quizResultsProps = {
-        results,
-        percentCompleted,
-        nextLevelAvailable,
-        handleRetakeQuiz,
-        currentUser,
-        selectedArticleNumber,
-        historyList,
-        testType,
-    };
-
-    const questionContainerProps = {
-        quizQuestions,
-        currentQuestion,
-        quizOptions,
-        selectedAnswer,
-        handleAnswer,
-        handleAnswerKeyPress,
-        remainingTime,
-        maxTimeStatic,
-        answerChosen,
-        currentAnswerStatus,
-        isNextButtonActive,
-        handleNextQuestion,
-        smUp,
-        optionsHighlightWhenTimerIsFinished,
-        results,
-        optionHighlight,
-        currentArticleTitle
-    };
-
-
     return (
         <Container>
             <Helmet>
                 <title> {`Тестування ${selectedArticleNumber}`}</title>
             </Helmet>
-            <QuizHeader selectedArticleNumber={selectedArticleNumber}/>
+            <Grid sx={{display: "none"}} className={"back_button_container"} container justifyContent={"space-between"}>
+                <Grid item>
+                    <Button component={RouterLink} to={`/article/${selectedArticleNumber}`}
+                            startIcon={<ArrowBackIosIcon/>}>
+                        До бібліотеки
+                    </Button>
+                </Grid>
+                <Grid item>
+                    <Button component={RouterLink} to={"/timeline"} endIcon={<ArrowUpwardIcon/>} color={"secondary"}>
+                        До Часопростору
+                    </Button>
+                </Grid>
+            </Grid>
+
+
             {isQuizFinished ? (
-                <QuizResults props={quizResultsProps}/>
+                <div className={"finished_container"}>
+
+                    <Typography className={"title"} variant={"h4"}>Ваші Результати:</Typography>
+
+                    <Grid container justifyContent={"center"}>
+                        <Grid item xs={12} sm={8} md={5}><Card className={"result_test_card"}>
+                            <CardHeader title={` ${quizQuestions.length}/${results.correct}`}
+                                        subheader={resultIcon(nextLevelAvailable)}
+                            />
+                            <CardContent>
+                                <LinearProgress
+                                    defaultValue={0}
+                                    color={"success"}
+                                    value={percentCompleted}
+                                    variant={"determinate"}
+                                />
+                            </CardContent>
+
+                        </Card>
+                        </Grid>
+                    </Grid>
+
+
+                    {/*<p>Правильних відповідей: {results.correct}</p>*/}
+                    {/*<p>Неправильних відповідей: {results.incorrect}</p>*/}
+
+
+                    {nextLevelAvailable ? (
+                            <div>
+
+                                <Grid className={"icon_container"} container justifyContent={"center"}>
+                                    <Grid item>
+                                        <StarIcon fontSize={"large"} color={"success"}
+                                                  className={"pulse"}/>
+                                    </Grid>
+                                </Grid>
+
+                                {testType === "article" &&
+                                <Grid container justifyContent={"center"}>
+                                    <Grid item xs={12} md={6}>
+
+                                        <Card sx={{background: theme.palette.secondary.light}}>
+                                            <CardContent>
+                                                <Typography sx={{color: theme.palette.text.secondary}}>Вітаю, <Typography
+                                                    component={"span"}
+                                                    variant={"subtitle1"}>{currentUser ? currentUser.user_name : "Невідомий"}</Typography>,
+                                                    ви
+                                                    досягли наступного
+                                                    рівня. Тепер
+                                                    ви можити відправитися у наступний
+                                                    пункт нашої
+                                                    подорожі у часі.
+                                                </Typography>
+
+                                            </CardContent>
+                                            <CardActions>
+                                                <Button component={RouterLink} to={`/article/${selectedArticleNumber + 1}`}
+                                                        fullWidth startIcon={<ArrowForwardIosIcon/>} color={"secondary"}
+                                                        endIcon={<ArrowForwardIosIcon/>} variant={"contained"}
+                                                        size={"large"}
+                                                >{selectedArticleNumber !== null ? historyList[selectedArticleNumber + 1].date : "Помилка" +
+                                                    " у машині часу"}</Button>
+                                            </CardActions>
+
+                                        </Card>
+                                    </Grid>
+                                </Grid>
+
+
+                                }
+
+
+                            </div>
+
+                        ) :
+
+                        <React.Fragment>
+
+                            <Typography className={"textMessage"}>
+                                Не сумуйте. Підготуйтесь та спробуйте знову
+                            </Typography>
+
+                            <Grid flexDirection={smUp ? "row-reverse" : "row"} spacing={2} container
+                                  justifyContent={"space-between"}>
+                                <Grid item xs={12} sm={"auto"}>
+                                    <Button size={"large"} fullWidth endIcon={<ReplayIcon/>}
+                                            variant={"contained"}
+                                            onClick={handleRetakeQuiz}>Пройти ще раз</Button>
+                                </Grid>
+                                <Grid item xs={12} sm={"auto"}>
+                                    <Button variant={"outlined"} color={"secondary"} size={"large"} fullWidth
+                                            component={RouterLink}
+                                            to={`/article/${selectedArticleNumber}`}
+                                            startIcon={<ArrowBackIosIcon/>}>
+                                        До бібліотеки
+                                    </Button>
+                                </Grid>
+
+                            </Grid>
+
+
+                        </React.Fragment>
+
+                    }
+
+
+                </div>
             ) : (
-                <QuestionContainer props={questionContainerProps}/>
+                <div className={"question_container"}>
+                    <LinearProgress
+                        color={"secondary"}
+                        value={quizQuestions ? Math.round((100 / quizQuestions.length) * results.correct) : 0}
+                        variant={"determinate"}
+                    />
+
+                    <h1>Тема: {currentArticleTitle && currentArticleTitle}</h1>
+                    <Grid container rowSpacing={{xs: 2, sm: 0}} columnSpacing={{xs: 1, sm: 2, md: 3}}
+                          alignItems={"center"}
+                          justifyContent={"center"}>
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant={smUp ? "h6" : 'body1'}>
+                                {quizQuestions[currentQuestion]}
+                            </Typography> </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <RadioGroup
+                                name="radio-buttons-group"
+                                onKeyPress={handleAnswerKeyPress}
+                            >
+                                {(quizOptions && quizOptions.length > 0) && quizOptions[currentQuestion].map((option, index) => (
+                                    <FormControlLabel
+                                        key={index + "button"}
+                                        className={cx(remainingTime == 0 ? optionsHighlightWhenTimerIsFinished(index + 1) : optionHighlight(index + 1))}
+                                        onKeyPress={handleAnswerKeyPress}
+                                        onClick={() => {
+                                            if (!answerChosen && remainingTime > 0) {
+                                                handleAnswer(index + 1);
+                                            }
+                                        }}
+                                        control={<Radio checked={selectedAnswer === index + 1}/>}
+                                        label={option}
+                                        value={option}
+                                        disabled={answerChosen || remainingTime == 0}
+                                    />
+                                ))}
+                            </RadioGroup> </Grid>
+                    </Grid>
+
+
+                    <Grid container justifyContent={smUp ? 'space-between' : "start"} mt={2} alignItems={"center"}>
+
+                        <Grid className={"status_icon_container"} item xs={"auto"} md={"auto"}>
+                            {answerChosen && <AnswerReactionBlock currentAnswerStatus={currentAnswerStatus}/>}
+
+                            {!answerChosen &&
+                            (remainingTime > 0 ?
+                                    <TimerProgress maxTimeStatic={maxTimeStatic} remainingTime={remainingTime}/> :
+
+                                    <TimeUpMessageBlock/>
+                            )
+
+                            }
+                        </Grid>
+
+                        <Grid item xs={12} sm={"auto"}>
+                            <Button
+
+                                color={answerChosen ? (currentAnswerStatus ? "success" : "error") : remainingTime == 0 ? "error" : "primary"}
+                                onKeyDown={handleNextQuestion}
+                                fullWidth={!smUp}
+                                className={'next_button'}
+                                endIcon={<ArrowForwardIosIcon/>}
+                                variant={"contained"}
+                                size={"large"}
+                                onClick={handleNextQuestion}
+                                disabled={!isNextButtonActive}
+                            >
+                                Продовжити
+                            </Button>
+                        </Grid>
+                    </Grid>
+
+                </div>
             )}
 
             <QuizSuccessModal openModal={openModal} handleClose={handleClose}/>
