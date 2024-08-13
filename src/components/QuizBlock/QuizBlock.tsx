@@ -24,10 +24,8 @@ import StarIcon from '@mui/icons-material/Star';
 import "./quiz_style.scss"
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
-import {UserContext} from "../MyProviders/MyProviders";
 import QuizSuccessModal from "../../QuizSuccessModal/QuizSuccessModal";
 import {HistoricalEvent, IDataForQuiz, IQuizBlockProps, SubtopicsProps} from "../../types/types";
-import {useAuth} from "../AuthContext/AuthContext";
 import {makeStyles} from "tss-react/mui";
 import AnswerReactionBlock from "./components/AnswerReactionBlock/АnswerReactionBlock";
 import TimeUpMessageBlock from "./components/TimeUpMessageBlock/TimeUpMessageBlock";

@@ -10,7 +10,7 @@ export interface ISignInForms {
 
 export interface IModalSignInSignUp extends ISignInForms {
     openModal: boolean
-    handleCloseModal: () => void
+    readonly handleCloseModal: () => void
     showSignInForm: boolean
     showSignUpForm: boolean
     setOpenModal: (value: boolean) => void;
@@ -26,10 +26,10 @@ export interface ISubtopicsTextContent {
 }
 
 export interface SubtopicsProps extends ISubtopicsTextContent {
-    title: string,
-    content: string | IArticleContentArrayItem[]
-    sub_article_test_questions?: IDataForQuiz[]
-    sub_article_test_id?: number
+    readonly title: string,
+    readonly content: string | IArticleContentArrayItem[]
+    readonly sub_article_test_questions?: IDataForQuiz[]
+    readonly sub_article_test_id?: number
 }
 
 export interface IArticleContentArrayItem {
@@ -84,7 +84,7 @@ interface IAchievedListItem {
 }
 
 export interface ProfilePageProps extends IHistoryListArray {
-    username: string;
+    readonly username: string;
     avatar: string;
     lessonsVisited: number;
     achievementLevel: string;
@@ -111,14 +111,14 @@ export interface ISubtopicCardProps extends SubtopicsProps {
 }
 
 export interface IDataForQuiz {
-    correct_answers: number;  // Індекс правильної відповіді (від 1 до 4)
-    id: number;  // Унікальний ідентифікатор питання
-    options: string[];  // Масив варіантів відповіді
-    question: string;  // Текст питання
+    readonly correct_answers: number;  // Індекс правильної відповіді (від 1 до 4)
+    readonly id: number;  // Унікальний ідентифікатор питання
+    readonly options: string[];  // Масив варіантів відповіді
+    readonly question: string;  // Текст питання
 }
 
 export interface IQuizBlockProps extends IHistoryListArray, UserContextProps {
-    testType: 'article' | 'subArticle';
+    readonly testType: 'article' | 'subArticle';
     readonly onAnswer: (results: { correct: number; incorrect: number }) => void;
     readonly handleNextLevel: () => void;
     readonly setAllAnswerIsCorrect: (arg0: boolean) => void
