@@ -261,6 +261,7 @@ function App() {
                                                         avatar={avatarImg}
                                                         lessonsVisited={currentUser ? currentUser?.current_level : 0}
                                                         username={currentUser ? currentUser.user_name : "Петро Сагайдачний"}
+                                                        currentUserDate={historyListFromData[selectedArticle].date}
                                                     />
                                                 ) : (
                                                     <Preloader/>

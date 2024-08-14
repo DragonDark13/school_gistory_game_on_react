@@ -58,7 +58,7 @@ const QuestionContainer: React.FC<{ props: QuestionContainerProps }> = ({props})
                             defaultValue={0}
                             value={percentCompleted ? percentCompleted : 0}
                             variant={"determinate"}/>
-            <Typography variant={"h5"}>Тема: {currentArticleTitle && currentArticleTitle}</Typography>
+            <Typography className={"quiz_title"} variant={"h5"}>Тема: {currentArticleTitle && currentArticleTitle}</Typography>
             <Grid container rowSpacing={{xs: 2, sm: 0}} columnSpacing={{xs: 1, sm: 2, md: 3}} alignItems={"center"}
                   justifyContent={"center"}>
                 <Grid item xs={12} sm={6}>

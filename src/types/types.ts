@@ -91,6 +91,7 @@ export interface ProfilePageProps extends IHistoryListArray {
     achievements: string[];
     readonly achievedList: IAchievedListItem[];
     isLoading: boolean;
+    currentUserDate: string;
 
 }
 

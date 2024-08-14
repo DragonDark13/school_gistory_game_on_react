@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import SettingsIcon from '@mui/icons-material/Settings';
 import EmojiEvents from '@mui/icons-material/EmojiEvents';
-import {Container, Grid, LinearProgress, useMediaQuery} from "@mui/material";
+import {CardActions, Container, Grid, IconButton, LinearProgress, useMediaQuery} from "@mui/material";
 import './profile_page.scss'
 import UserProfileSettings from "./UserProfileSettings";
 import {Helmet} from "react-helmet-async";
@@ -23,6 +23,7 @@ import StarIcon from '@mui/icons-material/Star';
 import Preloader from "../Preloader/Preloader";
 import ChangePasswordForm from "./ChangePasswordForm";
 import ResetAchievementsButton from "./ResetAchievementsButton";
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -44,7 +45,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                                      achievements,
                                                      historyList,
                                                      achievedList,
-                                                     isLoading
+                                                     isLoading,
+                                                     currentUserDate
                                                  }) => {
 
 
@@ -142,10 +144,16 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                         <Grid item xs={"auto"} lg={"auto"}>
                                             <Typography className={"time"} variant={"h6"} color="text.secondary"
                                                         sx={{marginTop: '5px'}}>
-                                                {lessonsVisited}
+                                                {currentUserDate}
                                             </Typography>
                                         </Grid>
+                                        <Grid item xs={"auto"} lg={"auto"}>
+                                            <IconButton>
+                                                <ArrowForwardIosIcon/>
+                                            </IconButton>
+                                        </Grid>
                                     </Grid>
+
                                 </Paper>
 
                             </Grid>

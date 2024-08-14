@@ -1,25 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {
     Button,
-    Card, CardActions,
-    CardContent, CardHeader,
     Container,
-    FormControlLabel,
     Grid,
-    LinearProgress,
-    Radio,
-    RadioGroup,
-    Typography, useMediaQuery,
+    useMediaQuery,
     useTheme
 } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ReplayIcon from '@mui/icons-material/Replay';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
-import StarIcon from '@mui/icons-material/Star';
 
 import "./quiz_style.scss"
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
@@ -27,12 +16,8 @@ import {Helmet} from "react-helmet-async";
 import QuizSuccessModal from "../../QuizSuccessModal/QuizSuccessModal";
 import {HistoricalEvent, IDataForQuiz, IQuizBlockProps, SubtopicsProps} from "../../types/types";
 import {makeStyles} from "tss-react/mui";
-import AnswerReactionBlock from "./components/AnswerReactionBlock/АnswerReactionBlock";
-import TimeUpMessageBlock from "./components/TimeUpMessageBlock/TimeUpMessageBlock";
-import TimerProgress from "./components/TimerProgress/TimerProgress";
 import axiosClient from "../../axios";
 import QuizResults from "./components/QuizResults/QuizResults";
-import QuizActions from "./components/QuizActions/QuizActions";
 import QuestionContainer from "./components/QuestionContainer/QuestionContainer";
 
 
@@ -78,7 +63,7 @@ const useStyles = makeStyles()((theme) => ({
 
 
 const QuizHeader: React.FC<{ selectedArticleNumber: number }> = ({selectedArticleNumber}) => (
-    <Grid sx={{display: "none"}} className={"back_button_container"} container justifyContent={"space-between"}>
+    <Grid  className={"back_button_container"} container justifyContent={"space-between"}>
         <Grid item>
             <Button component={RouterLink} to={`/article/${selectedArticleNumber}`} startIcon={<ArrowBackIosIcon/>}>
                 До бібліотеки

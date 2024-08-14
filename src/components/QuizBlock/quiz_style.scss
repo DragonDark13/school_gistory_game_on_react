@@ -40,6 +40,11 @@
 .question_container {
   text-align: left;
 
+  .quiz_title{
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+
   @media (min-width: 992px) {
     text-align: center;
   }
