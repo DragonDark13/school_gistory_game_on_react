@@ -405,7 +405,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         handleNextQuestion,
         smUp,
         optionsHighlightWhenTimerIsFinished,
-        results,
         optionHighlight,
         currentArticleTitle,
         percentCompleted,
