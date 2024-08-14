@@ -147,11 +147,11 @@ const Header: React.FC<IHeader> = ({handleClickOpenModalSignIn}) => {
                                 </Link>
                             </Grid>
                             <Grid item xs={"auto"} md={3}>
-                                <Grid container alignItems={"center"} justifyContent={"space-between"}>
+                                <Grid container alignItems={"center"} justifyContent={isAuthenticated ? "space-between" : "end"}>
 
-                                    {smUp && achievementsIconContainer}
+                                    {(smUp && isAuthenticated) && achievementsIconContainer}
 
-                                    { smUp && lifeIconContainer}
+                                    { (smUp && isAuthenticated) && lifeIconContainer}
 
                                     {!smUp &&
                                     <IconButton onClick={toggleColorModeFunc}>

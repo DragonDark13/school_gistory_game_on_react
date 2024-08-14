@@ -190,9 +190,9 @@ const AboutFeatureList = () => {
                     </List>
                 </Hidden>
                 <Hidden smDown>
-                    <Grid container rowSpacing={4} columnSpacing={{xs: 1, sm: 2, md: 3}}>
+                    <Grid container justifyContent={"center"} rowSpacing={4} columnSpacing={{xs: 1, sm: 2, md: 3}}>
                         {featureList.map((feature, index) => (
-                            <Grid item sm={6} xl={4} className={cx(getItemColorClass(feature.name))}
+                            <Grid item sm={6} md={4} xl={4} className={cx(getItemColorClass(feature.name))}
                                   title={feature.description} key={index + "feature.title"}>
                                 <FeaturedListItemContent description={feature.description} name={feature.name}
                                                          title={feature.title}/>
