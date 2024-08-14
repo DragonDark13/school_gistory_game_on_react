@@ -9,8 +9,6 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 
 type QuestionContainerProps = {
-    results: any;
-    quizQuestions: string[];
     currentQuestion: number;
     quizOptions: string[][];
     selectedAnswer: number | null;
@@ -26,12 +24,12 @@ type QuestionContainerProps = {
     currentArticleTitle: string;
     optionsHighlightWhenTimerIsFinished: (option: number) => string;
     optionHighlight: (option: number) => string;
+    percentCompleted: number,
+    currentQuestionText: string,
 };
 
 const QuestionContainer: React.FC<{ props: QuestionContainerProps }> = ({props}) => {
     const {
-        results,
-        quizQuestions,
         currentQuestion,
         quizOptions,
         selectedAnswer,
@@ -46,7 +44,9 @@ const QuestionContainer: React.FC<{ props: QuestionContainerProps }> = ({props})
         smUp,
         currentArticleTitle,
         optionsHighlightWhenTimerIsFinished,
-        optionHighlight
+        optionHighlight,
+        percentCompleted,
+        currentQuestionText
     } = props;
 
     const {cx} = useStyles();
@@ -54,14 +54,15 @@ const QuestionContainer: React.FC<{ props: QuestionContainerProps }> = ({props})
 
     return (
         <div className={"question_container"}>
-            <LinearProgress color={"secondary"}
-                            value={quizQuestions ? Math.round((100 / quizQuestions.length) * results.correct) : 0}
+            <LinearProgress color={"primary"}
+                            defaultValue={0}
+                            value={percentCompleted ? percentCompleted : 0}
                             variant={"determinate"}/>
             <Typography variant={"h5"}>Тема: {currentArticleTitle && currentArticleTitle}</Typography>
             <Grid container rowSpacing={{xs: 2, sm: 0}} columnSpacing={{xs: 1, sm: 2, md: 3}} alignItems={"center"}
                   justifyContent={"center"}>
                 <Grid item xs={12} sm={6}>
-                    <Typography variant={"h6"}>{quizQuestions[currentQuestion]}</Typography>
+                    <Typography variant={"h6"}>{currentQuestionText}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <RadioGroup name="radio-buttons-group" onKeyPress={handleAnswerKeyPress}>

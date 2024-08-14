@@ -276,6 +276,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         // setUserAnswers(Array(quizQuestions.length).fill(""));
         setResults({correct: 0, incorrect: 0});
         setIsQuizFinished(false);
+        setPercentCompleted(0)
         clearSettingsBeforeNewQuestion();
     };
 
@@ -406,7 +407,9 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         optionsHighlightWhenTimerIsFinished,
         results,
         optionHighlight,
-        currentArticleTitle
+        currentArticleTitle,
+        percentCompleted,
+        currentQuestionText: quizQuestions[currentQuestion],
     };
 
 

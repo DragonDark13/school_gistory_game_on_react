@@ -51,7 +51,7 @@ const QuizResults: React.FC<{ props: QuizResultsProps }> = ({props}) => {
                         <CardHeader title={`${results.correct}/${results.correct + results.incorrect}`}
                                     subheader={resultIcon(nextLevelAvailable)}/>
                         <CardContent>
-                            <LinearProgress color={"success"} value={percentCompleted} variant={"determinate"}/>
+                            <LinearProgress defaultValue={0} color={"success"} value={percentCompleted} variant={"determinate"}/>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -79,7 +79,7 @@ const QuizResults: React.FC<{ props: QuizResultsProps }> = ({props}) => {
                                         <Button component={RouterLink} to={`/article/${selectedArticleNumber + 1}`}
                                                 fullWidth startIcon={<ArrowForwardIosIcon/>} color={"secondary"}
                                                 variant={"contained"} size={"large"}>
-                                            {selectedArticleNumber !== null ? historyList[selectedArticleNumber + 1].date : "Помилка у машині часу"}
+                                            {selectedArticleNumber ? historyList[selectedArticleNumber + 1].date : "Помилка у машині часу"}
                                         </Button>
                                     </CardActions>
                                 </Card>
