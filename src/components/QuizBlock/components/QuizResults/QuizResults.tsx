@@ -79,7 +79,7 @@ const QuizResults: React.FC<{ props: QuizResultsProps }> = ({props}) => {
                                         <Button component={RouterLink} to={`/article/${selectedArticleNumber + 1}`}
                                                 fullWidth startIcon={<ArrowForwardIosIcon/>} color={"secondary"}
                                                 variant={"contained"} size={"large"}>
-                                            {selectedArticleNumber ? historyList[selectedArticleNumber + 1].date : "Помилка у машині часу"}
+                                            {selectedArticleNumber!=="undefined" ? historyList[selectedArticleNumber + 1].date : "Помилка у машині часу"}
                                         </Button>
                                     </CardActions>
                                 </Card>
