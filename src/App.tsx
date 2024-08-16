@@ -279,10 +279,8 @@ function App() {
                                             <React.Suspense fallback={<Preloader/>}>
                                                 {(historyListFromData.length > 0 && currentUser!==null) ? (
                                                     <Article
-                                                        articleContentFromApp={historyListFromData[selectedArticle].content}
                                                         historyList={historyListFromData}
                                                         isLoading={isLoading}
-                                                        setSelectedSubArticle={setSelectedSubArticle}
                                                         subArticleSuccessLevels={subArticleSuccessLevels}
                                                         setSelectedArticle={setSelectedArticle}
                                                         currentUser={currentUser}

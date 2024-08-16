@@ -1,250 +1,145 @@
 import React, {useEffect, useState} from "react";
+import "./article.scss"
 import {Button, Container, Grid, LinearProgress, Typography, useMediaQuery} from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import "./article.scss"
-import myImage from "../../static/image/city.jpg";
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 import SubtopicCard from "./components/SubtopicCard/SubtopicCard";
-import {
-    IArticleContentArrayItem,
-    IArticleProps,
-    ISubtopicsTextContent,
-    ITestCompletedItem,
-    SubtopicsProps
-} from "../../types/types";
 import {useTheme} from "@mui/system";
 import {useAuth} from "../AuthContext/AuthContext";
 import {contentRenderFunction} from "../../utils/utils";
 import Preloader from "../Preloader/Preloader";
-
-
-// const fetchDataArticleContent = async (selectedArticleNumber: number) => {
-//     const response = await axiosClient.get(`/ep/maincontent/${selectedArticleNumber}/`);
-//     return response.data;
-// };
-
-// const fetchDataSubTopicsArray = async (selectedArticleNumber: number) => {
-//     const response = await axiosClient.get(`/ep/subtwithcontent/${selectedArticleNumber}`);
-//     return response.data.subtopics;
-// };
-
-// const useArticleContent = (selectedArticleNumber: number) => {
-//     return useQuery(['articleContent', selectedArticleNumber], () => fetchDataArticleContent(selectedArticleNumber), {
-//         enabled: !!selectedArticleNumber,
-//     });
-// };
-//
-// const useSubTopicsArray = (selectedArticleNumber: number) => {
-//     return useQuery(['subTopicsArray', selectedArticleNumber], () => fetchDataSubTopicsArray(selectedArticleNumber), {
-//         enabled: !!selectedArticleNumber,
-//     });
-// };
+import {IArticleContentArrayItem, IArticleProps, SubtopicsProps} from "../../types/types";
+import myImage from "../../static/image/city.jpg";
 
 
 const Article: React.FC<IArticleProps> = ({
                                               setSelectedArticle,
-                                              subArticleSuccessLevels,
-                                              setSelectedSubArticle,
                                               historyList,
                                               isLoading,
-                                              articleContentFromApp,
                                               currentUser
-
                                           }) => {
 
-    // console.log("historyList", historyList);
-    // console.log("isLoading::", isLoading);
-    const {selectedArticle} = useParams();
-    const [currentArticleContent, setCurrentArticleContent] = useState<null | IArticleContentArrayItem[]>(null);
-    const [subTopicTextArray, setSubTopicTextArray] = useState<ISubtopicsTextContent[] | []>([]);
-    const [subArticlesArray, setSubArticlesArray] = useState<SubtopicsProps[]>([]);
+        const {selectedArticle} = useParams();
+        const [stateArticle, setStateArticle] = useState({
+            currentArticleContent: null as IArticleContentArrayItem[] | null,
+            subArticlesArray: [] as SubtopicsProps[],
+            completionPercentage: 0,
+            completedSubtopics: 0,
+            totalSubtopics: 0,
+            currentLevelCompleted: false,
+        });
 
-    const [completionPercentage, setCompletionPercentage] = useState(0);
-    const [completedSubtopics, setCompletedSubtopics] = useState(0);
-    const [totalSubtopics, setTotalSubtopics] = useState(0);
-    const [currentLevelCompleted, setCurrentLevelCompleted] = useState(false);
+        const navigate = useNavigate();
+        const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
 
+        const theme = useTheme();
+        const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
-    subArticleSuccessLevels = []
+        const {isAuthenticated} = useAuth();
 
-    const navigate = useNavigate();
+        useEffect(() => {
+            if (!isAuthenticated) {
+                navigate("/");
+            }
+        }, [isAuthenticated]);
 
-    const selectedArticleNumber = parseInt(selectedArticle || '0', 10);
+        useEffect(() => {
+            setSelectedArticle(selectedArticleNumber);
+            const subtopics = historyList[selectedArticleNumber]?.subtopics ?? [];
+            const content = historyList[selectedArticleNumber]?.content ?? null;
 
-    // console.log("selectedArticleNumber", selectedArticleNumber);
+            setStateArticle(prevState => ({
+                ...prevState,
+                currentLevelCompleted: currentUser.current_level > selectedArticleNumber,
+                subArticlesArray: subtopics,
+                currentArticleContent: typeof content === "object" ? content : null
+            }));
 
-    useEffect(
-        () => {
-            setCurrentLevelCompleted(currentUser.current_level > selectedArticleNumber)
+        }, [selectedArticleNumber, historyList, currentUser]);
 
-        }, [selectedArticleNumber, currentUser]
-    )
+        useEffect(() => {
+            const calculateProgress = () => {
+                const selectedArticle = historyList[selectedArticleNumber];
+                if (!selectedArticle || !selectedArticle.subtopics) {
+                    return;
+                }
 
-    useEffect(() => {
+                const subtopics = selectedArticle.subtopics;
+                const total = subtopics.length;
 
+                const completed = subtopics.reduce((acc, subtopic) => {
+                    const testResult = currentUser.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
+                    if (testResult && testResult.completed) {
+                        acc += 1;
+                    }
+                    return acc;
+                }, 0);
 
-        setSelectedArticle(selectedArticleNumber);
-        const subtopics = historyList[selectedArticleNumber]?.subtopics;
-        setSubArticlesArray(subtopics ?? []);
+                setStateArticle(prevState => ({
+                    ...prevState,
+                    totalSubtopics: total,
+                    completedSubtopics: completed,
+                    completionPercentage: total > 0 ? (completed / total) * 100 : 0,
+                }));
+            };
 
-        const content = historyList[selectedArticleNumber]?.content;
-        setCurrentArticleContent(typeof content === "object" ? content : null);
+            calculateProgress();
+        }, [historyList, selectedArticleNumber, currentUser]);
 
+        const handleGoToSubArticleTest = (articleIndex: number) => {
+            if (currentUser === null) {
+                return;
+            }
+            let tests_completed_list = currentUser.tests_completed_list;
 
-    }, [selectedArticleNumber])
+            const firstIncompleteTest = tests_completed_list.find(test =>
+                test.test_type === "Sub Article" &&
+                test.event_id === articleIndex + 1 &&
+                !test.completed
+            );
 
-    const handleShowQuiz = () => {
-        // debugger
-        navigate(`/test/${selectedArticleNumber}`);
-    }
+            if (!firstIncompleteTest) {
+                console.error('No incomplete test found.');
+                return;
+            }
 
-    const article = historyList[selectedArticleNumber];
+            const subArticle = historyList[articleIndex]?.subtopics;
 
+            if (!subArticle) {
+                console.error('SubArticle is not available.');
+                return;
+            }
 
-    const theme = useTheme();
-    const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+            const findIndexBySubArticleTestId = (testId: number): number => {
+                return subArticle.findIndex(subArticle => subArticle.sub_article_test_id === testId);
+            };
 
-    const {isAuthenticated} = useAuth();
+            const id = firstIncompleteTest.test_id;
 
+            const selectedSubArticleIndex = findIndexBySubArticleTestId(id);
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-            navigate("/");
-
-        }
-    }, [isAuthenticated])
-
-    const handleGoToTestNow = (articleIndex: number) => {
-        navigate(`/test/${articleIndex}`);
-        setSelectedArticle(articleIndex)
-    }
-
-    const handleGoToSubTestNow = (articleIndex: number, subArticleIndex: number) => {
-        // debugger
-        // setSelectedArticle(articleIndex)
-        // setSelectedSubArticle(subArticleIndex)
-        navigate(`/test/${articleIndex}/${subArticleIndex}`);
-
-    }
-
-
-    const handleGoToSubArticleTest = (articleIndex: number) => {
-        // Знаходимо перший тест, де completed === false
-        if (currentUser === null) {
-            return false
-        }
-        let tests_completed_list = currentUser.tests_completed_list;
-
-        if (!tests_completed_list) {
-            console.error('User tests_completed_list is not available.');
-            return;
-        }
-        const firstIncompleteTest = tests_completed_list.find(test =>
-            test.test_type === "Sub Article" &&
-            test.event_id === articleIndex + 1 &&
-            !test.completed
-        );
-
-        if (!firstIncompleteTest) {
-            console.error('No incomplete test found.');
-            return;
-        }
-
-        const subArticle = historyList[articleIndex]?.subtopics;
-
-        if (!subArticle) {
-            console.error('SubArticle is not available.');
-            return;
-        }
-
-        const findIndexBySubArticleTestId = (testId: number): number => {
-            return subArticle.findIndex(subArticle => subArticle.sub_article_test_id === testId);
+            setSelectedArticle(articleIndex);
+            navigate(`/test/${articleIndex}/${selectedSubArticleIndex}`);
         };
 
-        const id = firstIncompleteTest.test_id;
+        const handleShowQuiz = () => {
+            navigate(`/test/${selectedArticleNumber}`);
+        };
 
-        const selectedSubArticleIndex = findIndexBySubArticleTestId(id);
+        const finalTestIsNotOpen = (stateArticle.subArticlesArray.length > 0 &&
+            !stateArticle.subArticlesArray.every((subtopic: SubtopicsProps) => {
+                const testResult = currentUser.tests_completed_list.find((result) => result.test_id === subtopic.sub_article_test_id);
+                return testResult && testResult.completed;
+            }));
 
-        setSelectedArticle(articleIndex);
-        handleGoToSubTestNow(articleIndex, selectedSubArticleIndex);
-    };
+        return (
+            <Container className={"article_page_container"}>
+                <Helmet>
+                    <title>{isLoading ? `Loading` : `Тема ${historyList[selectedArticleNumber]?.text}`}</title>
+                </Helmet>
 
-
-    // const {
-    //     data: currentArticleContentFromFetch,
-    //     isLoading: isArticleContentLoading
-    // } = useArticleContent(selectedArticleNumber);
-    // const {
-    //     data: subTopicsArrayFromFetch,
-    //     isLoading: isSubTopicsArrayLoading
-    // } = useSubTopicsArray(selectedArticleNumber);
-    //
-
-    // useEffect(() => {
-    //     // You can perform additional actions if needed
-    //
-    //     if (currentArticleContentFromFetch) {
-    //         setCurrentArticleContent(currentArticleContentFromFetch);
-    //     } else {
-    //         setCurrentArticleContent(null);
-    //     }
-    //
-    //     if (subTopicsArrayFromFetch) {
-    //         setSubTopicsArray(subTopicsArrayFromFetch);
-    //     } else {
-    //         setSubTopicsArray([]);
-    //     }
-    //
-    // }, [currentArticleContentFromFetch, subTopicsArrayFromFetch]);
-
-    // const totalSubtopics = historyList[selectedArticleNumber].subtopics ? historyList[selectedArticleNumber].subtopics.length : 0;
-    // const completedSubtopics = subArticleSuccessLevels.length > 0 ? subArticleSuccessLevels[selectedArticleNumber].filter(done => done).length : 0;
-    // const completionPercentage = totalSubtopics > 0 ? (completedSubtopics / totalSubtopics) * 100 : 0;
-    // const finalTestIsNotOpen = (historyList[selectedArticleNumber].subtopics.length > 0 && subArticleSuccessLevels.length > 0) ? (subArticleSuccessLevels.length > 0 && !subArticleSuccessLevels[selectedArticleNumber].every(done => done)) : true;
-
-    useEffect(() => {
-        if (!historyList || selectedArticleNumber >= historyList.length) {
-            return; // або можете показати повідомлення про помилку
-        }
-
-        const selectedArticle = historyList[selectedArticleNumber];
-
-        if (selectedArticle && selectedArticle.subtopics) {
-            const subtopics = selectedArticle.subtopics;
-            const total = subtopics.length;
-
-            const completed = subtopics.reduce((acc, subtopic) => {
-                const testResult = currentUser.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
-                if (testResult && testResult.completed) {
-                    acc += 1;
-                }
-                return acc;
-            }, 0);
-
-            setTotalSubtopics(total);
-            setCompletedSubtopics(completed);
-            setCompletionPercentage(total > 0 ? (completed / total) * 100 : 0);
-        }
-    }, [historyList, selectedArticleNumber, currentUser.tests_completed_list]);
-
-
-    const finalTestIsNotOpen = (subArticlesArray.length > 0 &&
-        !subArticlesArray.every((subtopic: SubtopicsProps) => {
-            const testResult = currentUser.tests_completed_list.find((result: ITestCompletedItem) => result.test_id === subtopic.sub_article_test_id);
-            return testResult && testResult.completed;
-        }));
-
-    return (
-        <Container className={"article_page_container"}>
-            <Helmet>
-                <title> {isLoading ? `Loading` : `Тема ${article.text}`}</title>
-            </Helmet>
-
-
-            {
-                isLoading ? (<Preloader/>) :
-
+                {isLoading ? (<Preloader/>) : (
                     <React.Fragment>
                         <Grid className={"back_button_container"} container>
                             <Grid item>
@@ -256,15 +151,16 @@ const Article: React.FC<IArticleProps> = ({
                             </Grid>
                         </Grid>
 
-
                         <Typography textAlign={"center"} variant={"h6"} className={"lesson"}>Lesson</Typography>
-                        <Typography textAlign={"center"} className={"date"} variant={"h5"}>{article.date}</Typography>
+                        <Typography textAlign={"center"} className={"date"}
+                                    variant={"h5"}>{historyList[selectedArticleNumber]?.date}</Typography>
 
-                        <Typography textAlign={"center"} className={"title"} variant={"h4"}>{article.text}</Typography>
+                        <Typography textAlign={"center"} className={"title"}
+                                    variant={"h4"}>{historyList[selectedArticleNumber]?.text}</Typography>
 
                         <Grid container justifyContent={"center"}>
                             <Grid item xs={"auto"}>
-                                {!currentLevelCompleted && (finalTestIsNotOpen ?
+                                {!stateArticle.currentLevelCompleted && (finalTestIsNotOpen ?
                                         <Button className={"start_button_top"}
                                                 onClick={() => handleGoToSubArticleTest(selectedArticleNumber)}
                                                 variant={"contained"}>Start Test</Button>
@@ -280,38 +176,34 @@ const Article: React.FC<IArticleProps> = ({
                             <Grid item xs={12} md={5}> <img src={myImage} alt=""/></Grid>
                             <Grid item xs={12} md={7}>
                                 <div
-                                    className={"content_container"}>{historyList[selectedArticleNumber].content && contentRenderFunction(currentArticleContent ? currentArticleContent : "")}</div>
+                                    className={"content_container"}>{historyList[selectedArticleNumber]?.content && contentRenderFunction(stateArticle.currentArticleContent ? stateArticle.currentArticleContent : "")}</div>
                             </Grid>
                         </Grid>
 
-
-                        {/* Display subtopics as cards */}
-                        {subArticlesArray.length > 0 && (
+                        {stateArticle.subArticlesArray.length > 0 && (
                             <Grid className={"subtopic_card_list"} container justifyContent={"center"}>
 
-                                {!currentLevelCompleted && <Grid item xs={12} sm={12} md={6} xl={6}>
+                                {!stateArticle.currentLevelCompleted && <Grid item xs={12} sm={12} md={6} xl={6}>
                                     <Typography variant={"h6"}>Пройдіть додаткові завдання перед головним
                                         тестом</Typography>
                                 </Grid>}
 
-                                {!currentLevelCompleted &&
+                                {!stateArticle.currentLevelCompleted &&
                                 <Grid className={"additional_test_progress_container"} container
                                       justifyContent={"center"}>
                                     <Grid item xs={12} sm={8} md={6} xl={4}>
                                         <LinearProgress color={"primary"} variant="determinate"
-                                                        value={completionPercentage}/>
+                                                        value={stateArticle.completionPercentage}/>
                                         <Typography className={"linear_progress_title"} variant="body2" gutterBottom>
-                                            Виконано: {completedSubtopics} із {totalSubtopics} ({completionPercentage.toFixed(2)}%)
+                                            Виконано: {stateArticle.completedSubtopics} із {stateArticle.totalSubtopics} ({stateArticle.completionPercentage.toFixed(2)}%)
                                         </Typography>
                                     </Grid>
                                 </Grid>}
 
                                 <Grid item container xs={12} spacing={2}>
-                                    {subArticlesArray.map((subtopic, index) => {
+                                    {stateArticle.subArticlesArray.map((subtopic, index) => {
 
-                                        // console.log('Subtopic ID:', subtopic.sub_article_test_id);
                                         const testResult = currentUser.tests_completed_list.find(result => result.test_id === subtopic.sub_article_test_id);
-                                        // console.log('Test Result:', testResult);
                                         const isCompleted = testResult ? testResult.completed : false;
 
                                         return (
@@ -322,34 +214,44 @@ const Article: React.FC<IArticleProps> = ({
                                                     subArticleIndex={index}
                                                     title={subtopic.title}
                                                     content={subtopic.content}
-                                                    handleGoToSubTestNow={handleGoToSubTestNow}
+                                                    handleGoToSubTestNow={(articleIndex, subArticleIndex) => navigate(`/test/${articleIndex}/${subArticleIndex}`)}
                                                 />
                                             </Grid>
                                         );
-                                    })}                                </Grid>
+                                    })}
+                                </Grid>
                             </Grid>
                         )}
 
+                        {!stateArticle.currentLevelCompleted && <Grid container justifyContent={"center"}>
+                            <Grid item xs={12}>
+                                {stateArticle.subArticlesArray.length > 0 && stateArticle.completionPercentage < 100 && (
+                                    <Typography textAlign={"center"} variant={"h6"}>
+                                        Пройдіть всі додаткові тести, щоб розблокувати головний тест
+                                    </Typography>
+                                )}
 
-                        {!currentLevelCompleted && <Grid container justifyContent={"center"}>
-                            <Grid item xs={12} sm={6} md={"auto"}>
-                                <Button
-                                    disabled={finalTestIsNotOpen}
-                                    size={"large"}
-                                    fullWidth={!mdUp}
-                                    variant={"contained"}
-                                    className="quiz-button"
-                                    onClick={handleShowQuiz}>
-                                    Завершити рівень
-                                </Button>
+                                <Grid container justifyContent={"center"}>
+                                    <Grid item xs={12} sm={6} md={"auto"}>
+                                        <Button
+                                            disabled={stateArticle.completionPercentage < 100}
+                                            onClick={handleShowQuiz}
+                                            size={"large"}
+                                            fullWidth={!mdUp}
+                                            variant={"contained"}
+                                            className="quiz-button"
+                                        >
+                                            Завершити рівень
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+
                             </Grid>
                         </Grid>}
-                    </React.Fragment>
-            }
+                    </React.Fragment>)}
+            </Container>
+        );
+    }
+;
 
-        </Container>
-    )
-
-}
-
-export default Article
+export default Article;

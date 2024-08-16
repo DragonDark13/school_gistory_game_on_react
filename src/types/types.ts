@@ -97,11 +97,8 @@ export interface ProfilePageProps extends IHistoryListArray {
 
 export interface IArticleProps extends IHistoryListArray, ISetSelectedArticle {
     subArticleSuccessLevels: boolean[][];
-    readonly setSelectedSubArticle: (arg0: number) => void;
     isLoading: boolean;
-    articleContentFromApp: IArticleContentArrayItem[];
     currentUser: IUser;
-
 }
 
 export interface ISubtopicCardProps extends SubtopicsProps {
