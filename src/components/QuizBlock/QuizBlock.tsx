@@ -63,7 +63,7 @@ const useStyles = makeStyles()((theme) => ({
 
 
 const QuizHeader: React.FC<{ selectedArticleNumber: number }> = ({selectedArticleNumber}) => (
-    <Grid  className={"back_button_container"} container justifyContent={"space-between"}>
+    <Grid className={"back_button_container"} container justifyContent={"space-between"}>
         <Grid item>
             <Button component={RouterLink} to={`/article/${selectedArticleNumber}`} startIcon={<ArrowBackIosIcon/>}>
                 До бібліотеки
