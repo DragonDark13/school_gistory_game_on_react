@@ -267,7 +267,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
 
     const handleNextQuestion = () => {
-        if (!selectedAnswer && remainingTime > 0) {
+        if (selectedAnswer === null && remainingTime > 0) {
             return;
         }
 

@@ -58,7 +58,8 @@ const QuestionContainer: React.FC<{ props: QuestionContainerProps }> = ({props})
                             defaultValue={0}
                             value={percentCompleted ? percentCompleted : 0}
                             variant={"determinate"}/>
-            <Typography className={"quiz_title"} variant={"h5"}>Тема: {currentArticleTitle && currentArticleTitle}</Typography>
+            <Typography className={"quiz_title"}
+                        variant={"h5"}>Тема: {currentArticleTitle && currentArticleTitle}</Typography>
             <Grid container rowSpacing={{xs: 2, sm: 0}} columnSpacing={{xs: 1, sm: 2, md: 3}} alignItems={"center"}
                   justifyContent={"center"}>
                 <Grid item xs={12} sm={6}>
@@ -69,14 +70,14 @@ const QuestionContainer: React.FC<{ props: QuestionContainerProps }> = ({props})
                         {(quizOptions && quizOptions.length > 0) && quizOptions[currentQuestion].map((option, index) => (
                             <FormControlLabel
                                 key={index + "button"}
-                                className={cx(remainingTime === 0 ? optionsHighlightWhenTimerIsFinished(index + 1) : optionHighlight(index + 1))}
+                                className={cx(remainingTime === 0 ? optionsHighlightWhenTimerIsFinished(index) : optionHighlight(index))}
                                 onKeyPress={handleAnswerKeyPress}
                                 onClick={() => {
                                     if (!answerChosen && remainingTime > 0) {
-                                        handleAnswer(index + 1);
+                                        handleAnswer(index);
                                     }
                                 }}
-                                control={<Radio checked={selectedAnswer === index + 1}/>}
+                                control={<Radio checked={selectedAnswer === index}/>}
                                 label={option}
                                 value={option}
                                 disabled={answerChosen || remainingTime === 0}
