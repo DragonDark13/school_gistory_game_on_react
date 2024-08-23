@@ -37,8 +37,8 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             });
 
             if (response.status === 200 && response.data.success) {
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('refresh_token', response.data.refresh_token);
+                localStorage.setItem('token', response.data.tokens.access_token);
+                localStorage.setItem('refresh_token', response.data.tokens.refresh_token);
                 setIsAuthenticated(true);
                 setCurrentUser(response.data.user_data);
             } else {
@@ -62,8 +62,8 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             });
 
             if (response.status === 201) {
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('refresh_token', response.data.refresh_token);
+                localStorage.setItem('token', response.data.tokens.access_token);
+                localStorage.setItem('refresh_token', response.data.tokens.refresh_token);
                 setIsAuthenticated(true);
                 setCurrentUser(response.data.user_data);
             } else {
@@ -94,7 +94,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                     'Authorization': `Bearer ${refreshToken}`
                 }
             });
-            const newAccessToken = response.data.access_token;
+            const newAccessToken = response.data.tokens.access_token;
             localStorage.setItem('token', newAccessToken);
             return newAccessToken;
         } catch (error) {

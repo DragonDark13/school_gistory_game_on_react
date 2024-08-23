@@ -30,7 +30,7 @@ export const validateSettings = {
     password: {
         min: 8,
         max: 20,
-        passwordPattern: /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/,
+        passwordPattern: /(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}/,
     },
     email: {
         min: 3,
