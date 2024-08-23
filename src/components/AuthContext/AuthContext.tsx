@@ -75,33 +75,41 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 setCurrentUser(response.data.user_data);
                 setIsAuthenticated(true);
             }
-        } catch (error) {
-            if (error.response?.status === 401) {
-                const newToken = await refreshAccessToken();
-                if (newToken) {
-                    try {
-                        const retryResponse = await axiosClient.get('/api/user', {
-                            headers: {'Authorization': `Bearer ${newToken}`}
-                        });
+        } catch (error: unknown) {
 
-                        if (retryResponse.status === 200) {
-                            setCurrentUser(retryResponse.data.user_data);
-                            setIsAuthenticated(true);
+            if (error instanceof AxiosError) {
+                if (error.response?.status === 401) {
+                    const newToken = await refreshAccessToken();
+                    if (newToken) {
+                        try {
+                            const retryResponse = await axiosClient.get('/api/user', {
+                                headers: {'Authorization': `Bearer ${newToken}`}
+                            });
+
+                            if (retryResponse.status === 200) {
+                                setCurrentUser(retryResponse.data.user_data);
+                                setIsAuthenticated(true);
+                            }
+                        } catch (retryError) {
+                            console.error('Error fetching user data after token refresh:', retryError);
+                            setIsAuthenticated(false);
+                            setCurrentUser(null);
                         }
-                    } catch (retryError) {
-                        console.error('Error fetching user data after token refresh:', retryError);
+                    } else {
                         setIsAuthenticated(false);
                         setCurrentUser(null);
                     }
                 } else {
+                    console.error('Error fetching user data:', error);
                     setIsAuthenticated(false);
                     setCurrentUser(null);
                 }
+
             } else {
-                console.error('Error fetching user data:', error);
-                setIsAuthenticated(false);
-                setCurrentUser(null);
+                console.error('unknow error', error);
+
             }
+
         } finally {
             setIsFetching(false);
             setIsLoading(false);
@@ -154,7 +162,10 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Login failed: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            handleError(error, 'Login error');
+            if (error instanceof AxiosError) {
+                handleError(error, 'Login error');
+            }
+
         } finally {
             setIsLoading(false);
         }
@@ -175,7 +186,9 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             }
         } catch (error) {
             setIsAuthenticated(false);
-            handleError(error, 'Registration error');
+            if (error instanceof AxiosError) {
+                handleError(error, 'Registration error');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -206,7 +219,9 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Failed to update profile: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            handleError(error, 'Failed to update profile');
+            if (error instanceof AxiosError) {
+                handleError(error, 'Failed to update profile');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -227,7 +242,9 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Failed to delete profile: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            handleError(error, 'Delete profile error');
+            if (error instanceof AxiosError) {
+                handleError(error, 'Delete profile error');
+            }
         } finally {
             setIsLoading(false);
         }
