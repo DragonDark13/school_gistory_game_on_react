@@ -120,7 +120,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
         fetchUserData();
     }, [fetchUserData]);
 
-    const handleError = (error: AxiosError | Error, fallbackMessage: string) => {
+    const handleError = (error: AxiosError | Error | unknown, fallbackMessage: string) => {
         if (error instanceof AxiosError) {
             console.error(fallbackMessage, error.response?.data.message || error.message);
             alert(fallbackMessage + ': ' + (error.response?.data.message || 'Network error'));
@@ -162,10 +162,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Login failed: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            if (error instanceof AxiosError) {
-                handleError(error, 'Login error');
-            }
-
+            handleError(error, 'Login error');
         } finally {
             setIsLoading(false);
         }
@@ -186,9 +183,8 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             }
         } catch (error) {
             setIsAuthenticated(false);
-            if (error instanceof AxiosError) {
-                handleError(error, 'Registration error');
-            }
+            handleError(error, 'Registration error');
+
         } finally {
             setIsLoading(false);
         }
@@ -219,9 +215,8 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Failed to update profile: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            if (error instanceof AxiosError) {
-                handleError(error, 'Failed to update profile');
-            }
+            handleError(error, 'Failed to update profile');
+
         } finally {
             setIsLoading(false);
         }
@@ -242,9 +237,8 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Failed to delete profile: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            if (error instanceof AxiosError) {
-                handleError(error, 'Delete profile error');
-            }
+            handleError(error, 'Delete profile error');
+
         } finally {
             setIsLoading(false);
         }
