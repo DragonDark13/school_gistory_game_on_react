@@ -1,12 +1,13 @@
 import * as React from 'react';
-import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from "react";
-import axiosClient from "../../axios";
-import {UserContext} from "../MyProviders/MyProviders";
-import {AxiosError} from "axios";
+import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from 'react';
+import axiosClient from '../../axios';
+import {UserContext} from '../MyProviders/MyProviders';
+import {AxiosError} from 'axios';
+import {IUser} from "../../types/types";
 
 export interface IAuthContextProps {
     isAuthenticated: boolean;
-    login: (email: string, password: string) => Promise<void>;
+    login: (userName: string, password: string) => Promise<void>;
     register: (email: string, password: string, userName: string) => Promise<void>;
     logout: () => void;
     isLoading: boolean;
@@ -20,14 +21,125 @@ interface IAuthProviderProps {
     children: ReactNode;
 }
 
+interface AuthResponse {
+    data: {
+        tokens: {
+            access_token: string;
+            refresh_token: string;
+        };
+        user_data: IUser; // Replace 'any' with the actual type of user data
+    };
+}
+
+
 export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const {setCurrentUser} = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(true);
+    const [isFetching, setIsFetching] = useState(true);
+
+
+    const refreshAccessToken = async () => {
+        const refreshToken = localStorage.getItem('refresh_token');
+        try {
+            const response = await axiosClient.post('/refresh', {}, {
+                headers: {'Authorization': `Bearer ${refreshToken}`}
+            });
+            const newAccessToken = response.data.token;
+            localStorage.setItem('token', newAccessToken);
+            return newAccessToken;
+        } catch (error) {
+            console.error('Error refreshing token:', error);
+            return null;
+        }
+    };
+
+
+    const fetchUserData = useCallback(async () => {
+        if (!isFetching) return; // Prevent multiple concurrent fetches
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            setIsAuthenticated(false);
+            setCurrentUser(null);
+            setIsFetching(false);
+            return;
+        }
+
+        try {
+            const response = await axiosClient.get('/api/user', {
+                headers: {'Authorization': `Bearer ${token}`}
+            });
+
+            if (response.status === 200) {
+                setCurrentUser(response.data.user_data);
+                setIsAuthenticated(true);
+            }
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken();
+                if (newToken) {
+                    try {
+                        const retryResponse = await axiosClient.get('/api/user', {
+                            headers: {'Authorization': `Bearer ${newToken}`}
+                        });
+
+                        if (retryResponse.status === 200) {
+                            setCurrentUser(retryResponse.data.user_data);
+                            setIsAuthenticated(true);
+                        }
+                    } catch (retryError) {
+                        console.error('Error fetching user data after token refresh:', retryError);
+                        setIsAuthenticated(false);
+                        setCurrentUser(null);
+                    }
+                } else {
+                    setIsAuthenticated(false);
+                    setCurrentUser(null);
+                }
+            } else {
+                console.error('Error fetching user data:', error);
+                setIsAuthenticated(false);
+                setCurrentUser(null);
+            }
+        } finally {
+            setIsFetching(false);
+            setIsLoading(false);
+        }
+    }, [refreshAccessToken, setCurrentUser, isFetching]);
 
     useEffect(() => {
         fetchUserData();
-    }, []);
+    }, [fetchUserData]);
+
+    const handleError = (error: AxiosError | Error, fallbackMessage: string) => {
+        if (error instanceof AxiosError) {
+            console.error(fallbackMessage, error.response?.data.message || error.message);
+            alert(fallbackMessage + ': ' + (error.response?.data.message || 'Network error'));
+        } else {
+            console.error(fallbackMessage, error);
+            alert(fallbackMessage + ': Unknown error');
+        }
+    };
+
+    const storeTokens = (accessToken: string, refreshToken: string) => {
+        localStorage.setItem('token', accessToken);
+        localStorage.setItem('refresh_token', refreshToken);
+    };
+
+    const handleUserAuthentication = (response: AuthResponse) => {
+        const {tokens, user_data} = response.data;
+
+        if (!tokens || !user_data) {
+            console.error('Invalid authentication response:', response);
+            alert('Authentication failed: Invalid response from server.');
+            return;
+        }
+
+        storeTokens(tokens.access_token, tokens.refresh_token);
+        setIsAuthenticated(true);
+        setCurrentUser(user_data);
+    };
 
     const login = async (userName: string, password: string) => {
         setIsLoading(true);
@@ -37,18 +149,12 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             });
 
             if (response.status === 200 && response.data.success) {
-                localStorage.setItem('token', response.data.tokens.access_token);
-                localStorage.setItem('refresh_token', response.data.tokens.refresh_token);
-                setIsAuthenticated(true);
-                setCurrentUser(response.data.user_data);
+                handleUserAuthentication(response)
             } else {
                 alert('Login failed: ' + (response.data.message || 'Unknown error'));
             }
-        } catch (error: unknown) {
-            if (error instanceof AxiosError) {
-                console.error('Login error:', error?.response?.data.message);
-                alert('Login failed: ' + (error?.response?.data.message || 'Network error'));
-            }
+        } catch (error) {
+            handleError(error, 'Login error');
         } finally {
             setIsLoading(false);
         }
@@ -62,104 +168,19 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             });
 
             if (response.status === 201) {
-                localStorage.setItem('token', response.data.tokens.access_token);
-                localStorage.setItem('refresh_token', response.data.tokens.refresh_token);
-                setIsAuthenticated(true);
-                setCurrentUser(response.data.user_data);
+                handleUserAuthentication(response)
             } else {
                 setIsAuthenticated(false);
-
                 alert('Registration failed: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
             setIsAuthenticated(false);
-
-            if (error instanceof AxiosError) {
-                console.error('Registration error:', error?.response?.data.message);
-                alert('Registration failed: ' + (error?.response?.data.message || 'Network error'));
-                throw new Error(error.response?.data.message || 'Registration failed');
-            } else {
-                console.error('An unexpected error occurred');
-            }
+            handleError(error, 'Registration error');
         } finally {
             setIsLoading(false);
         }
     };
 
-    const refreshAccessToken = async () => {
-        const refreshToken = localStorage.getItem('refresh_token');
-        try {
-            const response = await axiosClient.post('/refresh', {}, {
-                headers: {
-                    'Authorization': `Bearer ${refreshToken}`
-                }
-            });
-            const newAccessToken = response.data.tokens.access_token;
-            localStorage.setItem('token', newAccessToken);
-            return newAccessToken;
-        } catch (error) {
-            console.error('Error refreshing token:', error);
-            return null;
-        }
-    };
-
-    const fetchUserData = useCallback(async () => {
-            const token = localStorage.getItem('token');
-
-            if (!token) {
-                setIsAuthenticated(false);
-                setCurrentUser(null);
-                setIsLoading(false);
-                return;
-            }
-
-            try {
-                const response = await axiosClient.get('/api/user', {
-                    headers: {'Authorization': `Bearer ${token}`}
-                });
-
-                if (response.status === 200) {
-                    setCurrentUser(response.data.user_data);
-                    setIsAuthenticated(true);
-                }
-            } catch (error) {
-                if (error instanceof Error) {
-                    if (error && error.message === 'Token has expired') {
-                        const newToken = await refreshAccessToken();
-                        if (newToken) {
-                            try {
-                                const retryResponse = await axiosClient.get('/api/user', {
-                                    headers: {'Authorization': `Bearer ${newToken}`}
-                                });
-
-                                if (retryResponse.status === 200) {
-                                    setCurrentUser(retryResponse.data.user_data);
-                                    setIsAuthenticated(true);
-                                }
-                            } catch (retryError) {
-                                console.error('Error fetching user data after token refresh:', retryError);
-                                setIsAuthenticated(false);
-                                setCurrentUser(null);
-                            }
-                        } else {
-                            setIsAuthenticated(false);
-                            setCurrentUser(null);
-                        }
-                    } else {
-                        console.error('An unexpected error occurred');
-                    }
-                } else {
-                    console.error('Error fetching user data:', error);
-                    setIsAuthenticated(false);
-                    setCurrentUser(null);
-                }
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        ,
-        []
-    );
 
     const logout = () => {
         localStorage.removeItem('token');
@@ -171,11 +192,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     const updateProfile = async (user_name: string, email: string, country: string) => {
         setIsLoading(true);
         try {
-            const response = await axiosClient.post('/update-profile', {
-                user_name,
-                email,
-                country
-            }, {
+            const response = await axiosClient.post('/update-profile', {user_name, email, country}, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -189,11 +206,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Failed to update profile: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            if (error instanceof Error) {
-                alert('Failed to update profile: ' + (error.message || 'Network error'));
-            } else {
-                alert('Failed to update profile: Unknown error');
-            }
+            handleError(error, 'Failed to update profile');
         } finally {
             setIsLoading(false);
         }
@@ -214,14 +227,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 alert('Failed to delete profile: ' + (response.data.message || 'Unknown error'));
             }
         } catch (error) {
-            if (error instanceof Error) {
-                console.error('Delete profile error:', error);
-                alert('Failed to delete profile: ' + (error?.message || 'Network error'));
-            } else {
-                console.error('Delete profile error:', error);
-
-            }
-
+            handleError(error, 'Delete profile error');
         } finally {
             setIsLoading(false);
         }
@@ -229,7 +235,8 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
 
     return (
         <AuthContext.Provider
-            value={{isAuthenticated, login, register, logout, isLoading, updateProfile, deleteProfile}}>
+            value={{isAuthenticated, login, register, logout, isLoading, updateProfile, deleteProfile}}
+        >
             {children}
         </AuthContext.Provider>
     );
