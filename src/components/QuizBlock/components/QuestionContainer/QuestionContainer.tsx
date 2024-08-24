@@ -8,13 +8,12 @@ import {useStyles} from "tss-react";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 
-type QuestionContainerProps = {
+export type IQuestionContainerProps = {
     currentQuestion: number;
     quizOptions: string[][];
     selectedAnswer: number | null;
     handleAnswer: (answerIndex: number) => void;
     handleAnswerKeyPress: (event: React.KeyboardEvent) => void;
-    remainingTime: number;
     maxTimeStatic: number;
     answerChosen: boolean;
     currentAnswerStatus: boolean;
@@ -26,16 +25,17 @@ type QuestionContainerProps = {
     optionHighlight: (option: number) => string;
     percentCompleted: number,
     currentQuestionText: string,
+    setTimeIsFinished: (boolean) => void;
+    timeIsFinished: boolean
 };
 
-const QuestionContainer: React.FC<{ props: QuestionContainerProps }> = ({props}) => {
+const QuestionContainer: React.FC<{ props: IQuestionContainerProps }> = ({props}) => {
     const {
         currentQuestion,
         quizOptions,
         selectedAnswer,
         handleAnswer,
         handleAnswerKeyPress,
-        remainingTime,
         maxTimeStatic,
         answerChosen,
         currentAnswerStatus,
@@ -46,11 +46,14 @@ const QuestionContainer: React.FC<{ props: QuestionContainerProps }> = ({props})
         optionsHighlightWhenTimerIsFinished,
         optionHighlight,
         percentCompleted,
-        currentQuestionText
+        currentQuestionText,
+        setTimeIsFinished,
+        timeIsFinished
     } = props;
 
     const {cx} = useStyles();
 
+    console.log("QuestionContainer start")
 
     return (
         <div className={"question_container"}>
@@ -70,17 +73,17 @@ const QuestionContainer: React.FC<{ props: QuestionContainerProps }> = ({props})
                         {(quizOptions && quizOptions.length > 0) && quizOptions[currentQuestion].map((option, index) => (
                             <FormControlLabel
                                 key={index + "button"}
-                                className={cx(remainingTime === 0 ? optionsHighlightWhenTimerIsFinished(index) : optionHighlight(index))}
+                                className={cx(timeIsFinished ? optionsHighlightWhenTimerIsFinished(index) : answerChosen ? optionHighlight(index) : "")}
                                 onKeyPress={handleAnswerKeyPress}
                                 onClick={() => {
-                                    if (!answerChosen && remainingTime > 0) {
+                                    if (!answerChosen && !timeIsFinished) {
                                         handleAnswer(index);
                                     }
                                 }}
                                 control={<Radio checked={selectedAnswer === index}/>}
                                 label={option}
                                 value={option}
-                                disabled={answerChosen || remainingTime === 0}
+                                disabled={answerChosen || timeIsFinished}
                             />
                         ))}
                     </RadioGroup>
@@ -89,13 +92,17 @@ const QuestionContainer: React.FC<{ props: QuestionContainerProps }> = ({props})
             <Grid container justifyContent={"space-between"} mt={2} alignItems={"center"}>
                 <Grid className={"status_icon_container"} item xs={"auto"}>
                     {answerChosen && <AnswerReactionBlock currentAnswerStatus={currentAnswerStatus}/>}
-                    {!answerChosen && (remainingTime > 0 ?
-                        <TimerProgress maxTimeStatic={maxTimeStatic} remainingTime={remainingTime}/> :
+                    {!answerChosen && (!timeIsFinished ?
+                        <TimerProgress
+                            maxTimeStatic={maxTimeStatic}
+                            answerChosen={answerChosen}
+                            setTimeIsFinished={setTimeIsFinished}
+                        /> :
                         <TimeUpMessageBlock/>)}
                 </Grid>
                 <Grid item xs={12} sm={"auto"}>
                     <Button
-                        color={answerChosen ? (currentAnswerStatus ? "success" : "error") : remainingTime === 0 ? "error" : "primary"}
+                        color={answerChosen ? (currentAnswerStatus ? "success" : "error") : timeIsFinished ? "error" : "primary"}
                         onKeyDown={handleNextQuestion}
                         fullWidth={!smUp}
                         className={'next_button'}

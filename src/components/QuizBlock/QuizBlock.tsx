@@ -18,7 +18,7 @@ import {HistoricalEvent, IDataForQuiz, IQuizBlockProps, SubtopicsProps} from "..
 import {makeStyles} from "tss-react/mui";
 import axiosClient from "../../axios";
 import QuizResults from "./components/QuizResults/QuizResults";
-import QuestionContainer from "./components/QuestionContainer/QuestionContainer";
+import QuestionContainer, {IQuestionContainerProps} from "./components/QuestionContainer/QuestionContainer";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -86,7 +86,11 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                                                   setCurrentUser,
                                                   currentUser
                                               }) => {
+    console.log("Current Props:",
+        historyList,
+        currentUser);
 
+    console.log("QuizBlock.tsx start")
 
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [results, setResults] = useState({correct: 0, incorrect: 0});
@@ -99,7 +103,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const [answerChosen, setAnswerChosen] = useState(false);
     const [currentAnswerStatus, setCurrentAnswerStatus] = useState(false);
     const maxTimeStatic = 30;
-    const [remainingTime, setRemainingTime] = useState(maxTimeStatic);
+    const [timeIsFinished, setTimeIsFinished] = useState<boolean>(false)
     const [currentTestId, setCurrentTestId] = useState<number | null | undefined>(null)
     const [currentArticleTitle, setCurrentArticleTitle] = useState<string>("")
     const [currentArticle, setCurrentArticle] = useState<SubtopicsProps | HistoricalEvent | null>(null);
@@ -121,17 +125,22 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     const smUp = useMediaQuery(themeDefault.breakpoints.up('sm'));
 
 
-    useEffect(() => {
-        if (setSelectedSubArticle) {
-            setSelectedSubArticle(selectedSubArticleNumber);
-        }
-    }, [setSelectedSubArticle, selectedSubArticleNumber]);
+    // useEffect(() => {
+    //     if (setSelectedSubArticle) {
+    //         setSelectedSubArticle(selectedSubArticleNumberFromUrl);
+    //     }
+    // }, [selectedSubArticleNumberFromUrl]);
 
     useEffect(() => {
+        console.log("historyList", historyList);
+
         if (historyList.length > 0) {
-
+            console.log("testType", testType);
             if (testType === "subArticle") {
                 selectedSubArticleNumber = parseInt(subtopicId || '0', 10);
+                if (setSelectedSubArticle) {
+                    setSelectedSubArticle(selectedSubArticleNumber);
+                }
                 const selectedArticle = historyList[selectedArticleNumber];
                 if (selectedArticle && selectedArticle.subtopics) {
                     const selectedSubtopic = selectedArticle.subtopics[selectedSubArticleNumber];
@@ -148,21 +157,41 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
             }
 
         }
-    }, [historyList, subtopicId]);
+    }, [subtopicId, historyList]);
+
+    const updateStateFromArticle = (questions: IDataForQuiz[]) => {
+        const questionsArray: string[] = questions.map(item => item.question) || [];
+        setQuizQuestions(questionsArray);
+        console.log("questionsArray", questionsArray);
+
+        const optionsArray: string[][] = questions.map(item => item.options) || [];
+        setQuizOptions(optionsArray);
+        console.log("optionsArray", optionsArray);
+
+        const correctAnswersArray: number[] = questions.map(item => item.correct_answers) || [];
+        setQuizCorrectAnswers(correctAnswersArray);
+        console.log("correctAnswersArray", correctAnswersArray);
+
+
+        // inspect
+
+        const isValid = optionsArray.every((options, index) =>
+            correctAnswersArray[index] >= 0 && correctAnswersArray[index] < options.length
+        );
+
+        const equalArrayLenght = optionsArray.length === correctAnswersArray.length && correctAnswersArray.length === questions.length;
+
+        if (!equalArrayLenght || !isValid) console.warn("Length mismatch: optionsArray and correctAnswersArray should be" +
+            " of" +
+            " the same length as questionsArray");
+
+    };
 
     useEffect(() => {
-        const updateStateFromArticle = (questions: IDataForQuiz[]) => {
-            const questionsArray: string[] = questions.map(item => item.question) || [];
-            setQuizQuestions(questionsArray);
-
-            const optionsArray: string[][] = questions.map(item => item.options) || [];
-            setQuizOptions(optionsArray);
-
-            const correctAnswersArray: number[] = questions.map(item => item.correct_answers) || [];
-            setQuizCorrectAnswers(correctAnswersArray);
-        };
 
         if (currentArticle) {
+            console.log("currentArticle1111", currentArticle)
+
             if (testType === "subArticle") {
                 setCurrentArticleTitle("title" in currentArticle ? currentArticle.title : "");
                 setCurrentTestId("sub_article_test_id" in currentArticle ? currentArticle.sub_article_test_id : undefined);
@@ -179,7 +208,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
                 }
             }
         }
-    }, [currentArticle, testType]);
+    }, [currentArticle]);
 
 
 // Успішне завершення тесту
@@ -242,19 +271,19 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     useEffect(() => {
 
-        if (remainingTime === 0 && !answerChosen) {
+        if (timeIsFinished && !answerChosen) {
             setResults({...results, incorrect: results.incorrect + 1});
             setCurrentAnswerStatus(false);
             setIsNextButtonActive(true);
         }
 
-    }, [answerChosen, remainingTime])
+    }, [answerChosen, timeIsFinished])
 
     const clearSettingsBeforeNewQuestion = () => {
         setSelectedAnswer(null);
         setIsNextButtonActive(false);
         setAnswerChosen(false)
-        setRemainingTime(maxTimeStatic);
+        setTimeIsFinished(false);
     }
     const handleRetakeQuiz = () => {
         setCurrentQuestion(0);
@@ -267,7 +296,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
 
     const handleNextQuestion = () => {
-        if (selectedAnswer === null && remainingTime > 0) {
+        if (selectedAnswer === null && !timeIsFinished) {
             return;
         }
 
@@ -295,50 +324,55 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
     };
 
 
-    useEffect(() => {
-        let timer: NodeJS.Timeout | undefined;
-
-        // Timer effect
-        const startTimer = () => {
-            timer = setInterval(() => {
-                setRemainingTime((prevTime) => {
-                    if (prevTime === 0) {
-                        clearInterval(timer); // Clear the timer when it reaches 0
-                        return 0;
-                    } else {
-                        return prevTime - 1; // Decrement the remaining time
-                    }
-                });
-            }, 1000);
-        };
-
-        if (!answerChosen) {
-            // Run the timer only if answerChosen is false
-            startTimer();
-        } else {
-            clearInterval(timer);
-        }
-
-        // Cleanup function
-        return () => {
-            if (timer) clearInterval(timer);
-        };
-
-    }, [answerChosen]); // Runs whenever answerChosen changes; // Runs whenever answerChosen changes; // Runs once when the component mounts
+    // useEffect(() => {
+    //     let timer: NodeJS.Timeout | undefined;
+    //
+    //     // Timer effect
+    //     const startTimer = () => {
+    //         Timertimer = setInterval(() => {
+    //             setRemainingTime((prevTime) => {
+    //                 if (prevTime === 0) {
+    //                     clearInterval(timer); // Clear the timer when it reaches 0
+    //                     setTimeIsFinished(true)
+    //                     return 0;
+    //                 } else {
+    //                     return prevTime - 1; // Decrement the remaining time
+    //                 }
+    //             });
+    //         }, 1000);
+    //     };
+    //
+    //     if (!answerChosen) {
+    //         // Run the timer only if answerChosen is false
+    //         console.log("Run the timer ")
+    //         startTimer();
+    //     } else {
+    //         clearInterval(timer);
+    //     }
+    //     // startTimer()
+    //     // Cleanup function
+    //     return () => {
+    //         if (timer) clearInterval(timer);
+    //     };
+    //
+    // }, [answerChosen]); // Runs whenever answerChosen changes; // Runs whenever answerChosen changes; // Runs once when the component mounts
 
 // Calculate the progress for CircularProgress
 
     const optionHighlight = (option: number) => {
 
-        if (option === selectedAnswer) {
+        if (selectedAnswer !== null) {
+            if (option === selectedAnswer) {
 
-            if (option === quizCorrectAnswers[currentQuestion]) {
+                if (option === quizCorrectAnswers[currentQuestion]) {
+                    return classes.sucessOptionSelected;
+                } else return classes.errorOptionSelected;
+
+            } else if (option === quizCorrectAnswers[currentQuestion]) {
                 return classes.sucessOptionSelected;
-            } else return classes.errorOptionSelected;
+            } else return "";
+        }
 
-        } else if (option === quizCorrectAnswers[currentQuestion]) {
-            return classes.sucessOptionSelected;
-        } else return "";
 
     }
 
@@ -347,21 +381,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
             return classes.sucessOptionSelected;
         } else return "";
     }
-
-    useEffect(() => {
-
-        const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === 'Enter') {
-                handleNextQuestion();
-            }
-        };
-
-        document.addEventListener('keypress', handleKeyPress);
-
-        return () => {
-            document.removeEventListener('keypress', handleKeyPress);
-        };
-    }, [handleNextQuestion]);
 
 
     const quizResultsProps = {
@@ -382,7 +401,6 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         selectedAnswer,
         handleAnswer,
         handleAnswerKeyPress,
-        remainingTime,
         maxTimeStatic,
         answerChosen,
         currentAnswerStatus,
@@ -394,8 +412,12 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         currentArticleTitle,
         percentCompleted,
         currentQuestionText: quizQuestions[currentQuestion],
+        setTimeIsFinished,
+        timeIsFinished,
     };
 
+
+    console.log(timeIsFinished ? "timeIsFinished Yes" : "timeIsFinished No")
 
     return (
         <Container>
