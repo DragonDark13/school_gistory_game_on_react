@@ -1,0 +1,1 @@
+import{a as r,i as a,j as t}from"./index-OJM2jF-y.js";var e={},o=a;Object.defineProperty(e,"__esModule",{value:!0});var u=e.default=void 0,d=o(r()),s=t,i=(0,d.default)((0,s.jsx)("path",{d:"M6.23 20.23 8 22l10-10L8 2 6.23 3.77 14.46 12z"}),"ArrowForwardIos");u=e.default=i;export{u as d};
