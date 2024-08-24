@@ -36,7 +36,6 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const {setCurrentUser} = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(true);
-    const [isFetching, setIsFetching] = useState(false);
     const [fetchUserDataIsComplited, setFetchUserDataIsComplited] = useState(false);
 
 
@@ -59,7 +58,6 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     };
 
 
-    const isFetchingRef = useRef(false);
     let isFetchingInProgress = false;
 
 
@@ -72,18 +70,11 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
         if (isFetchingInProgress) return;
         isFetchingInProgress = true;
 
-        if (isFetching) {
-            console.log('Fetch in progress, skipping');
-            return;
-        }
-        isFetchingRef.current = true;
-        setIsFetching(true);
+
         const token = localStorage.getItem('token');
         if (!token) {
             setIsAuthenticated(false);
             setCurrentUser(null);
-            isFetchingRef.current = false;
-            setIsFetching(false);
             return;
         }
 
@@ -128,14 +119,12 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 console.error('Unknown error', error);
             }
         } finally {
-            isFetchingRef.current = false;
-            setIsFetching(false);
             setIsLoading(false);
             isFetchingInProgress = false;
             setFetchUserDataIsComplited(true);
 
         }
-    }, [refreshAccessToken, isFetching, fetchUserDataIsComplited]);
+    }, [refreshAccessToken, fetchUserDataIsComplited]);
 
     useEffect(() => {
         console.log('Fetching user data from useEffect');
