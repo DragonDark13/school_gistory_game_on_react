@@ -370,8 +370,8 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
             } else if (option === quizCorrectAnswers[currentQuestion]) {
                 return classes.sucessOptionSelected;
-            } else return "";
-        }
+            } else return " ";
+        } else return " ";
 
 
     }
@@ -394,27 +394,27 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
         testType,
     };
 
-    const questionContainerProps = {
-        quizQuestions,
-        currentQuestion,
-        quizOptions,
-        selectedAnswer,
-        handleAnswer,
-        handleAnswerKeyPress,
-        maxTimeStatic,
-        answerChosen,
-        currentAnswerStatus,
-        isNextButtonActive,
-        handleNextQuestion,
-        smUp,
-        optionsHighlightWhenTimerIsFinished,
-        optionHighlight,
-        currentArticleTitle,
-        percentCompleted,
-        currentQuestionText: quizQuestions[currentQuestion],
-        setTimeIsFinished,
-        timeIsFinished,
-    };
+    // const questionContainerProps = {
+    //     quizQuestions,
+    //     currentQuestion,
+    //     quizOptions,
+    //     selectedAnswer,
+    //     handleAnswer,
+    //     handleAnswerKeyPress,
+    //     maxTimeStatic,
+    //     answerChosen,
+    //     currentAnswerStatus,
+    //     isNextButtonActive,
+    //     handleNextQuestion,
+    //     smUp,
+    //     optionsHighlightWhenTimerIsFinished,
+    //     optionHighlight,
+    //     currentArticleTitle,
+    //     percentCompleted,
+    //     currentQuestionText: quizQuestions[currentQuestion],
+    //     setTimeIsFinished,
+    //     timeIsFinished,
+    // };
 
 
     console.log(timeIsFinished ? "timeIsFinished Yes" : "timeIsFinished No")
@@ -428,7 +428,26 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
             {isQuizFinished ? (
                 <QuizResults props={quizResultsProps}/>
             ) : (
-                <QuestionContainer props={questionContainerProps}/>
+                <QuestionContainer
+                    setTimeIsFinished={setTimeIsFinished}
+                    answerChosen={answerChosen}
+                    maxTimeStatic={maxTimeStatic}
+                    currentAnswerStatus={currentAnswerStatus}
+                    currentArticleTitle={currentArticleTitle}
+                    currentQuestion={currentQuestion}
+                    handleAnswer={handleAnswer}
+                    currentQuestionText={quizQuestions[currentQuestion]}
+                    handleAnswerKeyPress={handleAnswerKeyPress}
+                    handleNextQuestion={handleNextQuestion}
+                    isNextButtonActive={isNextButtonActive}
+                    optionHighlight={optionHighlight}
+                    optionsHighlightWhenTimerIsFinished={optionsHighlightWhenTimerIsFinished}
+                    percentCompleted={percentCompleted}
+                    quizOptions={quizOptions}
+                    selectedAnswer={selectedAnswer}
+                    smUp={smUp}
+                    timeIsFinished={timeIsFinished}
+                />
             )}
 
             <QuizSuccessModal openModal={openModal} handleClose={handleClose}/>

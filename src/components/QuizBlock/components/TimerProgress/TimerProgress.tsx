@@ -5,7 +5,7 @@ import set = Reflect.set;
 interface ITimerProgress {
     maxTimeStatic: number,
     answerChosen: boolean,
-    setTimeIsFinished: (boolean) => void;
+    setTimeIsFinished: (arg0: boolean) => void;
 }
 
 const TimerProgress = memo(({

@@ -25,31 +25,31 @@ export type IQuestionContainerProps = {
     optionHighlight: (option: number) => string;
     percentCompleted: number,
     currentQuestionText: string,
-    setTimeIsFinished: (boolean) => void;
+    setTimeIsFinished: (arg0: boolean) => void;
     timeIsFinished: boolean
 };
 
-const QuestionContainer: React.FC<{ props: IQuestionContainerProps }> = ({props}) => {
-    const {
-        currentQuestion,
-        quizOptions,
-        selectedAnswer,
-        handleAnswer,
-        handleAnswerKeyPress,
-        maxTimeStatic,
-        answerChosen,
-        currentAnswerStatus,
-        isNextButtonActive,
-        handleNextQuestion,
-        smUp,
-        currentArticleTitle,
-        optionsHighlightWhenTimerIsFinished,
-        optionHighlight,
-        percentCompleted,
-        currentQuestionText,
-        setTimeIsFinished,
-        timeIsFinished
-    } = props;
+const QuestionContainer: React.FC<IQuestionContainerProps> = ({
+                                                                  currentQuestion,
+                                                                  quizOptions,
+                                                                  selectedAnswer,
+                                                                  handleAnswer,
+                                                                  handleAnswerKeyPress,
+                                                                  maxTimeStatic,
+                                                                  answerChosen,
+                                                                  currentAnswerStatus,
+                                                                  isNextButtonActive,
+                                                                  handleNextQuestion,
+                                                                  smUp,
+                                                                  currentArticleTitle,
+                                                                  optionsHighlightWhenTimerIsFinished,
+                                                                  optionHighlight,
+                                                                  percentCompleted,
+                                                                  currentQuestionText,
+                                                                  setTimeIsFinished,
+                                                                  timeIsFinished
+                                                              }) => {
+
 
     const {cx} = useStyles();
 
