@@ -37,6 +37,7 @@ const fetchEvents = async () => {
 const useFetchEvents = (isAuthenticated:boolean) => {
     return useQuery('users', fetchEvents, {
         enabled: isAuthenticated,  // Execute the query only if the user is authenticated
+        refetchOnWindowFocus: false, // Disables refetching on window focus
     });
 };
 
@@ -188,8 +189,6 @@ function App() {
 
     }, [currentUser]);
 
-
-    const {query} = useRequestProcessor();
 
     const {data: historyDataList, isLoading, isError} = useFetchEvents(isAuthenticated);
 

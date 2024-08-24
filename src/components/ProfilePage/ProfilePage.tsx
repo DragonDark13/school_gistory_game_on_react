@@ -50,7 +50,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                                  }) => {
 
 
-    const {isAuthenticated} = useAuth();
+    const {isAuthenticated,deleteProfile} = useAuth();
 
     const navigate = useNavigate();
 
@@ -97,7 +97,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     const mdUp = useMediaQuery(theme.breakpoints.up('md'))
     const smUp = useMediaQuery(theme.breakpoints.up('sm'))
 
-    const {deleteProfile} = useAuth();
 
     const handleDeleteProfile = async () => {
         if (window.confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {

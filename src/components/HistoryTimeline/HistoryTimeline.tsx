@@ -34,7 +34,7 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
     const theme = useTheme();
 
     const {currentUser} = useContext(UserContext)
-    // console.log("isLoading----", isLoading);
+    console.log("start HistoryTimeline");
 
     const [subTopicsArray, setSubTopicsArray] = useState<null | any>(null);
 

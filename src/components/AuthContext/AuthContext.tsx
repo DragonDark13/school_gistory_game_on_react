@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from 'react';
+import {createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import axiosClient from '../../axios';
 import {UserContext} from '../MyProviders/MyProviders';
 import {AxiosError} from 'axios';
@@ -36,7 +36,11 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const {setCurrentUser} = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(true);
-    const [isFetching, setIsFetching] = useState(true);
+    const [isFetching, setIsFetching] = useState(false);
+    const [fetchUserDataIsComplited, setFetchUserDataIsComplited] = useState(false);
+
+
+    // console.log("AuthProvider start");
 
 
     const refreshAccessToken = async () => {
@@ -55,13 +59,30 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
     };
 
 
-    const fetchUserData = useCallback(async () => {
-        if (!isFetching) return; // Prevent multiple concurrent fetches
+    const isFetchingRef = useRef(false);
+    let isFetchingInProgress = false;
 
+
+    const fetchUserData = useCallback(async () => {
+        console.log('Fetching user data');
+        if (fetchUserDataIsComplited) {
+            console.log('Fetch already complited, skipping');
+            return;
+        }
+        if (isFetchingInProgress) return;
+        isFetchingInProgress = true;
+
+        if (isFetching) {
+            console.log('Fetch in progress, skipping');
+            return;
+        }
+        isFetchingRef.current = true;
+        setIsFetching(true);
         const token = localStorage.getItem('token');
         if (!token) {
             setIsAuthenticated(false);
             setCurrentUser(null);
+            isFetchingRef.current = false;
             setIsFetching(false);
             return;
         }
@@ -76,7 +97,6 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                 setIsAuthenticated(true);
             }
         } catch (error: unknown) {
-
             if (error instanceof AxiosError) {
                 if (error.response?.status === 401) {
                     const newToken = await refreshAccessToken();
@@ -104,21 +124,24 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
                     setIsAuthenticated(false);
                     setCurrentUser(null);
                 }
-
             } else {
-                console.error('unknow error', error);
-
+                console.error('Unknown error', error);
             }
-
         } finally {
+            isFetchingRef.current = false;
             setIsFetching(false);
             setIsLoading(false);
+            isFetchingInProgress = false;
+            setFetchUserDataIsComplited(true);
+
         }
-    }, [refreshAccessToken, setCurrentUser, isFetching]);
+    }, [refreshAccessToken, isFetching, fetchUserDataIsComplited]);
 
     useEffect(() => {
+        console.log('Fetching user data from useEffect');
+
         fetchUserData();
-    }, [fetchUserData]);
+    }, []);
 
     const handleError = (error: AxiosError | Error | unknown, fallbackMessage: string) => {
         if (error instanceof AxiosError) {
@@ -209,7 +232,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             });
 
             if (response.status === 200) {
-                fetchUserData();
+                await fetchUserData();
                 alert('Profile updated successfully.');
             } else {
                 alert('Failed to update profile: ' + (response.data.message || 'Unknown error'));
