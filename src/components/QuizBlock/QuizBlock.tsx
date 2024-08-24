@@ -279,6 +279,7 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
 
     }, [answerChosen, timeIsFinished])
 
+
     const clearSettingsBeforeNewQuestion = () => {
         setSelectedAnswer(null);
         setIsNextButtonActive(false);
@@ -307,6 +308,21 @@ const QuizBlock: React.FC<IQuizBlockProps> = ({
             setIsQuizFinished(true);
         }
     };
+
+    useEffect(() => {
+
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (event.key === 'Enter') {
+                handleNextQuestion();
+            }
+        };
+
+        document.addEventListener('keypress', handleKeyPress);
+
+        return () => {
+            document.removeEventListener('keypress', handleKeyPress);
+        };
+    }, [handleNextQuestion]);
 
     const handleAnswerKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === "Enter" && isNextButtonActive) {
