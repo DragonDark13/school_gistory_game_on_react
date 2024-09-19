@@ -64,7 +64,6 @@ export interface IHistoryTimelineProps extends IHistoryListArray, ISetSelectedAr
 export interface ITimelineCardProps {
     event: HistoricalEvent;
     index: number;
-    buttonState: number;
     readonly handleExpandArticle: (index: number) => void;
     readonly handleGoToTestNow: (index: number) => void;
     readonly handleGoToSubArticleTest: (index: number) => void;

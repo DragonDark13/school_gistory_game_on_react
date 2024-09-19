@@ -247,7 +247,6 @@ const HistoryTimeline: React.FC<IHistoryTimelineProps> = ({
                                             isAllSubtaskDone={isAllSubtaskDone(index)}
                                             event={event}
                                             index={index}
-                                            buttonState={successLevels}
                                             handleExpandArticle={handleExpandArticle}
                                             handleGoToSubArticleTest={handleGoToSubArticleTest}
                                             handleGoToTestNow={handleGoToTestNow}

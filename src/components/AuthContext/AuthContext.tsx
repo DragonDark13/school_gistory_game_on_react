@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import {createContext, ReactNode, useCallback, useContext, useEffect,  useState} from 'react';
 import axiosClient from '../../axios';
 import {UserContext} from '../MyProviders/MyProviders';
 import {AxiosError} from 'axios';

@@ -19,7 +19,6 @@ import {ITimelineCardProps} from "../../../../types/types";
 const TimelineCard: React.FC<ITimelineCardProps> = ({
                                                         event,
                                                         index,
-                                                        buttonState,
                                                         handleExpandArticle,
                                                         handleGoToTestNow,
                                                         handleGoToSubArticleTest,
@@ -48,13 +47,11 @@ const TimelineCard: React.FC<ITimelineCardProps> = ({
                 image={myImage}
                 alt="city"
             />
-            <Hidden smDown>
                 <CardContent>
                     <Typography color={textColor} component={"div"}>
                         {event.text}
                     </Typography>
                 </CardContent>
-            </Hidden>
             <CardActions disableSpacing sx={{"flexWrap": "wrap"}}>
                 <Button variant={"outlined"} color={"secondary"} size={"small"} sx={{mb: 1}} fullWidth
                         disabled={notActiveCard}
