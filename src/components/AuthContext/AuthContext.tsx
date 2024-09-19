@@ -75,6 +75,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
         if (!token) {
             setIsAuthenticated(false);
             setCurrentUser(null);
+            setIsLoading(false)
             return;
         }
 
