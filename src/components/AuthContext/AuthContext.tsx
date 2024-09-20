@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {createContext, ReactNode, useCallback, useContext, useEffect,  useState} from 'react';
+import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from 'react';
 import axiosClient from '../../axios';
 import {UserContext} from '../MyProviders/MyProviders';
 import {AxiosError} from 'axios';
@@ -222,7 +222,11 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({children}) => {
             });
 
             if (response.status === 200) {
-                await fetchUserData();
+                setCurrentUser(prevState => ({
+                    ...prevState,
+                    user_name: response.data.user_name,
+                    email: response.data.email,
+                }))
                 alert('Profile updated successfully.');
             } else {
                 alert('Failed to update profile: ' + (response.data.message || 'Unknown error'));

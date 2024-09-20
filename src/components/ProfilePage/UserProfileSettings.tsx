@@ -24,7 +24,6 @@ const UserProfileSettings = React.memo(() => {
     const [isEditing, setIsEditing] = useState(false);
     const [userName, setUserName] = useState(currentUser ? currentUser.user_name : "");
     const [email, setEmail] = useState(currentUser ? currentUser.email : "");
-    const [country, setCountry] = useState(currentUser ? currentUser.country : "");
     const [selectedCountry, setSelectedCountry] = useState({label: "Ukrainian", value: "UK"});
     const theme = useTheme();
 
