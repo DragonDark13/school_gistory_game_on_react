@@ -13,7 +13,7 @@ import {ProfilePageProps} from "../../types/types";
 import {useTheme} from "@mui/system";
 import {makeStyles} from "tss-react/mui";
 import {useAuth} from "../AuthContext/AuthContext";
-import {useNavigate} from "react-router-dom";
+import {Link as RouterLink, useNavigate} from "react-router-dom";
 import AchievedItem from "./AchievedItem";
 import AnchorIcon from '@mui/icons-material/Anchor';
 import CelebrationIcon from '@mui/icons-material/Celebration';
@@ -50,7 +50,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                                  }) => {
 
 
-    const {isAuthenticated,deleteProfile} = useAuth();
+    const {isAuthenticated, deleteProfile} = useAuth();
 
     const navigate = useNavigate();
 
@@ -147,9 +147,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={"auto"} lg={"auto"}>
-                                            <IconButton>
-                                                <ArrowForwardIosIcon/>
-                                            </IconButton>
+                                            <RouterLink to={"/timeline"}>
+                                                <IconButton>
+                                                    <ArrowForwardIosIcon/>
+                                                </IconButton>
+                                            </RouterLink>
                                         </Grid>
                                     </Grid>
 
@@ -250,6 +252,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
         </Container>
     );
-};
+}
+;
 
 export default ProfilePage;
